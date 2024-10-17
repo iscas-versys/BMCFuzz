@@ -1,0 +1,2672 @@
+{
+    "SimTop.difftest_timer": {
+        "regname": "[63:0] difftest_timer",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000001100101",
+        "module_name": "SimTop"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_instr": {
+        "regname": "[63:0] dataBuffer_0_cf_instr",
+        "initval": "64b0000000000000000000000000000000000000000000000000000100110010011",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_pc": {
+        "regname": "[38:0] dataBuffer_0_cf_pc",
+        "initval": "39b000000010000000000000000000001001000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_pnpc": {
+        "regname": "[38:0] dataBuffer_0_cf_pnpc",
+        "initval": "39b000000010000000000000000000001001000100",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_exceptionVec_1": {
+        "regname": "dataBuffer_0_cf_exceptionVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_exceptionVec_2": {
+        "regname": "dataBuffer_0_cf_exceptionVec_2",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_exceptionVec_12": {
+        "regname": "dataBuffer_0_cf_exceptionVec_12",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_intrVec_1": {
+        "regname": "dataBuffer_0_cf_intrVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_intrVec_3": {
+        "regname": "dataBuffer_0_cf_intrVec_3",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_intrVec_5": {
+        "regname": "dataBuffer_0_cf_intrVec_5",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_intrVec_7": {
+        "regname": "dataBuffer_0_cf_intrVec_7",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_intrVec_9": {
+        "regname": "dataBuffer_0_cf_intrVec_9",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_intrVec_11": {
+        "regname": "dataBuffer_0_cf_intrVec_11",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_brIdx": {
+        "regname": "[3:0] dataBuffer_0_cf_brIdx",
+        "initval": "4b0000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_cf_crossBoundaryFault": {
+        "regname": "dataBuffer_0_cf_crossBoundaryFault",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_src1Type": {
+        "regname": "dataBuffer_0_ctrl_src1Type",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_src2Type": {
+        "regname": "dataBuffer_0_ctrl_src2Type",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_fuType": {
+        "regname": "[2:0] dataBuffer_0_ctrl_fuType",
+        "initval": "3b000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_fuOpType": {
+        "regname": "[6:0] dataBuffer_0_ctrl_fuOpType",
+        "initval": "7b1000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_rfSrc1": {
+        "regname": "[4:0] dataBuffer_0_ctrl_rfSrc1",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_rfSrc2": {
+        "regname": "[4:0] dataBuffer_0_ctrl_rfSrc2",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_rfWen": {
+        "regname": "dataBuffer_0_ctrl_rfWen",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_rfDest": {
+        "regname": "[4:0] dataBuffer_0_ctrl_rfDest",
+        "initval": "5b10011",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_ctrl_isNutCoreTrap": {
+        "regname": "dataBuffer_0_ctrl_isNutCoreTrap",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_0_data_imm": {
+        "regname": "[63:0] dataBuffer_0_data_imm",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_instr": {
+        "regname": "[63:0] dataBuffer_1_cf_instr",
+        "initval": "64b0000000000000000000000000000000000000000000000000000100000010011",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_pc": {
+        "regname": "[38:0] dataBuffer_1_cf_pc",
+        "initval": "39b000000010000000000000000000001000110100",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_pnpc": {
+        "regname": "[38:0] dataBuffer_1_cf_pnpc",
+        "initval": "39b000000010000000000000000000001000111000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_exceptionVec_1": {
+        "regname": "dataBuffer_1_cf_exceptionVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_exceptionVec_2": {
+        "regname": "dataBuffer_1_cf_exceptionVec_2",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_exceptionVec_12": {
+        "regname": "dataBuffer_1_cf_exceptionVec_12",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_intrVec_1": {
+        "regname": "dataBuffer_1_cf_intrVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_intrVec_3": {
+        "regname": "dataBuffer_1_cf_intrVec_3",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_intrVec_5": {
+        "regname": "dataBuffer_1_cf_intrVec_5",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_intrVec_7": {
+        "regname": "dataBuffer_1_cf_intrVec_7",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_intrVec_9": {
+        "regname": "dataBuffer_1_cf_intrVec_9",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_intrVec_11": {
+        "regname": "dataBuffer_1_cf_intrVec_11",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_brIdx": {
+        "regname": "[3:0] dataBuffer_1_cf_brIdx",
+        "initval": "4b0000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_cf_crossBoundaryFault": {
+        "regname": "dataBuffer_1_cf_crossBoundaryFault",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_src1Type": {
+        "regname": "dataBuffer_1_ctrl_src1Type",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_src2Type": {
+        "regname": "dataBuffer_1_ctrl_src2Type",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_fuType": {
+        "regname": "[2:0] dataBuffer_1_ctrl_fuType",
+        "initval": "3b000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_fuOpType": {
+        "regname": "[6:0] dataBuffer_1_ctrl_fuOpType",
+        "initval": "7b1000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_rfSrc1": {
+        "regname": "[4:0] dataBuffer_1_ctrl_rfSrc1",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_rfSrc2": {
+        "regname": "[4:0] dataBuffer_1_ctrl_rfSrc2",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_rfWen": {
+        "regname": "dataBuffer_1_ctrl_rfWen",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_rfDest": {
+        "regname": "[4:0] dataBuffer_1_ctrl_rfDest",
+        "initval": "5b10000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_ctrl_isNutCoreTrap": {
+        "regname": "dataBuffer_1_ctrl_isNutCoreTrap",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_1_data_imm": {
+        "regname": "[63:0] dataBuffer_1_data_imm",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_instr": {
+        "regname": "[63:0] dataBuffer_2_cf_instr",
+        "initval": "64b0000000000000000000000000000000000000000000000000000100010010011",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_pc": {
+        "regname": "[38:0] dataBuffer_2_cf_pc",
+        "initval": "39b000000010000000000000000000001000111000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_pnpc": {
+        "regname": "[38:0] dataBuffer_2_cf_pnpc",
+        "initval": "39b000000010000000000000000000001000111100",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_exceptionVec_1": {
+        "regname": "dataBuffer_2_cf_exceptionVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_exceptionVec_2": {
+        "regname": "dataBuffer_2_cf_exceptionVec_2",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_exceptionVec_12": {
+        "regname": "dataBuffer_2_cf_exceptionVec_12",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_intrVec_1": {
+        "regname": "dataBuffer_2_cf_intrVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_intrVec_3": {
+        "regname": "dataBuffer_2_cf_intrVec_3",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_intrVec_5": {
+        "regname": "dataBuffer_2_cf_intrVec_5",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_intrVec_7": {
+        "regname": "dataBuffer_2_cf_intrVec_7",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_intrVec_9": {
+        "regname": "dataBuffer_2_cf_intrVec_9",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_intrVec_11": {
+        "regname": "dataBuffer_2_cf_intrVec_11",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_brIdx": {
+        "regname": "[3:0] dataBuffer_2_cf_brIdx",
+        "initval": "4b0000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_cf_crossBoundaryFault": {
+        "regname": "dataBuffer_2_cf_crossBoundaryFault",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_src1Type": {
+        "regname": "dataBuffer_2_ctrl_src1Type",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_src2Type": {
+        "regname": "dataBuffer_2_ctrl_src2Type",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_fuType": {
+        "regname": "[2:0] dataBuffer_2_ctrl_fuType",
+        "initval": "3b000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_fuOpType": {
+        "regname": "[6:0] dataBuffer_2_ctrl_fuOpType",
+        "initval": "7b1000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_rfSrc1": {
+        "regname": "[4:0] dataBuffer_2_ctrl_rfSrc1",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_rfSrc2": {
+        "regname": "[4:0] dataBuffer_2_ctrl_rfSrc2",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_rfWen": {
+        "regname": "dataBuffer_2_ctrl_rfWen",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_rfDest": {
+        "regname": "[4:0] dataBuffer_2_ctrl_rfDest",
+        "initval": "5b10001",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_ctrl_isNutCoreTrap": {
+        "regname": "dataBuffer_2_ctrl_isNutCoreTrap",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_2_data_imm": {
+        "regname": "[63:0] dataBuffer_2_data_imm",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_instr": {
+        "regname": "[63:0] dataBuffer_3_cf_instr",
+        "initval": "64b0000000000000000000000000000000000000000000000000000100100010011",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_pc": {
+        "regname": "[38:0] dataBuffer_3_cf_pc",
+        "initval": "39b000000010000000000000000000001000111100",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_pnpc": {
+        "regname": "[38:0] dataBuffer_3_cf_pnpc",
+        "initval": "39b000000010000000000000000000001001000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_exceptionVec_1": {
+        "regname": "dataBuffer_3_cf_exceptionVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_exceptionVec_2": {
+        "regname": "dataBuffer_3_cf_exceptionVec_2",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_exceptionVec_12": {
+        "regname": "dataBuffer_3_cf_exceptionVec_12",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_intrVec_1": {
+        "regname": "dataBuffer_3_cf_intrVec_1",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_intrVec_3": {
+        "regname": "dataBuffer_3_cf_intrVec_3",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_intrVec_5": {
+        "regname": "dataBuffer_3_cf_intrVec_5",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_intrVec_7": {
+        "regname": "dataBuffer_3_cf_intrVec_7",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_intrVec_9": {
+        "regname": "dataBuffer_3_cf_intrVec_9",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_intrVec_11": {
+        "regname": "dataBuffer_3_cf_intrVec_11",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_brIdx": {
+        "regname": "[3:0] dataBuffer_3_cf_brIdx",
+        "initval": "4b0000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_cf_crossBoundaryFault": {
+        "regname": "dataBuffer_3_cf_crossBoundaryFault",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_src1Type": {
+        "regname": "dataBuffer_3_ctrl_src1Type",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_src2Type": {
+        "regname": "dataBuffer_3_ctrl_src2Type",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_fuType": {
+        "regname": "[2:0] dataBuffer_3_ctrl_fuType",
+        "initval": "3b000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_fuOpType": {
+        "regname": "[6:0] dataBuffer_3_ctrl_fuOpType",
+        "initval": "7b1000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_rfSrc1": {
+        "regname": "[4:0] dataBuffer_3_ctrl_rfSrc1",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_rfSrc2": {
+        "regname": "[4:0] dataBuffer_3_ctrl_rfSrc2",
+        "initval": "5b00000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_rfWen": {
+        "regname": "dataBuffer_3_ctrl_rfWen",
+        "initval": "1b1",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_rfDest": {
+        "regname": "[4:0] dataBuffer_3_ctrl_rfDest",
+        "initval": "5b10010",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_ctrl_isNutCoreTrap": {
+        "regname": "dataBuffer_3_ctrl_isNutCoreTrap",
+        "initval": "1b0",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.dataBuffer_3_data_imm": {
+        "regname": "[63:0] dataBuffer_3_data_imm",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.ringBufferHead": {
+        "regname": "[1:0] ringBufferHead",
+        "initval": "2b01",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.ringBufferTail": {
+        "regname": "[1:0] ringBufferTail",
+        "initval": "2b01",
+        "module_name": "NutCore"
+    },
+    "SimTop.soc.nutcore.frontend.valid": {
+        "regname": "valid",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_instr": {
+        "regname": "[63:0] idu_io_in_0_bits_r_instr",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_pc": {
+        "regname": "[38:0] idu_io_in_0_bits_r_pc",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_pnpc": {
+        "regname": "[38:0] idu_io_in_0_bits_r_pnpc",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_exceptionVec_1": {
+        "regname": "idu_io_in_0_bits_r_exceptionVec_1",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_exceptionVec_12": {
+        "regname": "idu_io_in_0_bits_r_exceptionVec_12",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_brIdx": {
+        "regname": "[3:0] idu_io_in_0_bits_r_brIdx",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.idu_io_in_0_bits_r_crossBoundaryFault": {
+        "regname": "idu_io_in_0_bits_r_crossBoundaryFault",
+        "initval": "None",
+        "module_name": "Frontend_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.pc": {
+        "regname": "[38:0] pc",
+        "initval": "39b000000010000000000000000000001001001100",
+        "module_name": "IFU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.crosslineJumpLatch": {
+        "regname": "crosslineJumpLatch",
+        "initval": "1b0",
+        "module_name": "IFU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.crosslineJumpTarget": {
+        "regname": "[38:0] crosslineJumpTarget",
+        "initval": "39b101010011001110000011111100110000000101",
+        "module_name": "IFU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.r": {
+        "regname": "r",
+        "initval": "1b1",
+        "module_name": "IFU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.flush": {
+        "regname": "flush",
+        "initval": "1b0",
+        "module_name": "BPU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.pcLatch": {
+        "regname": "[38:0] pcLatch",
+        "initval": "39b000000010000000000000000000001001001100",
+        "module_name": "BPU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.btbHit_REG": {
+        "regname": "btbHit_REG",
+        "initval": "1b0",
+        "module_name": "BPU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.sp_value": {
+        "regname": "[3:0] sp_value",
+        "initval": "None",
+        "module_name": "BPU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.rasTarget": {
+        "regname": "[38:0] rasTarget",
+        "initval": "39b000010001000011000101110101101100000100",
+        "module_name": "BPU_inorder"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.btb.resetState": {
+        "regname": "resetState",
+        "initval": "1b1",
+        "module_name": "SRAMTemplate"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.btb.resetSet": {
+        "regname": "[8:0] resetSet",
+        "initval": "9b001100101",
+        "module_name": "SRAMTemplate"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.btb.rdata_REG": {
+        "regname": "rdata_REG",
+        "initval": "1b0",
+        "module_name": "SRAMTemplate"
+    },
+    "SimTop.soc.nutcore.frontend.ifu.bp1.btb.rdata_r_0": {
+        "regname": "[73:0] rdata_r_0",
+        "initval": "74b00000000000000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "SRAMTemplate"
+    },
+    "SimTop.soc.nutcore.frontend.ibf.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "NaiveRVCAlignBuffer"
+    },
+    "SimTop.soc.nutcore.frontend.ibf.specialInstR": {
+        "regname": "[15:0] specialInstR",
+        "initval": "16b0011110101011010",
+        "module_name": "NaiveRVCAlignBuffer"
+    },
+    "SimTop.soc.nutcore.frontend.ibf.pcOffsetR": {
+        "regname": "[2:0] pcOffsetR",
+        "initval": "3b000",
+        "module_name": "NaiveRVCAlignBuffer"
+    },
+    "SimTop.soc.nutcore.frontend.ibf.specialPCR": {
+        "regname": "[38:0] specialPCR",
+        "initval": "39b111001000110000010011000001100011100111",
+        "module_name": "NaiveRVCAlignBuffer"
+    },
+    "SimTop.soc.nutcore.frontend.ibf.specialNPCR": {
+        "regname": "[38:0] specialNPCR",
+        "initval": "39b110100000100100101101101100000010101010",
+        "module_name": "NaiveRVCAlignBuffer"
+    },
+    "SimTop.soc.nutcore.frontend.ibf.specialIPFR": {
+        "regname": "specialIPFR",
+        "initval": "1b0",
+        "module_name": "NaiveRVCAlignBuffer"
+    },
+    "SimTop.soc.nutcore.frontend.ibf_io_in_q.enq_ptr_value": {
+        "regname": "[1:0] enq_ptr_value",
+        "initval": "None",
+        "module_name": "FlushableQueue"
+    },
+    "SimTop.soc.nutcore.frontend.ibf_io_in_q.deq_ptr_value": {
+        "regname": "[1:0] deq_ptr_value",
+        "initval": "None",
+        "module_name": "FlushableQueue"
+    },
+    "SimTop.soc.nutcore.frontend.ibf_io_in_q.maybe_full": {
+        "regname": "maybe_full",
+        "initval": "1b0",
+        "module_name": "FlushableQueue"
+    },
+    "SimTop.soc.nutcore.backend.valid": {
+        "regname": "valid",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_instr": {
+        "regname": "[63:0] exu_io_in_bits_r_cf_instr",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_pc": {
+        "regname": "[38:0] exu_io_in_bits_r_cf_pc",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_pnpc": {
+        "regname": "[38:0] exu_io_in_bits_r_cf_pnpc",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_exceptionVec_1": {
+        "regname": "exu_io_in_bits_r_cf_exceptionVec_1",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_exceptionVec_2": {
+        "regname": "exu_io_in_bits_r_cf_exceptionVec_2",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_exceptionVec_12": {
+        "regname": "exu_io_in_bits_r_cf_exceptionVec_12",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_intrVec_1": {
+        "regname": "exu_io_in_bits_r_cf_intrVec_1",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_intrVec_3": {
+        "regname": "exu_io_in_bits_r_cf_intrVec_3",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_intrVec_5": {
+        "regname": "exu_io_in_bits_r_cf_intrVec_5",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_intrVec_7": {
+        "regname": "exu_io_in_bits_r_cf_intrVec_7",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_intrVec_9": {
+        "regname": "exu_io_in_bits_r_cf_intrVec_9",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_intrVec_11": {
+        "regname": "exu_io_in_bits_r_cf_intrVec_11",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_brIdx": {
+        "regname": "[3:0] exu_io_in_bits_r_cf_brIdx",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_cf_crossBoundaryFault": {
+        "regname": "exu_io_in_bits_r_cf_crossBoundaryFault",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_ctrl_fuType": {
+        "regname": "[2:0] exu_io_in_bits_r_ctrl_fuType",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_ctrl_fuOpType": {
+        "regname": "[6:0] exu_io_in_bits_r_ctrl_fuOpType",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_ctrl_rfWen": {
+        "regname": "exu_io_in_bits_r_ctrl_rfWen",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_ctrl_rfDest": {
+        "regname": "[4:0] exu_io_in_bits_r_ctrl_rfDest",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_ctrl_isNutCoreTrap": {
+        "regname": "exu_io_in_bits_r_ctrl_isNutCoreTrap",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_data_src1": {
+        "regname": "[63:0] exu_io_in_bits_r_data_src1",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_data_src2": {
+        "regname": "[63:0] exu_io_in_bits_r_data_src2",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.exu_io_in_bits_r_data_imm": {
+        "regname": "[63:0] exu_io_in_bits_r_data_imm",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.valid_1": {
+        "regname": "valid_1",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_cf_instr": {
+        "regname": "[63:0] wbu_io_in_bits_r_decode_cf_instr",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_cf_pc": {
+        "regname": "[38:0] wbu_io_in_bits_r_decode_cf_pc",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_cf_redirect_target": {
+        "regname": "[38:0] wbu_io_in_bits_r_decode_cf_redirect_target",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_cf_redirect_valid": {
+        "regname": "wbu_io_in_bits_r_decode_cf_redirect_valid",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_ctrl_fuType": {
+        "regname": "[2:0] wbu_io_in_bits_r_decode_ctrl_fuType",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_ctrl_rfWen": {
+        "regname": "wbu_io_in_bits_r_decode_ctrl_rfWen",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_decode_ctrl_rfDest": {
+        "regname": "[4:0] wbu_io_in_bits_r_decode_ctrl_rfDest",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_isMMIO": {
+        "regname": "wbu_io_in_bits_r_isMMIO",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_commits_0": {
+        "regname": "[63:0] wbu_io_in_bits_r_commits_0",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_commits_1": {
+        "regname": "[63:0] wbu_io_in_bits_r_commits_1",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_commits_2": {
+        "regname": "[63:0] wbu_io_in_bits_r_commits_2",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_commits_3": {
+        "regname": "[63:0] wbu_io_in_bits_r_commits_3",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.wbu_io_in_bits_r_isExit": {
+        "regname": "wbu_io_in_bits_r_isExit",
+        "initval": "None",
+        "module_name": "Backend_inorder"
+    },
+    "SimTop.soc.nutcore.backend.isu.busy": {
+        "regname": "[31:0] busy",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_0": {
+        "regname": "[63:0] rf_0",
+        "initval": "64b0000000000000000000000000000000010000000000000000000000000000100",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_1": {
+        "regname": "[63:0] rf_1",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_2": {
+        "regname": "[63:0] rf_2",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_3": {
+        "regname": "[63:0] rf_3",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_4": {
+        "regname": "[63:0] rf_4",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_5": {
+        "regname": "[63:0] rf_5",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_6": {
+        "regname": "[63:0] rf_6",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_7": {
+        "regname": "[63:0] rf_7",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_8": {
+        "regname": "[63:0] rf_8",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_9": {
+        "regname": "[63:0] rf_9",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_10": {
+        "regname": "[63:0] rf_10",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_11": {
+        "regname": "[63:0] rf_11",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_12": {
+        "regname": "[63:0] rf_12",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_13": {
+        "regname": "[63:0] rf_13",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_14": {
+        "regname": "[63:0] rf_14",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_15": {
+        "regname": "[63:0] rf_15",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_16": {
+        "regname": "[63:0] rf_16",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_17": {
+        "regname": "[63:0] rf_17",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_18": {
+        "regname": "[63:0] rf_18",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_19": {
+        "regname": "[63:0] rf_19",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_20": {
+        "regname": "[63:0] rf_20",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_21": {
+        "regname": "[63:0] rf_21",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_22": {
+        "regname": "[63:0] rf_22",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_23": {
+        "regname": "[63:0] rf_23",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_24": {
+        "regname": "[63:0] rf_24",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_25": {
+        "regname": "[63:0] rf_25",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_26": {
+        "regname": "[63:0] rf_26",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_27": {
+        "regname": "[63:0] rf_27",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_28": {
+        "regname": "[63:0] rf_28",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_29": {
+        "regname": "[63:0] rf_29",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_30": {
+        "regname": "[63:0] rf_30",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.isu.rf_31": {
+        "regname": "[63:0] rf_31",
+        "initval": "None",
+        "module_name": "ISU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.hasIllegalJumpAddr": {
+        "regname": "hasIllegalJumpAddr",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.io_jumpIsIllegal_bits_r": {
+        "regname": "[63:0] io_jumpIsIllegal_bits_r",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_valid": {
+        "regname": "REG_valid",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_pc": {
+        "regname": "[38:0] REG_pc",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_isMissPredict": {
+        "regname": "REG_isMissPredict",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_actualTarget": {
+        "regname": "[38:0] REG_actualTarget",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_actualTaken": {
+        "regname": "REG_actualTaken",
+        "initval": "1b1",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_fuOpType": {
+        "regname": "[6:0] REG_fuOpType",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_btbType": {
+        "regname": "[1:0] REG_btbType",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.alu.REG_isRVC": {
+        "regname": "REG_isRVC",
+        "initval": "None",
+        "module_name": "ALU"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.io_vaddr_r": {
+        "regname": "[63:0] io_vaddr_r",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "UnpipelinedLSU"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.state": {
+        "regname": "[2:0] state",
+        "initval": "3b000",
+        "module_name": "UnpipelinedLSU"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.atomMemReg": {
+        "regname": "[63:0] atomMemReg",
+        "initval": "None",
+        "module_name": "UnpipelinedLSU"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.atomRegReg": {
+        "regname": "[63:0] atomRegReg",
+        "initval": "64b0110011001101110011110100000010010110001100111001001111101101100",
+        "module_name": "UnpipelinedLSU"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.mmioReg": {
+        "regname": "mmioReg",
+        "initval": "1b0",
+        "module_name": "UnpipelinedLSU"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.lsExecUnit.io_vaddr_r": {
+        "regname": "[63:0] io_vaddr_r",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "LSExecUnit"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.lsExecUnit.addrLatch": {
+        "regname": "[63:0] addrLatch",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "LSExecUnit"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.lsExecUnit.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "LSExecUnit"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.lsExecUnit.rdataLatch": {
+        "regname": "[63:0] rdataLatch",
+        "initval": "64b0100101001000001001010100011000010010101000011011100101100011010",
+        "module_name": "LSExecUnit"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.lsExecUnit.r": {
+        "regname": "r",
+        "initval": "1b0",
+        "module_name": "LSExecUnit"
+    },
+    "SimTop.soc.nutcore.backend.exu.lsu.lsExecUnit.r_1": {
+        "regname": "r_1",
+        "initval": "1b0",
+        "module_name": "LSExecUnit"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.isDivReg_REG": {
+        "regname": "isDivReg_REG",
+        "initval": "1b0",
+        "module_name": "MDU"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.mulRes_REG": {
+        "regname": "[64:0] mulRes_REG",
+        "initval": "65b00000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.mulRes_REG_1": {
+        "regname": "[64:0] mulRes_REG_1",
+        "initval": "65b00000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_bits_REG": {
+        "regname": "[129:0] io_out_bits_REG",
+        "initval": "130b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_bits_REG_1": {
+        "regname": "[129:0] io_out_bits_REG_1",
+        "initval": "130b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_bits_REG_2": {
+        "regname": "[129:0] io_out_bits_REG_2",
+        "initval": "None",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_valid_REG": {
+        "regname": "io_out_valid_REG",
+        "initval": "1b0",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_valid_REG_1": {
+        "regname": "io_out_valid_REG_1",
+        "initval": "1b0",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_valid_REG_2": {
+        "regname": "io_out_valid_REG_2",
+        "initval": "1b0",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.io_out_valid_REG_3": {
+        "regname": "io_out_valid_REG_3",
+        "initval": "None",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.mul.busy": {
+        "regname": "busy",
+        "initval": "1b0",
+        "module_name": "Multiplier"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.state": {
+        "regname": "[2:0] state",
+        "initval": "3b000",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.shiftReg": {
+        "regname": "[128:0] shiftReg",
+        "initval": "129b111100000101011001010101011101011110110001110010110100001101111110100101110101000010000101101101110101000101000011101101000000110",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.aSignReg": {
+        "regname": "aSignReg",
+        "initval": "1b1",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.qSignReg": {
+        "regname": "qSignReg",
+        "initval": "1b1",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.bReg": {
+        "regname": "[63:0] bReg",
+        "initval": "64b0110010100111011111001100011011010011100011000101111111110110101",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.aValx2Reg": {
+        "regname": "[64:0] aValx2Reg",
+        "initval": "65b00110111110110111101011111010001011101100101010101011010111001010",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.mdu.div.cnt_value": {
+        "regname": "[5:0] cnt_value",
+        "initval": "6b000000",
+        "module_name": "Divider"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.priviledgeMode": {
+        "regname": "[1:0] priviledgeMode",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mtvec": {
+        "regname": "[63:0] mtvec",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mcounteren": {
+        "regname": "[63:0] mcounteren",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mcause": {
+        "regname": "[63:0] mcause",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mtval": {
+        "regname": "[63:0] mtval",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mepc": {
+        "regname": "[63:0] mepc",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mie": {
+        "regname": "[63:0] mie",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mipReg": {
+        "regname": "[63:0] mipReg",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mstatus": {
+        "regname": "[63:0] mstatus",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.medeleg": {
+        "regname": "[63:0] medeleg",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mideleg": {
+        "regname": "[63:0] mideleg",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.mscratch": {
+        "regname": "[63:0] mscratch",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.stvec": {
+        "regname": "[63:0] stvec",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.satp": {
+        "regname": "[63:0] satp",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.sepc": {
+        "regname": "[63:0] sepc",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.scause": {
+        "regname": "[63:0] scause",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.stval": {
+        "regname": "[63:0] stval",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.sscratch": {
+        "regname": "[63:0] sscratch",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.scounteren": {
+        "regname": "[63:0] scounteren",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.lr": {
+        "regname": "lr",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.lrAddr": {
+        "regname": "[63:0] lrAddr",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.perfCnts_0": {
+        "regname": "[63:0] perfCnts_0",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000001100101",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.perfCnts_1": {
+        "regname": "[63:0] perfCnts_1",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.perfCnts_2": {
+        "regname": "[63:0] perfCnts_2",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000010010",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.redirectTargetReg": {
+        "regname": "[63:0] redirectTargetReg",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.hasIllegalXRET": {
+        "regname": "hasIllegalXRET",
+        "initval": "None",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.isIllegalXRET_REG": {
+        "regname": "isIllegalXRET_REG",
+        "initval": "1b0",
+        "module_name": "CSR"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_privilegeMode": {
+        "regname": "[63:0] difftest_REG_privilegeMode",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mstatus": {
+        "regname": "[63:0] difftest_REG_mstatus",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_sstatus": {
+        "regname": "[63:0] difftest_REG_sstatus",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mepc": {
+        "regname": "[63:0] difftest_REG_mepc",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_sepc": {
+        "regname": "[63:0] difftest_REG_sepc",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mtval": {
+        "regname": "[63:0] difftest_REG_mtval",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_stval": {
+        "regname": "[63:0] difftest_REG_stval",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mtvec": {
+        "regname": "[63:0] difftest_REG_mtvec",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_stvec": {
+        "regname": "[63:0] difftest_REG_stvec",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mcause": {
+        "regname": "[63:0] difftest_REG_mcause",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_scause": {
+        "regname": "[63:0] difftest_REG_scause",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_satp": {
+        "regname": "[63:0] difftest_REG_satp",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mip": {
+        "regname": "[63:0] difftest_REG_mip",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mie": {
+        "regname": "[63:0] difftest_REG_mie",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mscratch": {
+        "regname": "[63:0] difftest_REG_mscratch",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_sscratch": {
+        "regname": "[63:0] difftest_REG_sscratch",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_mideleg": {
+        "regname": "[63:0] difftest_REG_mideleg",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftest_REG_medeleg": {
+        "regname": "[63:0] difftest_REG_medeleg",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_valid": {
+        "regname": "difftestArchEvent_REG_valid",
+        "initval": "1b0",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_interrupt": {
+        "regname": "[31:0] difftestArchEvent_REG_interrupt",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_exception": {
+        "regname": "[31:0] difftestArchEvent_REG_exception",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_exceptionPC": {
+        "regname": "[63:0] difftestArchEvent_REG_exceptionPC",
+        "initval": "64b0000000000000000000000000000000010000000000000000000001001000000",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_exceptionInst": {
+        "regname": "[31:0] difftestArchEvent_REG_exceptionInst",
+        "initval": "32b00000000000000000000100110010011",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_1_valid": {
+        "regname": "difftestArchEvent_REG_1_valid",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_1_interrupt": {
+        "regname": "[31:0] difftestArchEvent_REG_1_interrupt",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_1_exception": {
+        "regname": "[31:0] difftestArchEvent_REG_1_exception",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_1_exceptionPC": {
+        "regname": "[63:0] difftestArchEvent_REG_1_exceptionPC",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.csr.CSRDiffWrapper.difftestArchEvent_REG_1_exceptionInst": {
+        "regname": "[31:0] difftestArchEvent_REG_1_exceptionInst",
+        "initval": "None",
+        "module_name": "CSRDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.diffMod.cycleCnt": {
+        "regname": "[63:0] cycleCnt",
+        "initval": "None",
+        "module_name": "EXUDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.exu.diffMod.instrCnt": {
+        "regname": "[63:0] instrCnt",
+        "initval": "None",
+        "module_name": "EXUDiffWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_valid": {
+        "regname": "difftest_REG_valid",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_skip": {
+        "regname": "difftest_REG_skip",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_isRVC": {
+        "regname": "difftest_REG_isRVC",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_rfwen": {
+        "regname": "difftest_REG_rfwen",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_wpdest": {
+        "regname": "[4:0] difftest_REG_wpdest",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_wdest": {
+        "regname": "[7:0] difftest_REG_wdest",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_pc": {
+        "regname": "[63:0] difftest_REG_pc",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_instr": {
+        "regname": "[31:0] difftest_REG_instr",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffInstrCommitWrapper.difftest_REG_special": {
+        "regname": "[7:0] difftest_REG_special",
+        "initval": "None",
+        "module_name": "DiffInstrCommitWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffIntWbWrapper.difftest_REG_valid": {
+        "regname": "difftest_REG_valid",
+        "initval": "None",
+        "module_name": "DiffIntWbWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffIntWbWrapper.difftest_REG_address": {
+        "regname": "[4:0] difftest_REG_address",
+        "initval": "None",
+        "module_name": "DiffIntWbWrapper"
+    },
+    "SimTop.soc.nutcore.backend.wbu.DiffIntWbWrapper.difftest_REG_data": {
+        "regname": "[63:0] difftest_REG_data",
+        "initval": "None",
+        "module_name": "DiffIntWbWrapper"
+    },
+    "SimTop.soc.nutcore.mmioXbar.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "SimpleBusCrossbarNto1"
+    },
+    "SimTop.soc.nutcore.mmioXbar.inflightSrc": {
+        "regname": "inflightSrc",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbarNto1"
+    },
+    "SimTop.soc.nutcore.mmioXbar.inputArb.lockCount_value": {
+        "regname": "[2:0] lockCount_value",
+        "initval": "3b000",
+        "module_name": "LockingArbiter"
+    },
+    "SimTop.soc.nutcore.mmioXbar.inputArb.lockIdx": {
+        "regname": "lockIdx",
+        "initval": "1b0",
+        "module_name": "LockingArbiter"
+    },
+    "SimTop.soc.nutcore.dmemXbar.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "SimpleBusCrossbarNto1_1"
+    },
+    "SimTop.soc.nutcore.dmemXbar.inflightSrc": {
+        "regname": "[1:0] inflightSrc",
+        "initval": "2b00",
+        "module_name": "SimpleBusCrossbarNto1_1"
+    },
+    "SimTop.soc.nutcore.dmemXbar.inputArb.lockCount_value": {
+        "regname": "[2:0] lockCount_value",
+        "initval": "3b000",
+        "module_name": "LockingArbiter_1"
+    },
+    "SimTop.soc.nutcore.dmemXbar.inputArb.lockIdx": {
+        "regname": "[1:0] lockIdx",
+        "initval": "2b10",
+        "module_name": "LockingArbiter_1"
+    },
+    "SimTop.soc.nutcore.itlb.r_0": {
+        "regname": "[144:0] r_0",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.r_1": {
+        "regname": "[144:0] r_1",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.r_2": {
+        "regname": "[144:0] r_2",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.r_3": {
+        "regname": "[144:0] r_3",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.hasInflight": {
+        "regname": "hasInflight",
+        "initval": "1b1",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.lastReqAddr": {
+        "regname": "[38:0] lastReqAddr",
+        "initval": "39b000000010000000000000000000001001001000",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.hasIllegalInflight": {
+        "regname": "hasIllegalInflight",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.valid": {
+        "regname": "valid",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec_io_in_bits_r_addr": {
+        "regname": "[38:0] tlbExec_io_in_bits_r_addr",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec_io_in_bits_r_user": {
+        "regname": "[86:0] tlbExec_io_in_bits_r_user",
+        "initval": "None",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.userBits": {
+        "regname": "[86:0] userBits",
+        "initval": "87b000001000000000010000000000000000000001001001100000000010000000000000000000001001001000",
+        "module_name": "EmbeddedTLB"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.victimWaymask_lfsr": {
+        "regname": "[63:0] victimWaymask_lfsr",
+        "initval": "64b0100100111100001001101110001110100110000010000100101110110010111",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.state": {
+        "regname": "[2:0] state",
+        "initval": "3b000",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.level": {
+        "regname": "[1:0] level",
+        "initval": "2b11",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.memRespStore": {
+        "regname": "[63:0] memRespStore",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.missMaskStore": {
+        "regname": "[17:0] missMaskStore",
+        "initval": "18b100011011001110011",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.raddr": {
+        "regname": "[55:0] raddr",
+        "initval": "56b11011100011111010100000111011010001110011000010010111101",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.alreadyOutFire": {
+        "regname": "alreadyOutFire",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.needFlush": {
+        "regname": "needFlush",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.missIPF": {
+        "regname": "missIPF",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.missPTEAF": {
+        "regname": "missPTEAF",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG": {
+        "regname": "REG",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_2": {
+        "regname": "[3:0] REG_2",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_3": {
+        "regname": "[26:0] REG_3",
+        "initval": "27b000000010000000000000000000",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_4": {
+        "regname": "[15:0] REG_4",
+        "initval": "16b0000000000000000",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_5": {
+        "regname": "[17:0] REG_5",
+        "initval": "18b111111111111111111",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_6": {
+        "regname": "[7:0] REG_6",
+        "initval": "8b00000000",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_7": {
+        "regname": "[43:0] REG_7",
+        "initval": "44b00000100101010001100001001010100001101110010",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.REG_8": {
+        "regname": "[55:0] REG_8",
+        "initval": "56b11011100011111010100000111011010001110011000010010111101",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.tlbExec.blockRefill": {
+        "regname": "blockRefill",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec"
+    },
+    "SimTop.soc.nutcore.itlb.mdTLB.resetState": {
+        "regname": "resetState",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBMD"
+    },
+    "SimTop.soc.nutcore.filter.hasInflight": {
+        "regname": "hasInflight",
+        "initval": "1b0",
+        "module_name": "PTERequestFilter"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.state": {
+        "regname": "[2:0] state",
+        "initval": "3b001",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.ismmioRec": {
+        "regname": "ismmioRec",
+        "initval": "1b0",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.needFlush": {
+        "regname": "needFlush",
+        "initval": "1b0",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.alreadyOutFire": {
+        "regname": "alreadyOutFire",
+        "initval": "1b0",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.reqaddr": {
+        "regname": "[31:0] reqaddr",
+        "initval": "None",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.mmiordata": {
+        "regname": "[63:0] mmiordata",
+        "initval": "64b1000100100111001011110110111010111000110111111111111111110011100",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.memrdata": {
+        "regname": "[63:0] memrdata",
+        "initval": "64b0000000000000000000010100001001100000000000000000000100110010011",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.io_imem_cache.memuser": {
+        "regname": "[86:0] memuser",
+        "initval": "None",
+        "module_name": "Cache_fake"
+    },
+    "SimTop.soc.nutcore.dtlb.r_0": {
+        "regname": "[144:0] r_0",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.r_1": {
+        "regname": "[144:0] r_1",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.r_2": {
+        "regname": "[144:0] r_2",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.r_3": {
+        "regname": "[144:0] r_3",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.valid": {
+        "regname": "valid",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec_io_in_bits_r_addr": {
+        "regname": "[38:0] tlbExec_io_in_bits_r_addr",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec_io_in_bits_r_size": {
+        "regname": "[2:0] tlbExec_io_in_bits_r_size",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec_io_in_bits_r_cmd": {
+        "regname": "[3:0] tlbExec_io_in_bits_r_cmd",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec_io_in_bits_r_wmask": {
+        "regname": "[7:0] tlbExec_io_in_bits_r_wmask",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec_io_in_bits_r_wdata": {
+        "regname": "[63:0] tlbExec_io_in_bits_r_wdata",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.valid_1": {
+        "regname": "valid_1",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbEmpty_io_in_bits_r_addr": {
+        "regname": "[31:0] tlbEmpty_io_in_bits_r_addr",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbEmpty_io_in_bits_r_size": {
+        "regname": "[2:0] tlbEmpty_io_in_bits_r_size",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbEmpty_io_in_bits_r_cmd": {
+        "regname": "[3:0] tlbEmpty_io_in_bits_r_cmd",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbEmpty_io_in_bits_r_wmask": {
+        "regname": "[7:0] tlbEmpty_io_in_bits_r_wmask",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbEmpty_io_in_bits_r_wdata": {
+        "regname": "[63:0] tlbEmpty_io_in_bits_r_wdata",
+        "initval": "None",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.alreadyOutFinish": {
+        "regname": "alreadyOutFinish",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLB_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.victimWaymask_lfsr": {
+        "regname": "[63:0] victimWaymask_lfsr",
+        "initval": "64b0100100111100001001101110001110100110000010000100101110110010111",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.io_pf_loadPF_REG": {
+        "regname": "io_pf_loadPF_REG",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.io_pf_storePF_REG": {
+        "regname": "io_pf_storePF_REG",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.io_pf_laf_REG": {
+        "regname": "io_pf_laf_REG",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.io_pf_saf_REG": {
+        "regname": "io_pf_saf_REG",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.state": {
+        "regname": "[2:0] state",
+        "initval": "3b000",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.level": {
+        "regname": "[1:0] level",
+        "initval": "2b11",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.memRespStore": {
+        "regname": "[63:0] memRespStore",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.missMaskStore": {
+        "regname": "[17:0] missMaskStore",
+        "initval": "18b000011010111000101",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.raddr": {
+        "regname": "[55:0] raddr",
+        "initval": "56b00100110000100010010010100011100111100100010101010001001",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.alreadyOutFire": {
+        "regname": "alreadyOutFire",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.missPTEAF": {
+        "regname": "missPTEAF",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG": {
+        "regname": "REG",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_1": {
+        "regname": "[3:0] REG_1",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_2": {
+        "regname": "[3:0] REG_2",
+        "initval": "None",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_3": {
+        "regname": "[26:0] REG_3",
+        "initval": "27b001101011010101110111100101",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_4": {
+        "regname": "[15:0] REG_4",
+        "initval": "16b0000000000000000",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_5": {
+        "regname": "[17:0] REG_5",
+        "initval": "18b111111111111111111",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_6": {
+        "regname": "[7:0] REG_6",
+        "initval": "8b00000000",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_7": {
+        "regname": "[43:0] REG_7",
+        "initval": "44b00000100101010001100001001010100001101110010",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.REG_8": {
+        "regname": "[55:0] REG_8",
+        "initval": "56b00100110000100010010010100011100111100100010101010001001",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.tlbExec.blockRefill": {
+        "regname": "blockRefill",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBExec_1"
+    },
+    "SimTop.soc.nutcore.dtlb.mdTLB.resetState": {
+        "regname": "resetState",
+        "initval": "1b0",
+        "module_name": "EmbeddedTLBMD_1"
+    },
+    "SimTop.soc.nutcore.dtlb.mdTLB.resetSet": {
+        "regname": "[3:0] resetSet",
+        "initval": "4b0000",
+        "module_name": "EmbeddedTLBMD_1"
+    },
+    "SimTop.soc.nutcore.filter_1.hasInflight": {
+        "regname": "hasInflight",
+        "initval": "1b0",
+        "module_name": "PTERequestFilter"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.state": {
+        "regname": "[2:0] state",
+        "initval": "3b000",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.ismmioRec": {
+        "regname": "ismmioRec",
+        "initval": "1b0",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.alreadyOutFire": {
+        "regname": "alreadyOutFire",
+        "initval": "1b0",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.reqaddr": {
+        "regname": "[31:0] reqaddr",
+        "initval": "None",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.cmd": {
+        "regname": "[3:0] cmd",
+        "initval": "None",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.size": {
+        "regname": "[2:0] size",
+        "initval": "None",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.wdata": {
+        "regname": "[63:0] wdata",
+        "initval": "None",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.wmask": {
+        "regname": "[7:0] wmask",
+        "initval": "None",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.mmiordata": {
+        "regname": "[63:0] mmiordata",
+        "initval": "64b1110100111100111110001001000100110110001101110101000010000111111",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.mmiocmd": {
+        "regname": "[3:0] mmiocmd",
+        "initval": "4b0011",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.memrdata": {
+        "regname": "[63:0] memrdata",
+        "initval": "64b0100101001000001001010100011000010010101000011011100101100011010",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.nutcore.io_dmem_cache.memcmd": {
+        "regname": "[3:0] memcmd",
+        "initval": "4b1111",
+        "module_name": "Cache_fake_1"
+    },
+    "SimTop.soc.cohMg.state": {
+        "regname": "[2:0] state",
+        "initval": "3b000",
+        "module_name": "CoherenceManager"
+    },
+    "SimTop.soc.cohMg.reqLatch_addr": {
+        "regname": "[31:0] reqLatch_addr",
+        "initval": "32b10000000000000000000001001000100",
+        "module_name": "CoherenceManager"
+    },
+    "SimTop.soc.xbar.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "SimpleBusCrossbarNto1"
+    },
+    "SimTop.soc.xbar.inflightSrc": {
+        "regname": "inflightSrc",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbarNto1"
+    },
+    "SimTop.soc.xbar.inputArb.lockCount_value": {
+        "regname": "[2:0] lockCount_value",
+        "initval": "3b000",
+        "module_name": "LockingArbiter"
+    },
+    "SimTop.soc.xbar.inputArb.lockIdx": {
+        "regname": "lockIdx",
+        "initval": "1b1",
+        "module_name": "LockingArbiter"
+    },
+    "SimTop.soc.io_mem_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter"
+    },
+    "SimTop.soc.io_mem_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter"
+    },
+    "SimTop.soc.io_mem_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter"
+    },
+    "SimTop.soc.mmioXbar.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "SimpleBusCrossbar1toN"
+    },
+    "SimTop.soc.mmioXbar.outSelRespVec_0": {
+        "regname": "outSelRespVec_0",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN"
+    },
+    "SimTop.soc.mmioXbar.outSelRespVec_1": {
+        "regname": "outSelRespVec_1",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN"
+    },
+    "SimTop.soc.mmioXbar.outSelRespVec_2": {
+        "regname": "outSelRespVec_2",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN"
+    },
+    "SimTop.soc.clint.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.mtime": {
+        "regname": "[63:0] mtime",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.mtimecmp": {
+        "regname": "[63:0] mtimecmp",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.msip": {
+        "regname": "[63:0] msip",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.freq_reg": {
+        "regname": "[63:0] freq_reg",
+        "initval": "64b0000000000000000000000000000000000000000000000000010011100010000",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.inc_reg": {
+        "regname": "[63:0] inc_reg",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000001",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.cnt": {
+        "regname": "[15:0] cnt",
+        "initval": "16b0000000001100101",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.io_extra_mtip_REG": {
+        "regname": "io_extra_mtip_REG",
+        "initval": "None",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint.io_extra_msip_REG": {
+        "regname": "io_extra_msip_REG",
+        "initval": "None",
+        "module_name": "AXI4CLINT"
+    },
+    "SimTop.soc.clint_io_in_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.soc.clint_io_in_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.soc.clint_io_in_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.soc.plic.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.priority_0": {
+        "regname": "[31:0] priority_0",
+        "initval": "32b10011010101101110011001011010000",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.enable_0_0": {
+        "regname": "[31:0] enable_0_0",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic.threshold_0": {
+        "regname": "[31:0] threshold_0",
+        "initval": "32b10010100101101110110101100010000",
+        "module_name": "AXI4PLIC"
+    },
+    "SimTop.soc.plic_io_in_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.soc.plic_io_in_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.soc.plic_io_in_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b1",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mem.c_value": {
+        "regname": "[7:0] c_value",
+        "initval": "8b00000000",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.readBeatCnt": {
+        "regname": "[7:0] readBeatCnt",
+        "initval": "8b00000000",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.len_r": {
+        "regname": "[7:0] len_r",
+        "initval": "8b00000000",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.burst_r": {
+        "regname": "[1:0] burst_r",
+        "initval": "2b10",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.raddr_r": {
+        "regname": "[38:0] raddr_r",
+        "initval": "39b000000010000000000000000000001001000100",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.writeBeatCnt": {
+        "regname": "[7:0] writeBeatCnt",
+        "initval": "8b00000000",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.waddr_r": {
+        "regname": "[31:0] waddr_r",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.rdata_REG": {
+        "regname": "rdata_REG",
+        "initval": "1b0",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.rdata_REG_1": {
+        "regname": "rdata_REG_1",
+        "initval": "1b0",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mem.rdata_r_0": {
+        "regname": "[63:0] rdata_r_0",
+        "initval": "64b0000000000000000000010100001001100000000000000000000100110010011",
+        "module_name": "AXI4RAM"
+    },
+    "SimTop.mmio.xbar.state": {
+        "regname": "[1:0] state",
+        "initval": "2b00",
+        "module_name": "SimpleBusCrossbar1toN_1"
+    },
+    "SimTop.mmio.xbar.outSelRespVec_0": {
+        "regname": "outSelRespVec_0",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN_1"
+    },
+    "SimTop.mmio.xbar.outSelRespVec_1": {
+        "regname": "outSelRespVec_1",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN_1"
+    },
+    "SimTop.mmio.xbar.outSelRespVec_2": {
+        "regname": "outSelRespVec_2",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN_1"
+    },
+    "SimTop.mmio.xbar.outSelRespVec_3": {
+        "regname": "outSelRespVec_3",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN_1"
+    },
+    "SimTop.mmio.xbar.outSelRespVec_4": {
+        "regname": "outSelRespVec_4",
+        "initval": "1b0",
+        "module_name": "SimpleBusCrossbar1toN_1"
+    },
+    "SimTop.mmio.uart.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.txfifo": {
+        "regname": "[31:0] txfifo",
+        "initval": "32b10010011000110011101101000101101",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.stat": {
+        "regname": "[31:0] stat",
+        "initval": "32b00000000000000000000000000000001",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.uart.ctrl": {
+        "regname": "[31:0] ctrl",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4UART"
+    },
+    "SimTop.mmio.vga.io_in_fb_r_valid_r": {
+        "regname": "io_in_fb_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.hCounter": {
+        "regname": "[10:0] hCounter",
+        "initval": "11b00001100101",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.vCounter": {
+        "regname": "[9:0] vCounter",
+        "initval": "10b0000000000",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.fbPixelAddrV0": {
+        "regname": "[16:0] fbPixelAddrV0",
+        "initval": "17b00000000000000000",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.fbPixelAddrV1": {
+        "regname": "[16:0] fbPixelAddrV1",
+        "initval": "17b00000000000000000",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.fb_io_in_ar_valid_REG": {
+        "regname": "fb_io_in_ar_valid_REG",
+        "initval": "1b0",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.data_r": {
+        "regname": "[63:0] data_r",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "AXI4VGA"
+    },
+    "SimTop.mmio.vga.ctrl.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "VGACtrl"
+    },
+    "SimTop.mmio.vga.ctrl.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "VGACtrl"
+    },
+    "SimTop.mmio.vga.ctrl.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "VGACtrl"
+    },
+    "SimTop.mmio.vga.ctrl.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "VGACtrl"
+    },
+    "SimTop.mmio.vga.ctrl.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "VGACtrl"
+    },
+    "SimTop.mmio.vga.fb.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4RAM_1"
+    },
+    "SimTop.mmio.vga.fb.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4RAM_1"
+    },
+    "SimTop.mmio.vga.fb.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4RAM_1"
+    },
+    "SimTop.mmio.vga.fb.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4RAM_1"
+    },
+    "SimTop.mmio.vga.fb.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4RAM_1"
+    },
+    "SimTop.mmio.vga.fb.rdata": {
+        "regname": "[63:0] rdata",
+        "initval": "None",
+        "module_name": "AXI4RAM_1"
+    },
+    "SimTop.mmio.flash.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.flash.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.flash.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.flash.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.flash.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.flash.io_in_r_bits_data_REG": {
+        "regname": "[63:0] io_in_r_bits_data_REG",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.flash.io_in_r_bits_data_r": {
+        "regname": "[63:0] io_in_r_bits_data_r",
+        "initval": "None",
+        "module_name": "AXI4Flash"
+    },
+    "SimTop.mmio.sd.r_busy": {
+        "regname": "r_busy",
+        "initval": "1b0",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.ren_REG": {
+        "regname": "ren_REG",
+        "initval": "1b0",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.io_in_r_valid_r": {
+        "regname": "io_in_r_valid_r",
+        "initval": "None",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.w_busy": {
+        "regname": "w_busy",
+        "initval": "1b0",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.io_in_b_valid_r": {
+        "regname": "io_in_b_valid_r",
+        "initval": "None",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_0": {
+        "regname": "[31:0] regs_0",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_1": {
+        "regname": "[31:0] regs_1",
+        "initval": "None",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_4": {
+        "regname": "[31:0] regs_4",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_5": {
+        "regname": "[31:0] regs_5",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_6": {
+        "regname": "[31:0] regs_6",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_7": {
+        "regname": "[31:0] regs_7",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_8": {
+        "regname": "[31:0] regs_8",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_15": {
+        "regname": "[31:0] regs_15",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.regs_20": {
+        "regname": "[31:0] regs_20",
+        "initval": "32b00000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.io_in_r_bits_data_REG": {
+        "regname": "[63:0] io_in_r_bits_data_REG",
+        "initval": "64b0000000000000000000000000000000000000000000000000000000000000000",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.sd.io_in_r_bits_data_r": {
+        "regname": "[63:0] io_in_r_bits_data_r",
+        "initval": "None",
+        "module_name": "AXI4DummySD"
+    },
+    "SimTop.mmio.uart_io_in_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.uart_io_in_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.uart_io_in_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b1",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.vga_io_in_fb_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.vga_io_in_fb_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.vga_io_in_fb_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.vga_io_in_ctrl_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.vga_io_in_ctrl_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.vga_io_in_ctrl_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.flash_io_in_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.flash_io_in_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.flash_io_in_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.sd_io_in_bridge.awAck": {
+        "regname": "awAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.sd_io_in_bridge.wAck": {
+        "regname": "wAck",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    },
+    "SimTop.mmio.sd_io_in_bridge.wen": {
+        "regname": "wen",
+        "initval": "1b0",
+        "module_name": "SimpleBus2AXI4Converter_1"
+    }
+}

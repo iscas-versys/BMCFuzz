@@ -1,3 +1,7 @@
+# SFuzz Project
+
+Changed from XFuzz repo, TBD.
+
 # xfuzz
 
 This project aims at fuzzing general-purpose hardware designs with software fuzzers.

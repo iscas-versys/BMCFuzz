@@ -1,0 +1,2754 @@
+{
+    "mod_name": "SimTop",
+    "insts": [
+        {
+            "inst_name": "soc",
+            "mod_name": "NutShell",
+            "children": [
+                {
+                    "inst_name": "nutcore",
+                    "mod_name": "NutCore",
+                    "children": [
+                        {
+                            "inst_name": "frontend",
+                            "mod_name": "Frontend_inorder",
+                            "children": [
+                                {
+                                    "inst_name": "ifu",
+                                    "mod_name": "IFU_inorder",
+                                    "children": [
+                                        {
+                                            "inst_name": "bp1",
+                                            "mod_name": "BPU_inorder",
+                                            "children": [
+                                                {
+                                                    "inst_name": "btb",
+                                                    "mod_name": "SRAMTemplate",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0",
+                                                            "mod_name": "array_0",
+                                                            "children": [
+                                                                {
+                                                                    "inst_name": "array_0_ext",
+                                                                    "mod_name": "array_0_ext",
+                                                                    "children": []
+                                                                }
+                                                            ],
+                                                            "reg_list": []
+                                                        }
+                                                    ],
+                                                    "reg_list": [
+                                                        {
+                                                            "regname": "resetState",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[8:0] resetSet",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "rdata_REG",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[73:0] rdata_r_0",
+                                                            "initval": "None"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "flush",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[38:0] pcLatch",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "btbHit_REG",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[3:0] sp_value",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[38:0] rasTarget",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[38:0] pc",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "crosslineJumpLatch",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[38:0] crosslineJumpTarget",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "ibf",
+                                    "mod_name": "NaiveRVCAlignBuffer",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[1:0] state",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[15:0] specialInstR",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] pcOffsetR",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[38:0] specialPCR",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[38:0] specialNPCR",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "specialIPFR",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "idu",
+                                    "mod_name": "IDU",
+                                    "children": [
+                                        {
+                                            "inst_name": "decoder",
+                                            "mod_name": "Decoder",
+                                            "children": [
+                                                {
+                                                    "inst_name": "expander",
+                                                    "mod_name": "RVCExpander",
+                                                    "children": [],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "ibf_io_in_q",
+                                    "mod_name": "FlushableQueue",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[1:0] enq_ptr_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[1:0] deq_ptr_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "maybe_full",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] idu_io_in_0_bits_r_instr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] idu_io_in_0_bits_r_pc",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] idu_io_in_0_bits_r_pnpc",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "idu_io_in_0_bits_r_exceptionVec_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "idu_io_in_0_bits_r_exceptionVec_12",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] idu_io_in_0_bits_r_brIdx",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "idu_io_in_0_bits_r_crossBoundaryFault",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "backend",
+                            "mod_name": "Backend_inorder",
+                            "children": [
+                                {
+                                    "inst_name": "isu",
+                                    "mod_name": "ISU",
+                                    "children": [
+                                        {
+                                            "inst_name": "difftest_module",
+                                            "mod_name": "DummyDPICWrapper",
+                                            "children": [
+                                                {
+                                                    "inst_name": "dpic",
+                                                    "mod_name": "DifftestArchIntRegState",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[31:0] busy",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_0",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_1",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_2",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_3",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_4",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_5",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_6",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_7",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_8",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_9",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_10",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_11",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_12",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_13",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_14",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_15",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_16",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_17",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_18",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_19",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_20",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_21",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_22",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_23",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_24",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_25",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_26",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_27",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_28",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_29",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_30",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] rf_31",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "exu",
+                                    "mod_name": "EXU",
+                                    "children": [
+                                        {
+                                            "inst_name": "alu",
+                                            "mod_name": "ALU",
+                                            "children": [],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "hasIllegalJumpAddr",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] io_jumpIsIllegal_bits_r",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "REG_valid",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[38:0] REG_pc",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "REG_isMissPredict",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[38:0] REG_actualTarget",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "REG_actualTaken",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[6:0] REG_fuOpType",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[1:0] REG_btbType",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "REG_isRVC",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "lsu",
+                                            "mod_name": "UnpipelinedLSU",
+                                            "children": [
+                                                {
+                                                    "inst_name": "lsExecUnit",
+                                                    "mod_name": "LSExecUnit",
+                                                    "children": [],
+                                                    "reg_list": [
+                                                        {
+                                                            "regname": "[63:0] io_vaddr_r",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] addrLatch",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[1:0] state",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] rdataLatch",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "r",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "r_1",
+                                                            "initval": "None"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "inst_name": "atomALU",
+                                                    "mod_name": "AtomALU",
+                                                    "children": [],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "[63:0] io_vaddr_r",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[2:0] state",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] atomMemReg",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] atomRegReg",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "mmioReg",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "mdu",
+                                            "mod_name": "MDU",
+                                            "children": [
+                                                {
+                                                    "inst_name": "mul",
+                                                    "mod_name": "Multiplier",
+                                                    "children": [],
+                                                    "reg_list": [
+                                                        {
+                                                            "regname": "[64:0] mulRes_REG",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[64:0] mulRes_REG_1",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[129:0] io_out_bits_REG",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[129:0] io_out_bits_REG_1",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[129:0] io_out_bits_REG_2",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "io_out_valid_REG",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "io_out_valid_REG_1",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "io_out_valid_REG_2",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "io_out_valid_REG_3",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "busy",
+                                                            "initval": "None"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "inst_name": "div",
+                                                    "mod_name": "Divider",
+                                                    "children": [],
+                                                    "reg_list": [
+                                                        {
+                                                            "regname": "[2:0] state",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[128:0] shiftReg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "aSignReg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "qSignReg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] bReg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[64:0] aValx2Reg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[5:0] cnt_value",
+                                                            "initval": "None"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "isDivReg_REG",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "csr",
+                                            "mod_name": "CSR",
+                                            "children": [
+                                                {
+                                                    "inst_name": "CSRDiffWrapper",
+                                                    "mod_name": "CSRDiffWrapper",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "difftest_module",
+                                                            "mod_name": "DummyDPICWrapper_1",
+                                                            "children": [
+                                                                {
+                                                                    "inst_name": "dpic",
+                                                                    "mod_name": "DifftestCSRState",
+                                                                    "children": []
+                                                                }
+                                                            ],
+                                                            "reg_list": []
+                                                        },
+                                                        {
+                                                            "inst_name": "difftestArchEvent_module",
+                                                            "mod_name": "DummyDPICWrapper_2",
+                                                            "children": [
+                                                                {
+                                                                    "inst_name": "dpic",
+                                                                    "mod_name": "DifftestArchEvent",
+                                                                    "children": []
+                                                                }
+                                                            ],
+                                                            "reg_list": []
+                                                        }
+                                                    ],
+                                                    "reg_list": [
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_privilegeMode",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mstatus",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_sstatus",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mepc",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_sepc",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mtval",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_stval",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mtvec",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_stvec",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mcause",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_scause",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_satp",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mip",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mie",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mscratch",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_sscratch",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_mideleg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftest_REG_medeleg",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "difftestArchEvent_REG_valid",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[31:0] difftestArchEvent_REG_interrupt",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[31:0] difftestArchEvent_REG_exception",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftestArchEvent_REG_exceptionPC",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[31:0] difftestArchEvent_REG_exceptionInst",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "difftestArchEvent_REG_1_valid",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[31:0] difftestArchEvent_REG_1_interrupt",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[31:0] difftestArchEvent_REG_1_exception",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[63:0] difftestArchEvent_REG_1_exceptionPC",
+                                                            "initval": "None"
+                                                        },
+                                                        {
+                                                            "regname": "[31:0] difftestArchEvent_REG_1_exceptionInst",
+                                                            "initval": "None"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "[1:0] priviledgeMode",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mtvec",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mcounteren",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mcause",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mtval",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mepc",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mie",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mipReg",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mstatus",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] medeleg",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mideleg",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] mscratch",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] stvec",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] satp",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] sepc",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] scause",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] stval",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] sscratch",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] scounteren",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "lr",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] lrAddr",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] perfCnts_0",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] perfCnts_1",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] perfCnts_2",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] redirectTargetReg",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "hasIllegalXRET",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "isIllegalXRET_REG",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "mou",
+                                            "mod_name": "MOU",
+                                            "children": [],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "diffMod",
+                                            "mod_name": "EXUDiffWrapper",
+                                            "children": [
+                                                {
+                                                    "inst_name": "difftest_module",
+                                                    "mod_name": "DummyDPICWrapper_3",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "dpic",
+                                                            "mod_name": "DifftestTrapEvent",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "[63:0] cycleCnt",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] instrCnt",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "wbu",
+                                    "mod_name": "WBU",
+                                    "children": [
+                                        {
+                                            "inst_name": "DiffInstrCommitWrapper",
+                                            "mod_name": "DiffInstrCommitWrapper",
+                                            "children": [
+                                                {
+                                                    "inst_name": "difftest_module",
+                                                    "mod_name": "DummyDPICWrapper_4",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "dpic",
+                                                            "mod_name": "DifftestInstrCommit",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "difftest_REG_valid",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "difftest_REG_skip",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "difftest_REG_isRVC",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "difftest_REG_rfwen",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[4:0] difftest_REG_wpdest",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[7:0] difftest_REG_wdest",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] difftest_REG_pc",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[31:0] difftest_REG_instr",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[7:0] difftest_REG_special",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "DiffIntWbWrapper",
+                                            "mod_name": "DiffIntWbWrapper",
+                                            "children": [
+                                                {
+                                                    "inst_name": "difftest_module",
+                                                    "mod_name": "DummyDPICWrapper_5",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "dpic",
+                                                            "mod_name": "DifftestIntWriteback",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "difftest_REG_valid",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[4:0] difftest_REG_address",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[63:0] difftest_REG_data",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "reg_list": []
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] exu_io_in_bits_r_cf_instr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] exu_io_in_bits_r_cf_pc",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] exu_io_in_bits_r_cf_pnpc",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_exceptionVec_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_exceptionVec_2",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_exceptionVec_12",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_intrVec_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_intrVec_3",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_intrVec_5",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_intrVec_7",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_intrVec_9",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_intrVec_11",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] exu_io_in_bits_r_cf_brIdx",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_cf_crossBoundaryFault",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] exu_io_in_bits_r_ctrl_fuType",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[6:0] exu_io_in_bits_r_ctrl_fuOpType",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_ctrl_rfWen",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[4:0] exu_io_in_bits_r_ctrl_rfDest",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "exu_io_in_bits_r_ctrl_isNutCoreTrap",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] exu_io_in_bits_r_data_src1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] exu_io_in_bits_r_data_src2",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] exu_io_in_bits_r_data_imm",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "valid_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] wbu_io_in_bits_r_decode_cf_instr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] wbu_io_in_bits_r_decode_cf_pc",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] wbu_io_in_bits_r_decode_cf_redirect_target",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "wbu_io_in_bits_r_decode_cf_redirect_valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] wbu_io_in_bits_r_decode_ctrl_fuType",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "wbu_io_in_bits_r_decode_ctrl_rfWen",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[4:0] wbu_io_in_bits_r_decode_ctrl_rfDest",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "wbu_io_in_bits_r_isMMIO",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] wbu_io_in_bits_r_commits_0",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] wbu_io_in_bits_r_commits_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] wbu_io_in_bits_r_commits_2",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] wbu_io_in_bits_r_commits_3",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "wbu_io_in_bits_r_isExit",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "mmioXbar",
+                            "mod_name": "SimpleBusCrossbarNto1",
+                            "children": [
+                                {
+                                    "inst_name": "inputArb",
+                                    "mod_name": "LockingArbiter",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[2:0] lockCount_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "lockIdx",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "[1:0] state",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "inflightSrc",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "dmemXbar",
+                            "mod_name": "SimpleBusCrossbarNto1_1",
+                            "children": [
+                                {
+                                    "inst_name": "inputArb",
+                                    "mod_name": "LockingArbiter_1",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[2:0] lockCount_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[1:0] lockIdx",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "[1:0] state",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[1:0] inflightSrc",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "itlb",
+                            "mod_name": "EmbeddedTLB",
+                            "children": [
+                                {
+                                    "inst_name": "tlbExec",
+                                    "mod_name": "EmbeddedTLBExec",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[63:0] victimWaymask_lfsr",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] state",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[1:0] level",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] memRespStore",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[17:0] missMaskStore",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[55:0] raddr",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "alreadyOutFire",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "needFlush",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "missIPF",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "missPTEAF",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] REG_2",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[26:0] REG_3",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[15:0] REG_4",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[17:0] REG_5",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[7:0] REG_6",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[43:0] REG_7",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[55:0] REG_8",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "blockRefill",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "mdTLB",
+                                    "mod_name": "EmbeddedTLBMD",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "resetState",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "[144:0] r_0",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[144:0] r_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[144:0] r_2",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[144:0] r_3",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "hasInflight",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] lastReqAddr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "hasIllegalInflight",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] tlbExec_io_in_bits_r_addr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[86:0] tlbExec_io_in_bits_r_user",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[86:0] userBits",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "filter",
+                            "mod_name": "PTERequestFilter",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "hasInflight",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "io_imem_cache",
+                            "mod_name": "Cache_fake",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "[2:0] state",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "ismmioRec",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "needFlush",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "alreadyOutFire",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[31:0] reqaddr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] mmiordata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] memrdata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[86:0] memuser",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "dtlb",
+                            "mod_name": "EmbeddedTLB_1",
+                            "children": [
+                                {
+                                    "inst_name": "tlbExec",
+                                    "mod_name": "EmbeddedTLBExec_1",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[63:0] victimWaymask_lfsr",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "io_pf_loadPF_REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "io_pf_storePF_REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "io_pf_laf_REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "io_pf_saf_REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] state",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[1:0] level",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] memRespStore",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[17:0] missMaskStore",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[55:0] raddr",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "alreadyOutFire",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "missPTEAF",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] REG_1",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] REG_2",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[26:0] REG_3",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[15:0] REG_4",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[17:0] REG_5",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[7:0] REG_6",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[43:0] REG_7",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[55:0] REG_8",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "blockRefill",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "tlbEmpty",
+                                    "mod_name": "EmbeddedTLBEmpty_1",
+                                    "children": [],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "mdTLB",
+                                    "mod_name": "EmbeddedTLBMD_1",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "resetState",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] resetSet",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "[144:0] r_0",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[144:0] r_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[144:0] r_2",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[144:0] r_3",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[38:0] tlbExec_io_in_bits_r_addr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] tlbExec_io_in_bits_r_size",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] tlbExec_io_in_bits_r_cmd",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[7:0] tlbExec_io_in_bits_r_wmask",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] tlbExec_io_in_bits_r_wdata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "valid_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[31:0] tlbEmpty_io_in_bits_r_addr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] tlbEmpty_io_in_bits_r_size",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] tlbEmpty_io_in_bits_r_cmd",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[7:0] tlbEmpty_io_in_bits_r_wmask",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] tlbEmpty_io_in_bits_r_wdata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "alreadyOutFinish",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "filter_1",
+                            "mod_name": "PTERequestFilter",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "hasInflight",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "io_dmem_cache",
+                            "mod_name": "Cache_fake_1",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "[2:0] state",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "ismmioRec",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "alreadyOutFire",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[31:0] reqaddr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] cmd",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] size",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] wdata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[7:0] wmask",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] mmiordata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] mmiocmd",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] memrdata",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] memcmd",
+                                    "initval": "None"
+                                }
+                            ]
+                        }
+                    ],
+                    "reg_list": [
+                        {
+                            "regname": "[63:0] dataBuffer_0_cf_instr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_0_cf_pc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_0_cf_pnpc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_exceptionVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_exceptionVec_2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_exceptionVec_12",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_intrVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_intrVec_3",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_intrVec_5",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_intrVec_7",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_intrVec_9",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_intrVec_11",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] dataBuffer_0_cf_brIdx",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_cf_crossBoundaryFault",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_ctrl_src1Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_ctrl_src2Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[2:0] dataBuffer_0_ctrl_fuType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[6:0] dataBuffer_0_ctrl_fuOpType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_0_ctrl_rfSrc1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_0_ctrl_rfSrc2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_ctrl_rfWen",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_0_ctrl_rfDest",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_0_ctrl_isNutCoreTrap",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_0_data_imm",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_1_cf_instr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_1_cf_pc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_1_cf_pnpc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_exceptionVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_exceptionVec_2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_exceptionVec_12",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_intrVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_intrVec_3",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_intrVec_5",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_intrVec_7",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_intrVec_9",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_intrVec_11",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] dataBuffer_1_cf_brIdx",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_cf_crossBoundaryFault",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_ctrl_src1Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_ctrl_src2Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[2:0] dataBuffer_1_ctrl_fuType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[6:0] dataBuffer_1_ctrl_fuOpType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_1_ctrl_rfSrc1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_1_ctrl_rfSrc2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_ctrl_rfWen",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_1_ctrl_rfDest",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_1_ctrl_isNutCoreTrap",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_1_data_imm",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_2_cf_instr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_2_cf_pc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_2_cf_pnpc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_exceptionVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_exceptionVec_2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_exceptionVec_12",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_intrVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_intrVec_3",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_intrVec_5",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_intrVec_7",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_intrVec_9",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_intrVec_11",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] dataBuffer_2_cf_brIdx",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_cf_crossBoundaryFault",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_ctrl_src1Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_ctrl_src2Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[2:0] dataBuffer_2_ctrl_fuType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[6:0] dataBuffer_2_ctrl_fuOpType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_2_ctrl_rfSrc1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_2_ctrl_rfSrc2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_ctrl_rfWen",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_2_ctrl_rfDest",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_2_ctrl_isNutCoreTrap",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_2_data_imm",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_3_cf_instr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_3_cf_pc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[38:0] dataBuffer_3_cf_pnpc",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_exceptionVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_exceptionVec_2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_exceptionVec_12",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_intrVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_intrVec_3",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_intrVec_5",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_intrVec_7",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_intrVec_9",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_intrVec_11",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] dataBuffer_3_cf_brIdx",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_cf_crossBoundaryFault",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_ctrl_src1Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_ctrl_src2Type",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[2:0] dataBuffer_3_ctrl_fuType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[6:0] dataBuffer_3_ctrl_fuOpType",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_3_ctrl_rfSrc1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_3_ctrl_rfSrc2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_ctrl_rfWen",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[4:0] dataBuffer_3_ctrl_rfDest",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "dataBuffer_3_ctrl_isNutCoreTrap",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] dataBuffer_3_data_imm",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[1:0] ringBufferHead",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[1:0] ringBufferTail",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "cohMg",
+                    "mod_name": "CoherenceManager",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "[2:0] state",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] reqLatch_addr",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "xbar",
+                    "mod_name": "SimpleBusCrossbarNto1",
+                    "children": [
+                        {
+                            "inst_name": "inputArb",
+                            "mod_name": "LockingArbiter",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "[2:0] lockCount_value",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "lockIdx",
+                                    "initval": "None"
+                                }
+                            ]
+                        }
+                    ],
+                    "reg_list": [
+                        {
+                            "regname": "[1:0] state",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "inflightSrc",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "memAddrMap",
+                    "mod_name": "SimpleBusAddressMapper",
+                    "children": [],
+                    "reg_list": []
+                },
+                {
+                    "inst_name": "io_mem_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "mmioXbar",
+                    "mod_name": "SimpleBusCrossbar1toN",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "[1:0] state",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_0",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_2",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "clint",
+                    "mod_name": "AXI4CLINT",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "r_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "ren_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_r_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "w_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_b_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] mtime",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] mtimecmp",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] msip",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] freq_reg",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] inc_reg",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[15:0] cnt",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_extra_mtip_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_extra_msip_REG",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "clint_io_in_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "plic",
+                    "mod_name": "AXI4PLIC",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "r_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "ren_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_r_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "w_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_b_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] priority_0",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] enable_0_0",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] threshold_0",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "plic_io_in_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                }
+            ],
+            "reg_list": []
+        },
+        {
+            "inst_name": "mem",
+            "mod_name": "AXI4RAM",
+            "children": [
+                {
+                    "inst_name": "rdata_mem",
+                    "mod_name": "DifftestMem1P",
+                    "children": [
+                        {
+                            "inst_name": "helper_0",
+                            "mod_name": "MemRWHelper",
+                            "children": []
+                        }
+                    ],
+                    "reg_list": []
+                }
+            ],
+            "reg_list": [
+                {
+                    "regname": "[7:0] c_value",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[7:0] readBeatCnt",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[7:0] len_r",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[1:0] burst_r",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[38:0] raddr_r",
+                    "initval": "None"
+                },
+                {
+                    "regname": "ren_REG",
+                    "initval": "None"
+                },
+                {
+                    "regname": "r_busy",
+                    "initval": "None"
+                },
+                {
+                    "regname": "io_in_r_valid_r",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[7:0] writeBeatCnt",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[31:0] waddr_r",
+                    "initval": "None"
+                },
+                {
+                    "regname": "w_busy",
+                    "initval": "None"
+                },
+                {
+                    "regname": "io_in_b_valid_r",
+                    "initval": "None"
+                },
+                {
+                    "regname": "rdata_REG",
+                    "initval": "None"
+                },
+                {
+                    "regname": "rdata_REG_1",
+                    "initval": "None"
+                },
+                {
+                    "regname": "[63:0] rdata_r_0",
+                    "initval": "None"
+                }
+            ]
+        },
+        {
+            "inst_name": "memdelay",
+            "mod_name": "AXI4Delayer",
+            "children": [
+                {
+                    "inst_name": "io_out_ar_pipe",
+                    "mod_name": "LatencyPipe",
+                    "children": [],
+                    "reg_list": []
+                },
+                {
+                    "inst_name": "io_out_aw_pipe",
+                    "mod_name": "LatencyPipe",
+                    "children": [],
+                    "reg_list": []
+                }
+            ],
+            "reg_list": []
+        },
+        {
+            "inst_name": "mmio",
+            "mod_name": "SimMMIO",
+            "children": [
+                {
+                    "inst_name": "xbar",
+                    "mod_name": "SimpleBusCrossbar1toN_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "[1:0] state",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_0",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_2",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_3",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "outSelRespVec_4",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "uart",
+                    "mod_name": "AXI4UART",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "r_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "ren_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_r_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "w_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_b_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] txfifo",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] stat",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] ctrl",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "vga",
+                    "mod_name": "AXI4VGA",
+                    "children": [
+                        {
+                            "inst_name": "ctrl",
+                            "mod_name": "VGACtrl",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "r_busy",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "ren_REG",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "io_in_r_valid_r",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "w_busy",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "io_in_b_valid_r",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "fb",
+                            "mod_name": "AXI4RAM_1",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "r_busy",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "ren_REG",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "io_in_r_valid_r",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "w_busy",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "io_in_b_valid_r",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] rdata",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "fbHelper",
+                            "mod_name": "FBHelper",
+                            "children": []
+                        }
+                    ],
+                    "reg_list": [
+                        {
+                            "regname": "io_in_fb_r_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[10:0] hCounter",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[9:0] vCounter",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[16:0] fbPixelAddrV0",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[16:0] fbPixelAddrV1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "fb_io_in_ar_valid_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] data_r",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "flash",
+                    "mod_name": "AXI4Flash",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "r_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "ren_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_r_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "w_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_b_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] io_in_r_bits_data_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] io_in_r_bits_data_r",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "sd",
+                    "mod_name": "AXI4DummySD",
+                    "children": [
+                        {
+                            "inst_name": "sdHelper",
+                            "mod_name": "SDHelper",
+                            "children": []
+                        }
+                    ],
+                    "reg_list": [
+                        {
+                            "regname": "r_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "ren_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_r_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "w_busy",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "io_in_b_valid_r",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_0",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_4",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_5",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_6",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_7",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_8",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_15",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] regs_20",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] io_in_r_bits_data_REG",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] io_in_r_bits_data_r",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "uart_io_in_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "vga_io_in_fb_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "vga_io_in_ctrl_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "flash_io_in_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "sd_io_in_bridge",
+                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "awAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wAck",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "wen",
+                            "initval": "None"
+                        }
+                    ]
+                }
+            ],
+            "reg_list": []
+        }
+    ],
+    "reg_list": [
+        {
+            "regname": "[63:0] difftest_timer",
+            "initval": "None"
+        }
+    ]
+}

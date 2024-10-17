@@ -1,0 +1,315 @@
+files:
+  - file_name: "SimTop.sv"
+    defs:
+      - mod_name: "SRAMTemplate"
+        insts:
+          - mod_name: "array_0"
+            inst_name: "array_0"
+      - mod_name: "BPU_inorder"
+        insts:
+          - mod_name: "SRAMTemplate"
+            inst_name: "btb"
+      - mod_name: "IFU_inorder"
+        insts:
+          - mod_name: "BPU_inorder"
+            inst_name: "bp1"
+      - mod_name: "NaiveRVCAlignBuffer"
+        insts:
+      - mod_name: "RVCExpander"
+        insts:
+      - mod_name: "Decoder"
+        insts:
+          - mod_name: "RVCExpander"
+            inst_name: "expander"
+      - mod_name: "IDU"
+        insts:
+          - mod_name: "Decoder"
+            inst_name: "decoder"
+      - mod_name: "FlushableQueue"
+        insts:
+      - mod_name: "Frontend_inorder"
+        insts:
+          - mod_name: "IFU_inorder"
+            inst_name: "ifu"
+          - mod_name: "NaiveRVCAlignBuffer"
+            inst_name: "ibf"
+          - mod_name: "IDU"
+            inst_name: "idu"
+          - mod_name: "FlushableQueue"
+            inst_name: "ibf_io_in_q"
+      - mod_name: "DummyDPICWrapper"
+        insts:
+          - mod_name: "DifftestArchIntRegState"
+            inst_name: "dpic"
+      - mod_name: "ISU"
+        insts:
+          - mod_name: "DummyDPICWrapper"
+            inst_name: "difftest_module"
+      - mod_name: "ALU"
+        insts:
+      - mod_name: "LSExecUnit"
+        insts:
+      - mod_name: "AtomALU"
+        insts:
+      - mod_name: "UnpipelinedLSU"
+        insts:
+          - mod_name: "LSExecUnit"
+            inst_name: "lsExecUnit"
+          - mod_name: "AtomALU"
+            inst_name: "atomALU"
+      - mod_name: "Multiplier"
+        insts:
+      - mod_name: "Divider"
+        insts:
+      - mod_name: "MDU"
+        insts:
+          - mod_name: "Multiplier"
+            inst_name: "mul"
+          - mod_name: "Divider"
+            inst_name: "div"
+      - mod_name: "DummyDPICWrapper_1"
+        insts:
+          - mod_name: "DifftestCSRState"
+            inst_name: "dpic"
+      - mod_name: "DummyDPICWrapper_2"
+        insts:
+          - mod_name: "DifftestArchEvent"
+            inst_name: "dpic"
+      - mod_name: "CSRDiffWrapper"
+        insts:
+          - mod_name: "DummyDPICWrapper_1"
+            inst_name: "difftest_module"
+          - mod_name: "DummyDPICWrapper_2"
+            inst_name: "difftestArchEvent_module"
+      - mod_name: "CSR"
+        insts:
+          - mod_name: "CSRDiffWrapper"
+            inst_name: "CSRDiffWrapper"
+      - mod_name: "MOU"
+        insts:
+      - mod_name: "DummyDPICWrapper_3"
+        insts:
+          - mod_name: "DifftestTrapEvent"
+            inst_name: "dpic"
+      - mod_name: "EXUDiffWrapper"
+        insts:
+          - mod_name: "DummyDPICWrapper_3"
+            inst_name: "difftest_module"
+      - mod_name: "EXU"
+        insts:
+          - mod_name: "ALU"
+            inst_name: "alu"
+          - mod_name: "UnpipelinedLSU"
+            inst_name: "lsu"
+          - mod_name: "MDU"
+            inst_name: "mdu"
+          - mod_name: "CSR"
+            inst_name: "csr"
+          - mod_name: "MOU"
+            inst_name: "mou"
+          - mod_name: "EXUDiffWrapper"
+            inst_name: "diffMod"
+      - mod_name: "DummyDPICWrapper_4"
+        insts:
+          - mod_name: "DifftestInstrCommit"
+            inst_name: "dpic"
+      - mod_name: "DiffInstrCommitWrapper"
+        insts:
+          - mod_name: "DummyDPICWrapper_4"
+            inst_name: "difftest_module"
+      - mod_name: "DummyDPICWrapper_5"
+        insts:
+          - mod_name: "DifftestIntWriteback"
+            inst_name: "dpic"
+      - mod_name: "DiffIntWbWrapper"
+        insts:
+          - mod_name: "DummyDPICWrapper_5"
+            inst_name: "difftest_module"
+      - mod_name: "WBU"
+        insts:
+          - mod_name: "DiffInstrCommitWrapper"
+            inst_name: "DiffInstrCommitWrapper"
+          - mod_name: "DiffIntWbWrapper"
+            inst_name: "DiffIntWbWrapper"
+      - mod_name: "Backend_inorder"
+        insts:
+          - mod_name: "ISU"
+            inst_name: "isu"
+          - mod_name: "EXU"
+            inst_name: "exu"
+          - mod_name: "WBU"
+            inst_name: "wbu"
+      - mod_name: "LockingArbiter"
+        insts:
+      - mod_name: "SimpleBusCrossbarNto1"
+        insts:
+          - mod_name: "LockingArbiter"
+            inst_name: "inputArb"
+      - mod_name: "LockingArbiter_1"
+        insts:
+      - mod_name: "SimpleBusCrossbarNto1_1"
+        insts:
+          - mod_name: "LockingArbiter_1"
+            inst_name: "inputArb"
+      - mod_name: "EmbeddedTLBExec"
+        insts:
+      - mod_name: "EmbeddedTLBMD"
+        insts:
+      - mod_name: "EmbeddedTLB"
+        insts:
+          - mod_name: "EmbeddedTLBExec"
+            inst_name: "tlbExec"
+          - mod_name: "EmbeddedTLBMD"
+            inst_name: "mdTLB"
+      - mod_name: "PTERequestFilter"
+        insts:
+      - mod_name: "Cache_fake"
+        insts:
+      - mod_name: "EmbeddedTLBExec_1"
+        insts:
+      - mod_name: "EmbeddedTLBEmpty_1"
+        insts:
+      - mod_name: "EmbeddedTLBMD_1"
+        insts:
+      - mod_name: "EmbeddedTLB_1"
+        insts:
+          - mod_name: "EmbeddedTLBExec_1"
+            inst_name: "tlbExec"
+          - mod_name: "EmbeddedTLBEmpty_1"
+            inst_name: "tlbEmpty"
+          - mod_name: "EmbeddedTLBMD_1"
+            inst_name: "mdTLB"
+      - mod_name: "Cache_fake_1"
+        insts:
+      - mod_name: "NutCore"
+        insts:
+          - mod_name: "Frontend_inorder"
+            inst_name: "frontend"
+          - mod_name: "Backend_inorder"
+            inst_name: "backend"
+          - mod_name: "SimpleBusCrossbarNto1"
+            inst_name: "mmioXbar"
+          - mod_name: "SimpleBusCrossbarNto1_1"
+            inst_name: "dmemXbar"
+          - mod_name: "EmbeddedTLB"
+            inst_name: "itlb"
+          - mod_name: "PTERequestFilter"
+            inst_name: "filter"
+          - mod_name: "Cache_fake"
+            inst_name: "io_imem_cache"
+          - mod_name: "EmbeddedTLB_1"
+            inst_name: "dtlb"
+          - mod_name: "PTERequestFilter"
+            inst_name: "filter_1"
+          - mod_name: "Cache_fake_1"
+            inst_name: "io_dmem_cache"
+      - mod_name: "CoherenceManager"
+        insts:
+      - mod_name: "SimpleBusAddressMapper"
+        insts:
+      - mod_name: "SimpleBus2AXI4Converter"
+        insts:
+      - mod_name: "SimpleBusCrossbar1toN"
+        insts:
+      - mod_name: "AXI4CLINT"
+        insts:
+      - mod_name: "SimpleBus2AXI4Converter_1"
+        insts:
+      - mod_name: "AXI4PLIC"
+        insts:
+      - mod_name: "NutShell"
+        insts:
+          - mod_name: "NutCore"
+            inst_name: "nutcore"
+          - mod_name: "CoherenceManager"
+            inst_name: "cohMg"
+          - mod_name: "SimpleBusCrossbarNto1"
+            inst_name: "xbar"
+          - mod_name: "SimpleBusAddressMapper"
+            inst_name: "memAddrMap"
+          - mod_name: "SimpleBus2AXI4Converter"
+            inst_name: "io_mem_bridge"
+          - mod_name: "SimpleBusCrossbar1toN"
+            inst_name: "mmioXbar"
+          - mod_name: "AXI4CLINT"
+            inst_name: "clint"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "clint_io_in_bridge"
+          - mod_name: "AXI4PLIC"
+            inst_name: "plic"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "plic_io_in_bridge"
+      - mod_name: "DifftestMem1P"
+        insts:
+          - mod_name: "MemRWHelper"
+            inst_name: "helper_0"
+      - mod_name: "AXI4RAM"
+        insts:
+          - mod_name: "DifftestMem1P"
+            inst_name: "rdata_mem"
+      - mod_name: "LatencyPipe"
+        insts:
+      - mod_name: "AXI4Delayer"
+        insts:
+          - mod_name: "LatencyPipe"
+            inst_name: "io_out_ar_pipe"
+          - mod_name: "LatencyPipe"
+            inst_name: "io_out_aw_pipe"
+      - mod_name: "SimpleBusCrossbar1toN_1"
+        insts:
+      - mod_name: "AXI4UART"
+        insts:
+      - mod_name: "VGACtrl"
+        insts:
+      - mod_name: "AXI4RAM_1"
+        insts:
+      - mod_name: "AXI4VGA"
+        insts:
+          - mod_name: "VGACtrl"
+            inst_name: "ctrl"
+          - mod_name: "AXI4RAM_1"
+            inst_name: "fb"
+          - mod_name: "FBHelper"
+            inst_name: "fbHelper"
+      - mod_name: "AXI4Flash"
+        insts:
+      - mod_name: "AXI4DummySD"
+        insts:
+          - mod_name: "SDHelper"
+            inst_name: "sdHelper"
+      - mod_name: "SimMMIO"
+        insts:
+          - mod_name: "SimpleBusCrossbar1toN_1"
+            inst_name: "xbar"
+          - mod_name: "AXI4UART"
+            inst_name: "uart"
+          - mod_name: "AXI4VGA"
+            inst_name: "vga"
+          - mod_name: "AXI4Flash"
+            inst_name: "flash"
+          - mod_name: "AXI4DummySD"
+            inst_name: "sd"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "uart_io_in_bridge"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "vga_io_in_fb_bridge"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "vga_io_in_ctrl_bridge"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "flash_io_in_bridge"
+          - mod_name: "SimpleBus2AXI4Converter_1"
+            inst_name: "sd_io_in_bridge"
+      - mod_name: "SimTop"
+        insts:
+          - mod_name: "NutShell"
+            inst_name: "soc"
+          - mod_name: "AXI4RAM"
+            inst_name: "mem"
+          - mod_name: "AXI4Delayer"
+            inst_name: "memdelay"
+          - mod_name: "SimMMIO"
+            inst_name: "mmio"
+      - mod_name: "array_0"
+        insts:
+          - mod_name: "array_0_ext"
+            inst_name: "array_0_ext"

@@ -57,7 +57,7 @@ for row in data:
 all_uncovered_no = [4708, 4709, 4710, 4711, 4712, 4713, 4714, 4715, 4716, 4717, 4718, 4719, 4720]
 # all_uncovered_no = [4706, 4707, 4708, 4709]
 
-rtl_dir = '/home/seddon/Coding/formal_fuzzing/CoverCount/rtl'  # 原始 RTL 文件夹路径
+rtl_dir = '/home/seddon/Coding/fuzz/xfuzz_suite/FuzzingNutShell/ccover/Formal/demo/rtl'  # 原始 RTL 文件夹路径
 output_rtl_dir = os.path.join(output_dir, 'rtl')  # 输出 RTL 文件夹路径
 new_verilog_file = 'SimTop_renaming.sv'  # 新生成的Verilog文件名
 

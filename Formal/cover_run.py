@@ -98,7 +98,7 @@ def execute_cover_tasks(env_path, cover_to_keep, output_dir):
 
 def main():
     cover_to_keep = [3933, 4389, 4390, 4392]  # 示例，保留的 cover 语句编号
-    env_path = "/home/seddon/Coding/oss-cad-suite/environment"
+    env_path = "/home/seddon/Coding/oss-cad-suite/environment" #Sby的source位置
     output_dir = './coverTasks'  # 输出文件夹路径
     execute_cover_tasks(env_path, cover_to_keep, output_dir)
 

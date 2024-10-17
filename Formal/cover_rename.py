@@ -100,7 +100,7 @@ def generate_sby_files(verilog_file, output_dir, cover_to_keep, cover_statements
 
 def main():
     # 使用例子
-    rtl_dir = '/home/seddon/Coding/formal_fuzzing/CoverCount/rtl'  # 原始 RTL 文件夹路径
+    rtl_dir = '/home/seddon/Coding/fuzz/xfuzz_suite/FuzzingNutShell/ccover/Formal/demo/rtl'  # 原始 RTL 文件夹路径
     output_dir = './coverTasks'  # 输出文件夹路径
     output_rtl_dir = os.path.join(output_dir, 'rtl')  # 输出 RTL 文件夹路径
     new_verilog_file = 'SimTop_renaming.sv'  # 新生成的Verilog文件名

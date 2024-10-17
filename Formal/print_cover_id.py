@@ -1,6 +1,6 @@
 import re
 
-def parse_verilog(file_path):
+def print_cover_id(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
     
@@ -27,10 +27,15 @@ def parse_verilog(file_path):
     
     return cover_statements
 
-# 调用函数并输出结果
-verilog_file = './SimTop.sv'  # 替换为你的Verilog文件路径
-cover_list = parse_verilog(verilog_file)
 
-# 输出结果
-for cover in cover_list:
-    print(cover)
+def main():
+    # 输出SystemVerilog文件中的所有cover声明，格式为:[cover_id] module.cover_signal_name
+    verilog_file = './demo/SimTop_1017.sv'  # 替换为你的Verilog文件路径
+    cover_list = print_cover_id(verilog_file)
+
+    # 输出结果
+    for cover in cover_list:
+        print(cover)
+
+if __name__ == "__main__":
+    main()

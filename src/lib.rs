@@ -63,14 +63,18 @@ fn main() -> i32 {
 
         if is_emu {
             emu_args.push(arg);
+            // println!("{:?}", emu_args);
         } else {
             workloads.push(arg);
         }
     }
 
+    println!("set_sim_env Begin\n");
     harness::set_sim_env(args.coverage, args.verbose, args.max_runs, emu_args);
-
+    println!("set_sim_env End\n");
     let mut has_failed = 0;
+
+    println!("workloads.len():{}", workloads.len());
     if workloads.len() > 0 {
         for _ in 0..args.repeat {
             let ret = harness::sim_run_multiple(&workloads, args.auto_exit);
@@ -90,6 +94,12 @@ fn main() -> i32 {
         } else {
             Some(args.corpus_input)
         };
+        println!("random_input: {:?}", args.random_input);
+        println!("max_iters: {:?}", args.max_iters);
+        println!("corpus_input: {:?}", corpus_input);
+        println!("corpus_output: {:?}", args.corpus_output);
+        println!("continue_on_errors: {:?}", args.continue_on_errors);
+        println!("save_errors: {:?}", args.save_errors);
         fuzzer::run_fuzzer(
             args.random_input,
             args.max_iters,

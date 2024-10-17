@@ -138,6 +138,7 @@ pub(crate) fn set_sim_env(
     emu_args: Vec<String>,
 ) {
     let cover_name = CString::new(coverage.as_bytes()).unwrap();
+    println!("{}", coverage);
     unsafe { set_cover_feedback(cover_name.as_ptr()) }
 
     if verbose {
@@ -154,5 +155,6 @@ pub(crate) fn set_sim_env(
         SIM_ARGS = emu_args;
     }
 
+    println!("Before Cover Init\n");
     cover_init();
 }

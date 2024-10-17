@@ -72,10 +72,12 @@ pub(crate) fn run_fuzzer(
         unsafe { harness::SAVE_ERRORS = true };
     }
 
+    println!("Preparing for corpus...\n");
     // Corpus
     if state.corpus().count() < 1 {
         if corpus_input.is_some() {
             let corpus_dirs = vec![PathBuf::from(corpus_input.unwrap())];
+            println!("{:?}", corpus_dirs);
             state
                 .load_initial_inputs_forced(&mut fuzzer, &mut executor, &mut mgr, &corpus_dirs)
                 .unwrap_or_else(|err| {
@@ -84,6 +86,7 @@ pub(crate) fn run_fuzzer(
                         &corpus_dirs, err
                     )
                 });
+                println!("Preparing for corpus OK!!\n");
         } else {
             let mut generator = RandBytesGenerator::new(16384);
             state
@@ -93,16 +96,19 @@ pub(crate) fn run_fuzzer(
         println!("We imported {} inputs from disk.", state.corpus().count());
     }
 
+    println!("Preparing for corpus OK!!!\n");
     if random_input {
         println!("We are using random input bytes");
         unsafe { harness::USE_RANDOM_INPUT = true };
     }
 
     // Mutator
+    println!("Fuzzing Mutator...\n");
     let mutator = StdScheduledMutator::new(havoc_mutations());
     let mut stages = tuple_list!(StdMutationalStage::new(mutator));
-
+    println!("Fuzzing Mutator OK...\n");
     // Fuzzing Loop
+    println!("Fuzzing Looping...\n");
     if max_iters.is_some() {
         println!("Running the Fuzzer for {} iterations.", max_iters.unwrap());
         fuzzer
@@ -121,6 +127,7 @@ pub(crate) fn run_fuzzer(
             .expect("Error in the fuzzing loop");
     }
 
+    println!("Fuzzing corpus_output\n");
     if corpus_output.is_some() {
         monitor::store_testcases(&mut state, corpus_output.unwrap());
     };

@@ -1,0 +1,19 @@
+[options]
+mode cover
+depth 20
+
+[engines]
+smtbmc
+
+[script]
+read -formal define.sv
+{formal_files}
+prep -top {top_module_name}
+chformal -remove -cover c:{cover_label} %n
+
+[files]
+{verilog_files}
+
+[file define.sv]
+`define SYNTHESIS
+`define sfuzz_rand_reg rand reg

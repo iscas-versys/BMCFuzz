@@ -8,7 +8,7 @@ import chiseltest.coverage.CoverageInfo
 import firrtl._
 import firrtl.analyses.InstanceKeyGraph
 import firrtl.annotations._
-import firrtl.ir.{DefNode, NoInfo}
+import firrtl.ir._
 import firrtl.options.Dependency
 import firrtl.stage.TransformManager.TransformDependency
 import firrtl.transforms.PropagatePresetAnnotations
@@ -100,14 +100,16 @@ object ToggleCoveragePass extends Transform with DependencyAPIMigration {
     // we first instrument each module in isolation
     val newAnnos = new Annos()
     val c = CircuitTarget(state.circuit.main)
-    val ms = state.circuit.modules.map(m => onModule(m, c, newAnnos, ignoreMods, opt, aliases(m.name), isTop))
+    val ms = state.circuit.modules.map(
+      m => onModule(m, c, newAnnos, ignoreMods, opt, aliases(m.name), isTop)
+    )
     val circuit = state.circuit.copy(modules = ms.map(_._1))
 
     // as a second step we add information to our annotations for signals that cross module boundaries
     val portAliases = ms.map { case (m, a, _, _) => m.name -> a }.toMap
     resolvePortAliases(c, newAnnos, portAliases, iGraph)
 
-    val annos = newAnnos ++ ms.flatMap(_._3).toList ++ state.annotations ++ ms.flatMap(_._4)
+    val annos = newAnnos ++ ms.flatMap(_._3).flatten ++ state.annotations ++ ms.flatMap(_._4)
     CircuitState(circuit, annos.toSeq)
   }
 
@@ -162,7 +164,7 @@ object ToggleCoveragePass extends Transform with DependencyAPIMigration {
   private type PortAliases = Seq[(String, Seq[ReferenceTarget])]
 
   private def onModule(m: ir.DefModule, c: CircuitTarget, annos: Annos, ignore: Set[String],
-    opt: Options, aliases: AliasAnalysis.Aliases, isTop: String => Boolean): (ir.DefModule, PortAliases, Option[Annotation], Seq[CoverPointAnnotation]) =
+    opt: Options, aliases: AliasAnalysis.Aliases, isTop: String => Boolean): (ir.DefModule, PortAliases, Option[Seq[Annotation]], Seq[CoverPointAnnotation]) =
     m match {
       case mod: ir.Module if !ignore(mod.name) =>
         // first we check to see which signals we want to cover
@@ -179,10 +181,12 @@ object ToggleCoveragePass extends Transform with DependencyAPIMigration {
               val en = ir.Reference(namespace.newName("enToggle"), Utils.BoolType, RegKind, UnknownFlow)
               val cover = mutable.ListBuffer[CoverPointAnnotation]()
               val ctx = ModuleCtx(annos, namespace, c.module(mod.name), en, clock, cover)
-              val (coverStmts, portAliases) = coverSignals(signals, aliases, ctx, isTop(mod.name))
+              val (enStmt, enAnno, en_past) = buildCoverEnable(ctx, opt.resetAware)
+              val ctx_past = ModuleCtx(annos, namespace, c.module(mod.name), en_past, clock, cover)
+              val (coverStmts, portAliases) = coverSignals(signals, aliases, ctx_past, isTop(mod.name))
               if(coverStmts.nonEmpty) {
                 // create actual hardware to generate enable signal
-                val (enStmt, enAnno) = buildCoverEnable(ctx, opt.resetAware)
+
                 val body = ir.Block(mod.body, enStmt, ir.Block(coverStmts))
                 (mod.copy(body = body), portAliases, Some(enAnno), cover.toSeq)
               } else { (mod, portAliases, None, Seq()) }
@@ -254,16 +258,25 @@ object ToggleCoveragePass extends Transform with DependencyAPIMigration {
   }
   private def getFields(t: ir.Type): Seq[ir.Field] = t.asInstanceOf[ir.BundleType].fields
 
-  private def buildCoverEnable(ctx: ModuleCtx, resetAware: Boolean): (ir.Statement, Annotation) = {
+  private def buildCoverEnable(ctx: ModuleCtx, resetAware: Boolean): (ir.Statement, Seq[Annotation], ir.Reference) = {
     assert(!resetAware, "TODO: reset aware")
 
     // we add a simple register in order to disable toggle coverage in the first cycle
     val ref = ctx.en
     val reg = ir.DefRegister(ir.NoInfo, ref.name, Utils.BoolType, ctx.clk, Utils.False(), Utils.False())
+
+    // Add pastReg for cover statement begin
+    val pastRegName = ref.name + "_past"
+    val pastReg = ir.DefRegister(ir.NoInfo, pastRegName, Utils.BoolType, ctx.clk, Utils.False(), Utils.False())
+    val pastRegRef = ir.Reference(pastRegName, Utils.BoolType, RegKind, UnknownFlow)
+    val pastConnect = ir.Connect(ir.NoInfo, pastRegRef, ir.Reference(ref.name, Utils.BoolType, RegKind, UnknownFlow))
+    // Add pastReg for cover statement end
+    
     val next = ir.Connect(ir.NoInfo, ref, Utils.True())
     val presetAnno = PresetRegAnnotation(ctx.m.ref(reg.name))
-
-    (ir.Block(reg, next), presetAnno)
+    val pastPresetAnno = PresetRegAnnotation(ctx.m.ref(pastReg.name))
+    // (ir.Block(reg, next), presetAnno)
+    (ir.Block(Seq(reg, pastReg, next, pastConnect)), Seq(presetAnno, pastPresetAnno), pastRegRef)
   }
 
   private def coverSignals(signals: Signals, aliases: AliasAnalysis.Aliases, ctx: ModuleCtx, isTop: Boolean):

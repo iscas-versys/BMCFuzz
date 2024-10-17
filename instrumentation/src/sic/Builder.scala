@@ -14,7 +14,7 @@ import scala.collection.mutable
   * Some of these convenience functions could be moved to firrtl at some point.
   */
 object Builder {
-  def enableVerificationIR: Boolean = false
+  def enableVerificationIR: Boolean = true
 
   /** Fails if there isn't exactly one Clock input */
   def findClock(m: ir.Module): ir.RefLikeExpression = {

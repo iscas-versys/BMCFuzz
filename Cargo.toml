@@ -15,6 +15,7 @@ clap = { version = "4.0", features = ["derive"] }
 libc = "0.2"
 md5 = "0.7"
 rand = "0.8.5"
+csv = "1.1"
 
 [lib]
 name = "fuzzer"

@@ -66,7 +66,7 @@ def execute_cover_task(env_path, cover, output_dir):
 
     if return_code == 0:
         log_message(f"发现case: cover_{cover}")
-        v_file_path = os.path.abspath(os.path.join(output_dir, f"../cover_{cover}/engine_0/trace0_tb.v"))
+        v_file_path = os.path.join(output_dir, f"cover_{cover}", "engine_0", "trace0_tb.v")
         if os.path.exists(v_file_path):
             log_message(f"开始解析文件: {v_file_path}")
             parse_v_file(cover, v_file_path, "hexbin")
@@ -97,9 +97,19 @@ def execute_cover_tasks(env_path, cover_to_keep, output_dir):
         log_message("环境变量加载失败")
 
 def main():
+    # 获取当前目录并切换
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(current_dir)
+    # 获取环境变量
+    env_path = os.getenv("OSS_CAD_SUITE_HOME")
+    if not env_path:
+        log_message("未找到环境变量 OSS_CAD_SUITE_HOME")
+        return
+
     cover_to_keep = [3933, 4389, 4390, 4392]  # 示例，保留的 cover 语句编号
-    env_path = "/home/seddon/Coding/oss-cad-suite/environment" #Sby的source位置
-    output_dir = './coverTasks'  # 输出文件夹路径
+    env_path = os.getenv("OSS_CAD_SUITE_HOME") # Sby的source位置
+    output_dir = os.path.join(current_dir, 'coverTasks')  # 输出文件夹路径
+    print(f"env_path: {env_path}, output_dir: {output_dir}")
     execute_cover_tasks(env_path, cover_to_keep, output_dir)
 
 if __name__ == "__main__":

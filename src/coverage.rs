@@ -81,3 +81,7 @@ pub(crate) fn cover_accumulate() {
 pub(crate) fn cover_display() {
     unsafe { ICOVERAGE.as_ref().unwrap().display() }
 }
+
+pub(crate) fn cover_get_accumulated_points() -> Vec<i8> {
+    unsafe { ICOVERAGE.as_ref().unwrap().accumulated.clone() }
+}

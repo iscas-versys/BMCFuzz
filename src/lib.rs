@@ -40,6 +40,9 @@ struct Arguments {
     continue_on_errors: bool,
     #[clap(default_value_t = false, long)]
     save_errors: bool,
+    #[clap(long)]
+    cover_points_output: Option<String>,
+
     // Run options
     #[clap(default_value_t = 1, long)]
     repeat: usize,
@@ -100,6 +103,8 @@ fn main() -> i32 {
         println!("corpus_output: {:?}", args.corpus_output);
         println!("continue_on_errors: {:?}", args.continue_on_errors);
         println!("save_errors: {:?}", args.save_errors);
+        println!("cover_points_output: {:?}", args.cover_points_output);
+        harness::set_fuzz_cover_output(args.cover_points_output);
         fuzzer::run_fuzzer(
             args.random_input,
             args.max_iters,

@@ -21,6 +21,10 @@ use crate::monitor::store_testcase;
 use libafl::prelude::*;
 use libc::*;
 
+use std::fs::File;
+use std::os::unix::io::AsRawFd; // 用于获取文件的文件描述符
+use csv::Writer;
+
 extern "C" {
     pub fn sim_main(argc: c_int, argv: *const *const c_char) -> c_int;
 
@@ -92,6 +96,7 @@ pub static mut CONTINUE_ON_ERRORS: bool = false;
 pub static mut SAVE_ERRORS: bool = false;
 pub static mut NUM_RUNS: u64 = 0;
 pub static mut MAX_RUNS: u64 = u64::MAX;
+pub static mut FUZZ_COVER_POINTS_OUTPUT: Option<String> = None;
 
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     let ret = if unsafe { USE_RANDOM_INPUT } {
@@ -124,7 +129,20 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     let do_exit = unsafe { NUM_RUNS >= MAX_RUNS };
     if do_exit {
         println!("Exit due to max_runs == 0");
+        // stdout -> file & display uncovered points
+        let cover_file = File::create("/home/chooaa/HW_formal_verification/nutshell-fv/ccover/Formal/coverTasks/cover.log").unwrap();
+        let fd = cover_file.as_raw_fd();
+        let stdout = unsafe { dup(STDOUT_FILENO) };
+        unsafe { dup2(fd, STDOUT_FILENO) };
         unsafe { display_uncovered_points() }
+        unsafe { dup2(stdout, STDOUT_FILENO) };
+        unsafe { close(stdout) };
+
+        // store the accumulated coverage points
+        if unsafe { FUZZ_COVER_POINTS_OUTPUT.is_some() } {
+            store_cover_points(unsafe { FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() });
+        }
+
         panic!("Exit due to max_runs == 0");
     }
 
@@ -157,4 +175,18 @@ pub(crate) fn set_sim_env(
 
     println!("Before Cover Init\n");
     cover_init();
+}
+
+pub(crate) fn set_fuzz_cover_output(output: Option<String>) {
+    unsafe { FUZZ_COVER_POINTS_OUTPUT = output };
+}
+
+pub(crate) fn store_cover_points(cover_points_output: String) {
+    let accumulated_points = cover_get_accumulated_points();
+    let mut wtr = Writer::from_path(cover_points_output).unwrap();
+    wtr.write_record(&["Index", "Covered"]).unwrap();
+    for (i, covered) in accumulated_points.iter().enumerate() {
+        wtr.write_record(&[i.to_string(), covered.to_string()]).unwrap();
+    }
+    wtr.flush().unwrap();
 }

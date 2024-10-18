@@ -99,9 +99,12 @@ def generate_sby_files(verilog_file, output_dir, cover_to_keep, cover_statements
             print(f"Generated {sby_file_name} for {cover_label}")
 
 def main():
-    # 使用例子
-    rtl_dir = '/home/seddon/Coding/fuzz/xfuzz_suite/FuzzingNutShell/ccover/Formal/demo/rtl'  # 原始 RTL 文件夹路径
-    output_dir = './coverTasks'  # 输出文件夹路径
+    # 获取当前目录并切换
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(current_dir)
+
+    rtl_dir = os.path.join(current_dir, 'demo', 'rtl')  # 原始 RTL 文件夹路径
+    output_dir = os.path.join(current_dir, 'coverTasks')  # 输出文件夹路径
     output_rtl_dir = os.path.join(output_dir, 'rtl')  # 输出 RTL 文件夹路径
     new_verilog_file = 'SimTop_renaming.sv'  # 新生成的Verilog文件名
 
@@ -112,9 +115,11 @@ def main():
     # 指定顶层模块名称（可选），默认是 "SimTop"
     top_module_name = "SimTop"
     # top_module_name = "NutCore"
+
     # 模板文件路径
-    sby_template = './template.sby'
+    sby_template = os.path.join(current_dir, 'template.sby')
     top_module_file = 'SimTop.sv'
+
     # 调用函数
     verilog_file = os.path.join(output_rtl_dir, top_module_file)
     cover_list = parse_and_modify_verilog(verilog_file, output_dir, new_verilog_file, cover_to_keep, top_module_name, sby_template, top_module_file)

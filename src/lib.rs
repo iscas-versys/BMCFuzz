@@ -42,6 +42,8 @@ struct Arguments {
     save_errors: bool,
     #[clap(long)]
     cover_points_output: Option<String>,
+    #[clap(default_value_t = 0.0, long)]
+    formal_cover_rate: f64,
 
     // Run options
     #[clap(default_value_t = 1, long)]
@@ -104,7 +106,10 @@ fn main() -> i32 {
         println!("continue_on_errors: {:?}", args.continue_on_errors);
         println!("save_errors: {:?}", args.save_errors);
         println!("cover_points_output: {:?}", args.cover_points_output);
+        println!("formal_cover_rate: {:?}", args.formal_cover_rate);
         harness::set_fuzz_cover_output(args.cover_points_output);
+        harness::set_formal_cover_rate(args.formal_cover_rate);
+        harness::set_cover_points();
         fuzzer::run_fuzzer(
             args.random_input,
             args.max_iters,

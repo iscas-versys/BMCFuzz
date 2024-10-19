@@ -13,7 +13,7 @@ extern crate libc;
 extern crate rand;
 
 use std::ffi::CString;
-use std::io::{self, Write};
+// use std::io::{self, Write};
 
 use crate::coverage::*;
 use crate::monitor::store_testcase;
@@ -21,9 +21,9 @@ use crate::monitor::store_testcase;
 use libafl::prelude::*;
 use libc::*;
 
-use std::fs::File;
-use std::os::unix::io::AsRawFd; // 用于获取文件的文件描述符
-use csv::Writer;
+// use std::fs::File;
+// use std::os::unix::io::AsRawFd; // 用于获取文件的文件描述符
+use csv::{Writer, Reader};
 
 extern "C" {
     pub fn sim_main(argc: c_int, argv: *const *const c_char) -> c_int;
@@ -32,7 +32,7 @@ extern "C" {
 
     pub fn update_stats(bitmap: *mut c_char);
 
-    pub fn display_uncovered_points();
+    // pub fn display_uncovered_points();
 
     pub fn set_cover_feedback(name: *const c_char);
 
@@ -94,9 +94,11 @@ pub(crate) fn sim_run_multiple(workloads: &Vec<String>, auto_exit: bool) -> i32 
 pub static mut USE_RANDOM_INPUT: bool = false;
 pub static mut CONTINUE_ON_ERRORS: bool = false;
 pub static mut SAVE_ERRORS: bool = false;
-pub static mut NUM_RUNS: u64 = 0;
+// pub static mut NUM_RUNS: u64 = 0;
 pub static mut MAX_RUNS: u64 = u64::MAX;
+
 pub static mut FUZZ_COVER_POINTS_OUTPUT: Option<String> = None;
+pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     let ret = if unsafe { USE_RANDOM_INPUT } {
@@ -108,13 +110,13 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     };
 
     // get coverage
-    cover_display();
-    io::stdout().flush().unwrap();
+    // cover_display();
+    // io::stdout().flush().unwrap();
 
     // panic if return code is non-zero (this is for fuzzers to catch crashes)
     let do_panic = unsafe { !CONTINUE_ON_ERRORS && ret != 0 };
     if do_panic {
-        unsafe { display_uncovered_points() }
+        // unsafe { display_uncovered_points() }
         panic!("<<<<<< Bug triggered >>>>>>");
     }
 
@@ -124,27 +126,50 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
         store_testcase(input, &"errors".to_string(), None);
     }
 
-    // panic to exit the fuzzer if max_runs is reached
-    unsafe { NUM_RUNS += 1 };
-    let do_exit = unsafe { NUM_RUNS >= MAX_RUNS };
-    if do_exit {
-        println!("Exit due to max_runs == 0");
+    // panic to exit the fuzzer if fuzz_cover_rate < formal_cover_rate
+    let fuzz_cover_rate = cover_get_cover_rate();
+    if fuzz_cover_rate < unsafe { FORMAL_COVER_RATE } {
+        println!("Exit due to fuzz_cover_rate < formal_cover_rate");
         // stdout -> file & display uncovered points
-        let cover_file = File::create("/home/chooaa/HW_formal_verification/nutshell-fv/ccover/Formal/coverTasks/cover.log").unwrap();
-        let fd = cover_file.as_raw_fd();
-        let stdout = unsafe { dup(STDOUT_FILENO) };
-        unsafe { dup2(fd, STDOUT_FILENO) };
-        unsafe { display_uncovered_points() }
-        unsafe { dup2(stdout, STDOUT_FILENO) };
-        unsafe { close(stdout) };
+        // let cover_file_path = unsafe { FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover.log" };
+        // let cover_file = File::create(cover_file_path).unwrap();
+        // let fd = cover_file.as_raw_fd();
+        // let stdout = unsafe { dup(STDOUT_FILENO) };
+        // unsafe { dup2(fd, STDOUT_FILENO) };
+        // unsafe { display_uncovered_points() }
+        // unsafe { dup2(stdout, STDOUT_FILENO) };
+        // unsafe { close(stdout) };
 
         // store the accumulated coverage points
         if unsafe { FUZZ_COVER_POINTS_OUTPUT.is_some() } {
-            store_cover_points(unsafe { FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() });
+            store_cover_points(unsafe { FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
         }
 
-        panic!("Exit due to max_runs == 0");
+        panic!("Exit due to fuzz_cover_rate < formal_cover_rate");
     }
+
+    // panic to exit the fuzzer if max_runs is reached
+    // unsafe { NUM_RUNS += 1 };
+    // let do_exit = unsafe { NUM_RUNS >= MAX_RUNS };
+    // if do_exit {
+    //     println!("Exit due to max_runs == 0");
+    //     // stdout -> file & display uncovered points
+    //     let cover_file_path = unsafe { FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover.log" };
+    //     let cover_file = File::create(cover_file_path).unwrap();
+    //     let fd = cover_file.as_raw_fd();
+    //     let stdout = unsafe { dup(STDOUT_FILENO) };
+    //     unsafe { dup2(fd, STDOUT_FILENO) };
+    //     unsafe { display_uncovered_points() }
+    //     unsafe { dup2(stdout, STDOUT_FILENO) };
+    //     unsafe { close(stdout) };
+
+    //     // store the accumulated coverage points
+    //     if unsafe { FUZZ_COVER_POINTS_OUTPUT.is_some() } {
+    //         store_cover_points(unsafe { FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
+    //     }
+
+    //     panic!("Exit due to max_runs == 0");
+    // }
 
     ExitKind::Ok
 }
@@ -177,16 +202,44 @@ pub(crate) fn set_sim_env(
     cover_init();
 }
 
-pub(crate) fn set_fuzz_cover_output(output: Option<String>) {
-    unsafe { FUZZ_COVER_POINTS_OUTPUT = output };
-}
-
-pub(crate) fn store_cover_points(cover_points_output: String) {
+fn store_cover_points(cover_points_output: String) {
     let accumulated_points = cover_get_accumulated_points();
     let mut wtr = Writer::from_path(cover_points_output).unwrap();
+    // write header
     wtr.write_record(&["Index", "Covered"]).unwrap();
+    // write records
     for (i, covered) in accumulated_points.iter().enumerate() {
         wtr.write_record(&[i.to_string(), covered.to_string()]).unwrap();
     }
     wtr.flush().unwrap();
+}
+
+pub(crate) fn set_fuzz_cover_output(output: Option<String>) {
+    unsafe { FUZZ_COVER_POINTS_OUTPUT = output };
+}
+
+pub(crate) fn set_formal_cover_rate(rate: f64) {
+    unsafe { FORMAL_COVER_RATE = rate };
+}
+
+pub(crate) fn set_cover_points() {
+    // read the accumulated coverage points from the file
+    let cover_file_path = unsafe{ FUZZ_COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" };
+    let mut rdr = Reader::from_path(cover_file_path).unwrap();
+    let len = unsafe{ get_cover_number() as usize };
+    let mut accumulated_points = vec![0; len];
+    // read header
+    rdr.headers().unwrap();
+    let mut count = 0;
+    for result in rdr.records() {
+        let record = result.unwrap();
+        let idx = record[0].parse::<usize>().unwrap();
+        let covered = record[1].parse::<i8>().unwrap();
+        if count < 100 {
+            println!("{}: {}", idx, covered);
+            count += 1;
+        }
+        accumulated_points[idx] = covered;
+    }
+    cover_set_accumulated(accumulated_points);
 }

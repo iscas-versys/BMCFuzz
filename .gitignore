@@ -18,3 +18,5 @@ Cargo.lock
 .vscode/
 Formal/coverTasks/
 Formal/logs/*
+
+Formal/__pycache__

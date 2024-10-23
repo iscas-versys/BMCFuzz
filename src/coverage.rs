@@ -90,6 +90,7 @@ impl Coverage {
     }
 
     pub fn get_cover_rate(& self) -> f64 {
+        println!("Covered Points: {}", self.accumulated_num);
         println!("Cover Rate: {:.3} per second", self.rate_sum / self.rate_window.len() as f64);
         self.rate_sum / self.rate_window.len() as f64
     }

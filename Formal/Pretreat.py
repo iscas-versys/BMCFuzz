@@ -2,6 +2,7 @@ import re
 import os
 import shutil
 import logging
+import csv
 
 from datetime import datetime
 
@@ -18,6 +19,15 @@ def log_init():
 def log_message(message):
     logging.info(message)
     print(message)
+
+def clear_logs():
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    logs_dir = os.path.join(current_dir, "logs")
+    if os.path.exists(logs_dir):
+        shutil.rmtree(logs_dir)
+    os.makedirs(logs_dir)
+    fuzz_log_dir = os.getenv("FUZZ_LOG")
+    os.makedirs(fuzz_log_dir, exist_ok=True)
 
 # 复制、解析并修改RTL文件
 def generate_rtl_files():
@@ -169,6 +179,23 @@ def clean_cover_files():
                 os.mkdir(entry.path)
     
     log_message("Cleaned cover files.")
+
+def generate_empty_cover_points_file():
+    cover_points_out = str(os.getenv("COVER_POINTS_OUT"))
+    cover_points_file_path = cover_points_out + "/cover_points.csv"
+    
+    # 检查文件是否存在, 如果存在则删除
+    if os.path.exists(cover_points_file_path):
+        os.remove(cover_points_file_path)
+        
+    MAX_COVER_POINTS = 11747
+    with open(cover_points_file_path, mode='w', newline='', encoding='utf-8') as file:
+        field_name = ['Index', 'Covered']
+        csv_writer = csv.DictWriter(file, fieldnames=field_name)
+        csv_writer.writeheader()
+
+        for i in range(MAX_COVER_POINTS):
+            csv_writer.writerow({'Index': i, 'Covered': 0})
 
 if __name__ == "__main__":
     # clean_cover_files()

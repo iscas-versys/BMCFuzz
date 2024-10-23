@@ -4,6 +4,7 @@ import logging
 from Pretreat import *
 
 class PointSelector:
+    MAX_POINT_NUM = 10
     module_contain_points = []
     
     def init(self, module_num, point2module):
@@ -31,7 +32,7 @@ class PointSelector:
                 max_uncovered_module = module
                 max_uncovered_points = points
         
-        select_num = min(len(max_uncovered_points), 10)
+        select_num = min(len(max_uncovered_points), self.MAX_POINT_NUM)
         select_points = random.sample(max_uncovered_points, select_num)
 
         # debug

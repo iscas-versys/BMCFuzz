@@ -8,7 +8,7 @@ import logging
 from datetime import datetime
 
 from Coverage import Coverage
-from Pretreat import generate_rtl_files, clean_cover_files, generate_sby_files, log_message, log_init
+from Pretreat import *
 from PointSelector import PointSelector
 from Executor import execute_cover_tasks, run_command
 
@@ -22,8 +22,6 @@ class Scheduler:
     point2module = []
 
     def init(self):
-        # 初始化log
-        log_init()
         log_message("Scheduler init")
         
         # 初始化Coverage和PointSelector
@@ -71,7 +69,8 @@ class Scheduler:
                         covered_num += 1
                     cover_points.append(int(row['Covered']))
             
-            log_message(f"Fuzz covered num: {covered_num-self.coverage.get_covered_num()}")
+            fuzz_covered_num = covered_num - self.coverage.get_covered_num()
+            log_message(f"Fuzz covered num: {fuzz_covered_num}")
             self.coverage.update_fuzz(covered_num, cover_points)
             self.point_selector.update(cover_points, self.point2module)
 
@@ -103,14 +102,23 @@ class Scheduler:
     
     def run_fuzz(self, formal_cover_rate):
         NOOP_HOME = os.getenv("NOOP_HOME")
-        # ./build/fuzzer -f --formal-cover-rate 500.0 --corpus-input $CORPUS_DIR --cover-points-output $COVER_POINTS_OUT -c firrtl.toggle -- --no-diff -I 100 -e 0
-        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && ./build/fuzzer -f --formal-cover-rate {formal_cover_rate} --corpus-input $CORPUS_DIR --cover-points-output $COVER_POINTS_OUT -c firrtl.toggle -- --no-diff -I 100 -e 0'"
+        FUZZ_LOG = os.getenv("FUZZ_LOG")
+        fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
+                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
+                        --corpus-input $CORPUS_DIR --cover-points-output $COVER_POINTS_OUT -c firrtl.toggle -- --no-diff -I 100 -e 0 \
+                        > {fuzz_log_file} 2>&1'"
         return_code = run_command(fuzz_command, shell=True)
-    
+        log_message(f"Fuzz return code: {return_code}")
+
 
 def run(args = None):
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    os.chdir(current_dir)
+    # 初始化log
+    clear_logs()
+    log_init()
+
+    # current_dir = os.path.dirname(os.path.realpath(__file__))
+    # os.chdir(current_dir)
 
     scheduler = Scheduler()
     scheduler.init()
@@ -118,8 +126,10 @@ def run(args = None):
     scheduler.run_loop(1)
 
 def test_fuzz():
+    clear_logs()
+    log_init()
     scheduler = Scheduler()
-    scheduler.run_fuzz(1000.0)
+    scheduler.run_fuzz(1000)
 
 if __name__ == "__main__":
     # # 初始化Coverage对象
@@ -135,7 +145,7 @@ if __name__ == "__main__":
     # sample_cover_points = [3933, 4389, 4390, 4392]
     # generate_sby_files(sample_cover_points)
 
-    # log_init()
     run()
+    # generate_empty_cover_points_file()
     # test_fuzz()
     

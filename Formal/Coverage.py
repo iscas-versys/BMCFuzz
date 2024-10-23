@@ -60,6 +60,7 @@ class Coverage:
                 csv_writer.writerow({'Index': i, 'Covered': self.cover_points[i]})
 
 if __name__ == "__main__":
+    # generate_empty_cover_points_file()
     # 初始化Coverage对象
     coverage = Coverage()
     

@@ -116,6 +116,11 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // panic if return code is non-zero (this is for fuzzers to catch crashes)
     let do_panic = unsafe { !CONTINUE_ON_ERRORS && ret != 0 };
     if do_panic {
+        println!("<<<<<< Bug triggered >>>>>>");
+        // store the accumulated coverage points
+        if unsafe { COVER_POINTS_OUTPUT.is_some() } {
+            store_cover_points(unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
+        }
         // unsafe { display_uncovered_points() }
         panic!("<<<<<< Bug triggered >>>>>>");
     }

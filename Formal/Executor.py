@@ -7,7 +7,7 @@ from tqdm import tqdm
 from datetime import datetime
 import time
 
-from Pretreat import log_message, log_init
+from Pretreat import log_message, log_init, generate_sby_files, clean_cover_files
 
 def run_command(command, shell=False):
     try:
@@ -16,6 +16,12 @@ def run_command(command, shell=False):
         return return_code
     except subprocess.CalledProcessError as e:
         log_message(f"Error occurred: {e.stderr}")
+        return None
+    except subprocess.TimeoutExpired as e:
+        log_message(f"Timeout occurred: {e.stderr}")
+        return None
+    except Exception as e:
+        log_message(f"Exception occurred: {e}")
         return None
 
 def execute_cover_tasks(cover_points):
@@ -31,7 +37,7 @@ def execute_cover_tasks(cover_points):
         log_message("环境变量加载失败")
         return 0
 
-    os.chdir(output_dir)
+    # os.chdir(output_dir)
     cover_cases = []
     strat_time = time.time()
     with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
@@ -53,7 +59,8 @@ def execute_cover_tasks(cover_points):
     return (cover_cases, end_time - strat_time)
 
 def execute_cover_task(env_path, cover, output_dir):
-    sby_command = f"bash -c 'source {env_path} && sby -f cover_{cover}.sby'"
+    cover_tasks_path = os.getenv("COVER_POINTS_OUT")
+    sby_command = f"bash -c 'source {env_path} && sby -f {cover_tasks_path}/cover_{cover}.sby'"
     return_code = run_command(sby_command, shell=True)
 
     if return_code == 0:
@@ -112,7 +119,10 @@ if __name__ == "__main__":
     os.chdir(current_dir)
     log_init()
     
-    sample_cover_points = [3933, 4389, 4390, 4392]
+    clean_cover_files()
+    # sample_cover_points = [3933, 4389, 4390, 4392]
+    sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
+    generate_sby_files(sample_cover_points)
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)

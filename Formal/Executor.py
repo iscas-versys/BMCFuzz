@@ -59,8 +59,7 @@ def execute_cover_tasks(cover_points):
     return (cover_cases, end_time - strat_time)
 
 def execute_cover_task(env_path, cover, output_dir):
-    cover_tasks_path = os.getenv("COVER_POINTS_OUT")
-    sby_command = f"bash -c 'source {env_path} && sby -f {cover_tasks_path}/cover_{cover}.sby'"
+    sby_command = f"bash -c 'source {env_path} && sby -f {output_dir}/cover_{cover}.sby'"
     return_code = run_command(sby_command, shell=True)
 
     if return_code == 0:
@@ -68,7 +67,7 @@ def execute_cover_task(env_path, cover, output_dir):
         v_file_path = os.path.join(output_dir, f"cover_{cover}", "engine_0", "trace0_tb.v")
         if os.path.exists(v_file_path):
             log_message(f"开始解析文件: {v_file_path}")
-            parse_v_file(cover, v_file_path, "hexbin")
+            parse_v_file(cover, v_file_path, f"{output_dir}/hexbin")
             return cover
         else:
             log_message(f".v文件不存在: {v_file_path}")

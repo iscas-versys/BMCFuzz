@@ -21,6 +21,7 @@ struct Coverage {
     cover_points: Vec<i8>,
     accumulated: Vec<i8>,
     accumulated_num: usize,
+    pre_accumulated_num: usize,
     start_time: Instant,
     rate_window: VecDeque<f64>,
     rate_sum: f64,
@@ -32,6 +33,7 @@ impl Coverage {
             cover_points: vec![0; n_cover],
             accumulated: vec![0; n_cover],
             accumulated_num: 0,
+            pre_accumulated_num: 0,
             start_time: Instant::now(),
             rate_window: VecDeque::with_capacity(RATE_WINDOW_SIZE),
             rate_sum: 0.0,
@@ -79,7 +81,9 @@ impl Coverage {
 
     pub fn update_cover_rate(&mut self) {
         let duration = self.start_time.elapsed().as_secs_f64();
-        let new_cover_rate = self.accumulated_num as f64 / duration;
+        self.start_time = Instant::now();
+        let new_cover_rate = (self.accumulated_num - self.pre_accumulated_num) as f64 / duration;
+        self.pre_accumulated_num = self.accumulated_num;
         if self.rate_window.len() == RATE_WINDOW_SIZE {
             if let Some(old_cover_rate) = self.rate_window.pop_front() {
                 self.rate_sum -= old_cover_rate;
@@ -87,12 +91,19 @@ impl Coverage {
         }
         self.rate_window.push_back(new_cover_rate);
         self.rate_sum += new_cover_rate;
+        println!("Covered Points: {}", self.accumulated_num);
+        println!("Coverage: {:.3}%", 100.0 * self.accumulated_num as f64 / self.len() as f64);
+        println!("Cover Rate: {:.3} per second", self.rate_sum / self.rate_window.len() as f64);
     }
 
     pub fn get_cover_rate(& self) -> f64 {
-        println!("Covered Points: {}", self.accumulated_num);
-        println!("Cover Rate: {:.3} per second", self.rate_sum / self.rate_window.len() as f64);
-        self.rate_sum / self.rate_window.len() as f64
+        if self.rate_window.len() < RATE_WINDOW_SIZE {
+            println!("Cover Rate Window Size: {}(not enough)", self.rate_window.len());
+            100.0
+        }
+        else {
+            self.rate_sum / self.rate_window.len() as f64
+        }
     }
 }
 

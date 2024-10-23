@@ -30,7 +30,7 @@ class PointSelector:
         for module, points in enumerate(self.module_contain_points):
             if len(points) > len(max_uncovered_points):
                 max_uncovered_module = module
-                max_uncovered_points = points
+                max_uncovered_points = list(points)
         
         select_num = min(len(max_uncovered_points), self.MAX_POINT_NUM)
         select_points = random.sample(max_uncovered_points, select_num)

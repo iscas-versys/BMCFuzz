@@ -17,3 +17,9 @@ Cargo.lock
 
 .vscode/
 Formal/coverTasks/
+
+# Ignore the logs
+Formal/logs/*.log
+Formal/logs/fuzz/*.log
+
+Formal/__pycache__

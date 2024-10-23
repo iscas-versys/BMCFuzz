@@ -13,12 +13,17 @@
 use crate::harness::get_cover_number;
 
 use std::time::Instant;
+use std::collections::VecDeque;
+
+const RATE_WINDOW_SIZE: usize = 100;
 
 struct Coverage {
     cover_points: Vec<i8>,
     accumulated: Vec<i8>,
     accumulated_num: usize,
     start_time: Instant,
+    rate_window: VecDeque<f64>,
+    rate_sum: f64,
 }
 
 impl Coverage {
@@ -28,6 +33,8 @@ impl Coverage {
             accumulated: vec![0; n_cover],
             accumulated_num: 0,
             start_time: Instant::now(),
+            rate_window: VecDeque::with_capacity(RATE_WINDOW_SIZE),
+            rate_sum: 0.0,
         }
     }
 
@@ -70,12 +77,22 @@ impl Coverage {
         );
     }
 
-    pub fn get_cover_rate(&self) -> f64 {
+    pub fn update_cover_rate(&mut self) {
         let duration = self.start_time.elapsed().as_secs_f64();
-        println!("Covered Points: {:?}", self.accumulated_num);
-        println!("Duration: {:.3}s", duration);
-        println!("Cover Rate: {:.3} points/s", self.accumulated_num as f64 / duration);
-        self.accumulated_num as f64 / duration
+        let new_cover_rate = self.accumulated_num as f64 / duration;
+        if self.rate_window.len() == RATE_WINDOW_SIZE {
+            if let Some(old_cover_rate) = self.rate_window.pop_front() {
+                self.rate_sum -= old_cover_rate;
+            }
+        }
+        self.rate_window.push_back(new_cover_rate);
+        self.rate_sum += new_cover_rate;
+    }
+
+    pub fn get_cover_rate(& self) -> f64 {
+        println!("Covered Points: {}", self.accumulated_num);
+        println!("Cover Rate: {:.3} per second", self.rate_sum / self.rate_window.len() as f64);
+        self.rate_sum / self.rate_window.len() as f64
     }
 }
 
@@ -107,6 +124,10 @@ pub(crate) fn cover_display() {
 
 pub(crate) fn cover_get_accumulated_points() -> Vec<i8> {
     unsafe { ICOVERAGE.as_ref().unwrap().accumulated.clone() }
+}
+
+pub(crate) fn cover_update_cover_rate() {
+    unsafe { ICOVERAGE.as_mut().unwrap().update_cover_rate() }
 }
 
 pub(crate) fn cover_get_cover_rate() -> f64 {

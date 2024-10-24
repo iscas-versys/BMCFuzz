@@ -101,12 +101,18 @@ pub static mut COVER_POINTS_OUTPUT: Option<String> = None;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
+    // insert c.nop in the beginning of the input
+    let mut input_bytes = input.bytes().to_vec();
+    input_bytes.insert(0, 0x01);
+    input_bytes.insert(0, 0x00);
+    let new_input = BytesInput::new(input_bytes);
+
     let ret = if unsafe { USE_RANDOM_INPUT } {
         let random_bytes: Vec<u8> = (0..1024).map(|_| rand::random::<u8>()).collect();
         let b = BytesInput::new(random_bytes);
         sim_run_from_memory(&b)
     } else {
-        sim_run_from_memory(input)
+        sim_run_from_memory(&new_input)
     };
 
     // get coverage
@@ -130,7 +136,7 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     if do_save {
         println!("<<<<<< Bug triggered >>>>>>");
         println!("<<<<<< Save the testcase >>>>>>");
-        store_testcase(input, &"errors".to_string(), None);
+        store_testcase(&new_input, &"errors".to_string(), None);
     }
 
     // panic to exit the fuzzer if fuzz_cover_rate < formal_cover_rate

@@ -4,7 +4,7 @@ import logging
 from Pretreat import *
 
 class PointSelector:
-    MAX_POINT_NUM = 10
+    MAX_POINT_NUM = 100
     module_contain_points = []
     
     def init(self, module_num, point2module):

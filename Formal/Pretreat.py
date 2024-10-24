@@ -6,7 +6,7 @@ import csv
 
 from datetime import datetime
 
-MAX_COVER_POINTS = 1
+MAX_COVER_POINTS = 0
 
 def log_init():
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -116,6 +116,7 @@ def parse_and_modify_rtl_files():
         new_file.writelines(new_lines)
     
     # 设置MAX_COVER_POINTS
+    global MAX_COVER_POINTS
     MAX_COVER_POINTS = len(cover_points)
 
     return cover_points
@@ -139,7 +140,7 @@ def generate_sby_files(cover_points):
     verilog_files = '\n'.join([file for file in rtl_files])
 
     for cover_id in cover_points:
-        if cover_id < MAX_COVER_POINTS:
+        if cover_id >= MAX_COVER_POINTS:
             log_message(f"cover_id: {cover_id} >= MAX_COVER_POINTS: {MAX_COVER_POINTS}")
             return
 
@@ -188,6 +189,7 @@ def generate_empty_cover_points_file():
     if os.path.exists(cover_points_file_path):
         os.remove(cover_points_file_path)
         
+    global MAX_COVER_POINTS
     MAX_COVER_POINTS = 11747
     with open(cover_points_file_path, mode='w', newline='', encoding='utf-8') as file:
         field_name = ['Index', 'Covered']

@@ -125,6 +125,16 @@ def run(args = None):
 
     scheduler.run_loop(1)
 
+def test_formal():
+    clear_logs()
+    log_init()
+
+    scheduler = Scheduler()
+    scheduler.init()
+    all_points = [i for i in range(len(scheduler.points_name))]
+    log_message(f"all_points_len: {len(all_points)}")
+    scheduler.run_formal(all_points)
+
 def test_fuzz():
     clear_logs()
     log_init()
@@ -145,7 +155,8 @@ if __name__ == "__main__":
     # sample_cover_points = [3933, 4389, 4390, 4392]
     # generate_sby_files(sample_cover_points)
 
-    run()
+    # run()
     # generate_empty_cover_points_file()
     # test_fuzz()
+    test_formal()
     

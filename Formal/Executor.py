@@ -1,7 +1,8 @@
 import os
 import re
 import subprocess
-import logging
+import shutil
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from datetime import datetime
@@ -62,19 +63,25 @@ def execute_cover_task(env_path, cover, output_dir):
     sby_command = f"bash -c 'source {env_path} && sby -f {output_dir}/cover_{cover}.sby'"
     return_code = run_command(sby_command, shell=True)
 
+    cover_point = -1
     if return_code == 0:
         log_message(f"发现case: cover_{cover}")
         v_file_path = os.path.join(output_dir, f"cover_{cover}", "engine_0", "trace0_tb.v")
         if os.path.exists(v_file_path):
             log_message(f"开始解析文件: {v_file_path}")
             parse_v_file(cover, v_file_path, f"{output_dir}/hexbin")
-            return cover
+            cover_point = cover
         else:
             log_message(f".v文件不存在: {v_file_path}")
-            return -1
     else:
         log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
-        return -1
+    
+    if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
+        os.remove(f"{output_dir}/cover_{cover}.sby")
+    if os.path.exists(f"{output_dir}/cover_{cover}"):
+        shutil.rmtree(f"{output_dir}/cover_{cover}")
+    
+    return cover_point
     
 def parse_v_file(cover_no, v_file_path, output_dir):
     pattern = r"UUT\.mem\.rdata_mem\.helper_0\.memory\[(28'b[01]+)\] = (64'b[01]+);"

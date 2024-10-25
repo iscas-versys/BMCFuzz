@@ -132,6 +132,15 @@ def test_formal():
     scheduler = Scheduler()
     scheduler.init()
     all_points = [i for i in range(len(scheduler.points_name))]
+    # hexbin_dir = os.getenv("COVER_POINTS_OUT") + "/hexbin"
+    # with os.scandir(hexbin_dir) as entries:
+    #     for entry in entries:
+    #         if entry.name.endswith(".bin"):
+    #             cover_id = int(entry.name.split(".")[0].split("_")[1])
+    #             log_message(f"cover_id: {cover_id}")
+    #             if cover_id in all_points:
+    #                 all_points.remove(cover_id)
+
     log_message(f"all_points_len: {len(all_points)}")
     scheduler.run_formal(all_points)
 

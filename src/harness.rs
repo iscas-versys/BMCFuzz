@@ -103,8 +103,8 @@ pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // insert c.nop in the beginning of the input
     let mut input_bytes = input.bytes().to_vec();
-    input_bytes.insert(0, 0x01);
     input_bytes.insert(0, 0x00);
+    input_bytes.insert(0, 0x01);
     let new_input = BytesInput::new(input_bytes);
 
     let ret = if unsafe { USE_RANDOM_INPUT } {

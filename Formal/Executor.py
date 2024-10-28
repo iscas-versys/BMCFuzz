@@ -5,7 +5,6 @@ import shutil
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
-from datetime import datetime
 import time
 
 from Pretreat import log_message, log_init, generate_sby_files, clean_cover_files
@@ -41,7 +40,8 @@ def execute_cover_tasks(cover_points):
     # os.chdir(output_dir)
     cover_cases = []
     strat_time = time.time()
-    with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+    max_workers = min(100, os.cpu_count())
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(execute_cover_task, env_path, cover, output_dir): cover for cover in cover_points}
         with tqdm(total=len(futures), desc="Processing covers") as pbar:
             for future in as_completed(futures):

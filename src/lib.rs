@@ -42,7 +42,7 @@ struct Arguments {
     save_errors: bool,
     #[clap(long)]
     cover_points_output: Option<String>,
-    #[clap(default_value_t = 0.0, long)]
+    #[clap(default_value_t = -1.0, long)]
     formal_cover_rate: f64,
 
     // Run options

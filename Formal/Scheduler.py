@@ -1,9 +1,5 @@
 import os
 import csv
-import shutil
-import argparse
-import subprocess
-import logging
 
 from datetime import datetime
 
@@ -47,16 +43,18 @@ class Scheduler:
 
         self.point_selector.init(module_id, self.point2module)
     
-    def run_loop(self, max_iter):
+    def run_loop(self, max_iter, target_coverage=0.9):
         for i in range(max_iter):
             log_message(f"Loop {i+1}")
+
             # 选点并执行formal任务
             cover_points = self.point_selector.generate_cover_points()
-            self.run_formal(cover_points)
+            if not self.run_formal(cover_points):
+                log_message("Exit:No more cover points!")
+                break
 
             # 执行fuzz任务
-            # self.run_fuzz(self.coverage.get_formal_cover_rate())
-            self.run_fuzz(1000.0)
+            self.run_fuzz(self.coverage.get_formal_cover_rate())
 
             # 获取fuzz结果并更新Coverage、PointSelector
             cover_points_path = os.getenv("COVER_POINTS_OUT") + "/cover_points.csv"
@@ -78,6 +76,10 @@ class Scheduler:
             log_message(f"Covered: {covered_num}/{len(cover_points)}")
             log_message(f"Coverage: {self.coverage.get_coverage()*100:.2f}%")
 
+            if self.coverage.get_coverage() >= target_coverage:
+                log_message("Exit:Coverage reached target!")
+                break
+
     def run_formal(self, cover_points):
         while(True):
             # 清理并重新生成cover points文件
@@ -94,11 +96,16 @@ class Scheduler:
                 log_message("未发现新case,重新选点")
                 self.point_selector.remove_points(cover_points, self.point2module)
                 cover_points = self.point_selector.generate_cover_points()
+            
+            if len(cover_points) == 0:
+                log_message("未发现新case,且无可选点")
+                return False
 
         # 更新Coverage并生成cover_points文件
-        self.coverage.update_formal(cover_cases)
-        self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
         self.coverage.generate_cover_file()
+        self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
+
+        return True
     
     def run_fuzz(self, formal_cover_rate):
         NOOP_HOME = os.getenv("NOOP_HOME")
@@ -123,7 +130,7 @@ def run(args = None):
     scheduler = Scheduler()
     scheduler.init()
 
-    scheduler.run_loop(1)
+    scheduler.run_loop(1000)
 
 def test_formal():
     clear_logs()
@@ -148,7 +155,7 @@ def test_fuzz():
     clear_logs()
     log_init()
     scheduler = Scheduler()
-    scheduler.run_fuzz(1000)
+    scheduler.run_fuzz(0.01)
 
 if __name__ == "__main__":
     # # 初始化Coverage对象
@@ -164,8 +171,8 @@ if __name__ == "__main__":
     # sample_cover_points = [3933, 4389, 4390, 4392]
     # generate_sby_files(sample_cover_points)
 
-    # run()
+    run()
     # generate_empty_cover_points_file()
     # test_fuzz()
-    test_formal()
+    # test_formal()
     

@@ -200,9 +200,8 @@ def generate_empty_cover_points_file():
             csv_writer.writerow({'Index': i, 'Covered': 0})
 
 if __name__ == "__main__":
+    # log_init()
     # clean_cover_files()
     # cover_points_name = generate_rtl_files()
-    # generate_sby_files([1234])
-    # generate_sby_files([3933, 4389, 4390, 4392])
-    # log_init()
     generate_empty_cover_points_file()
+    # generate_sby_files([3933, 4389, 4390, 4392])

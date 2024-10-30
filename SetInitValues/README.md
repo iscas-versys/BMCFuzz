@@ -53,7 +53,7 @@ cd ../
 
 输出：`hierarchy_emu_new.json`
 
-## 波形VCD文件转换为JSON
+## 波形VCD文件转换为JSON(Fix)
 
 ### 原脚本
 
@@ -75,7 +75,7 @@ python3 vcd_to_json.py ./test.vcd > testvcd.json
 
 请使用修改后的VCD_Parser库进行解析，生成新的JSON文件。
 
-## 从波形的JSON文件中获得数据并生成含initval的新JSON文件
+## 从波形的JSON文件中获得数据并生成含initval的新JSON文件(Fix)
 
 ### 原脚本
 
@@ -95,9 +95,23 @@ python3 vcd_to_json.py ./test.vcd > testvcd.json
 
 输出：`updated_registers.json`
 
+该脚本提示的Unmatched Registers的列表应该为空。
+
 ## 还原为源文件
 
+脚本名：`new_init_folder.py`
+
+输入：`updated_registers.json`, `SimTop_split 文件夹`
+
+输出：`SimTop_Init 文件夹`以及`SimTop_init.sv`文件
+
+注意：`SimTop_init.sv`文件用于提供给原始仓库的Verilator重新编译生成新的emu仿真程序。
+
 ## Verilator编译执行
+
+目前直接替换原始的SimTop文件，然后直接`make emu`重新编译即可，需要进一步优化和修改。
+
+需要进一步注意的是，当前重置初始值之后，就不能reset了，否则就无效了。
 
 ## Formal相关
 

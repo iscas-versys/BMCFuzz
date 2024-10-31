@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import re
+import shutil
 
 def load_json(file_path):
     with open(file_path, 'r') as file:
@@ -8,6 +9,10 @@ def load_json(file_path):
 
 def create_target_directory(target_dir):
     target_dir.mkdir(exist_ok=True)
+
+def copy_sv_files(source_dir, target_dir):
+    for sv_file in source_dir.glob('*.sv'):
+        shutil.copy(sv_file, target_dir)
 
 def parse_json(data):
     init_values = {}
@@ -22,9 +27,9 @@ def parse_json(data):
         init_values[module_name].append(f"    {regname_clean} = {initval};")
     return init_values
 
-def update_sv_files(source_dir, target_dir, init_values):
+def update_sv_files(target_dir, init_values):
     for module_name, init_statements in init_values.items():
-        sv_file_path = source_dir / f"{module_name}.sv"
+        sv_file_path = target_dir / f"{module_name}.sv"
         if not sv_file_path.exists():
             print(f"Warning: {sv_file_path} does not exist.")
             continue
@@ -40,11 +45,10 @@ def update_sv_files(source_dir, target_dir, init_values):
         initial_block = "initial begin\n" + "\n".join(init_statements) + "\nend\n"
         new_content = content[:endmodule_match] + initial_block + content[endmodule_match:]
 
-        new_sv_file_path = target_dir / f"{module_name}.sv"
-        with open(new_sv_file_path, 'w') as new_sv_file:
+        with open(sv_file_path, 'w') as new_sv_file:
             new_sv_file.write(new_content)
 
-        print(f"Processed {sv_file_path} -> {new_sv_file_path}")
+        print(f"Updated {sv_file_path}")
 
 def merge_sv_files(target_dir, merged_file_name):
     merged_file_path = Path(merged_file_name)
@@ -67,6 +71,7 @@ if __name__ == "__main__":
 
     data = load_json(json_file_path)
     create_target_directory(target_dir)
+    copy_sv_files(source_dir, target_dir)
     init_values = parse_json(data)
-    update_sv_files(source_dir, target_dir, init_values)
+    update_sv_files(target_dir, init_values)
     merge_sv_files(target_dir, merged_file_name)

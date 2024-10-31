@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import time
 
-from Pretreat import log_message, log_init, generate_sby_files, clean_cover_files
+from Pretreat import *
 
 def run_command(command, shell=False):
     try:
@@ -126,9 +126,12 @@ if __name__ == "__main__":
     log_init()
     
     clean_cover_files()
-    # sample_cover_points = [3933, 4389, 4390, 4392]
-    sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
+    set_max_cover_points(11747)
+    sample_cover_points = [5343]
+    # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
+    generate_rtl_files()
     generate_sby_files(sample_cover_points)
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)
+    generate_empty_cover_points_file()

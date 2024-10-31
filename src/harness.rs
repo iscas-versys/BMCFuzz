@@ -216,7 +216,7 @@ pub(crate) fn set_sim_env(
     cover_init();
 }
 
-fn store_cover_points(cover_points_output: String) {
+pub(crate) fn store_cover_points(cover_points_output: String) {
     let accumulated_points = cover_get_accumulated_points();
     let mut wtr = Writer::from_path(cover_points_output).unwrap();
     // write header

@@ -44,6 +44,7 @@ class Scheduler:
         self.point_selector.init(module_id, self.point2module)
     
     def run_loop(self, max_iter, target_coverage=0.9):
+        pre_fuzz_covered_num = 0
         for i in range(max_iter):
             log_message(f"Loop {i+1}")
 
@@ -67,10 +68,15 @@ class Scheduler:
                         covered_num += 1
                     cover_points.append(int(row['Covered']))
             
-            fuzz_covered_num = covered_num - self.coverage.get_covered_num()
+            fuzz_covered_num = covered_num - pre_fuzz_covered_num
+            pre_fuzz_covered_num = covered_num
             log_message(f"Fuzz covered num: {fuzz_covered_num}")
-            self.coverage.update_fuzz(covered_num, cover_points)
-            self.point_selector.update(cover_points, self.point2module)
+            self.coverage.update_fuzz(cover_points)
+            self.point_selector.update(self.coverage.cover_points)
+
+            if fuzz_covered_num == 0:
+                log_message("Exit:Fuzz covered num is 0!")
+                break
 
             # Coverage信息
             log_message(f"Covered: {covered_num}/{len(cover_points)}")
@@ -94,7 +100,6 @@ class Scheduler:
                 break
             else:
                 log_message("未发现新case,重新选点")
-                self.point_selector.remove_points(cover_points, self.point2module)
                 cover_points = self.point_selector.generate_cover_points()
             
             if len(cover_points) == 0:
@@ -103,6 +108,7 @@ class Scheduler:
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
+        self.coverage.update_formal(cover_cases)
         self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
 
         return True
@@ -130,7 +136,7 @@ def run(args = None):
     scheduler = Scheduler()
     scheduler.init()
 
-    scheduler.run_loop(1000)
+    scheduler.run_loop(2)
 
 def test_formal():
     clear_logs()

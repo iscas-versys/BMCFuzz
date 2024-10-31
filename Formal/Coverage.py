@@ -1,7 +1,5 @@
 import os
 import csv
-import logging
-from collections import deque
 
 from Pretreat import *
 
@@ -22,10 +20,13 @@ class Coverage:
         self.covered_num += len(cover_cases)
         for cover in cover_cases:
             self.cover_points[cover] = 1
+            self.covered_num += 1
 
-    def update_fuzz(self, covered_num, cover_points):
-        self.cover_points = cover_points
-        self.covered_num = covered_num
+    def update_fuzz(self, cover_points):
+        for index, cover in enumerate(cover_points):
+            if cover and not self.cover_points[index]:
+                self.covered_num += 1
+                self.cover_points[index] = 1
     
     def update_formal_cover_rate(self, covered_num, time_cost):
         covered_rate = covered_num / time_cost

@@ -16,9 +16,10 @@ def log_init():
     print(log_file_name)
     logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(message)s')
 
-def log_message(message):
+def log_message(message, print_message=True):
     logging.info(message)
-    print(message)
+    if print_message:
+        print(message)
 
 def clear_logs():
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -111,13 +112,40 @@ def parse_and_modify_rtl_files():
             new_lines.append(insert_line)
             has_inserted = True
     
+    # 为每个reg插入Initial语句
+    lines = []
+    reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
+    muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
+    for line in new_lines:
+        lines.append(line)
+        reg_match = reg_pattern.search(line)
+        if reg_match:
+            if reg_match.group(3):
+                # log_message(f"skip reg with init value: {reg_name}, init_value: {reg_match.group(3)}", False)
+                continue
+            if "RAND" in reg_match.group(2):
+                # log_message(f"skip RAND reg: {reg_match.group(2)}", False)
+                continue
+            # log_message(f"reg_name: {reg_match.group(2)}", False)
+            reg_name = reg_match.group(2)
+            lines.append(f"  initial assume(!{reg_name});\n")
+        muti_reg_match = muti_reg_pattern.search(line)
+        if muti_reg_match:
+            reg_name = muti_reg_match.group(2)
+            reg_number = int(muti_reg_match.group(4)) - int(muti_reg_match.group(3)) + 1
+            if reg_number > 16:
+                # log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
+                continue
+            # log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
+            for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
+                lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
+    
     # 将修改后的内容写入新的RLT文件
     with open(rtl_file, 'w') as new_file:
-        new_file.writelines(new_lines)
+        new_file.writelines(lines)
     
     # 设置MAX_COVER_POINTS
-    global MAX_COVER_POINTS
-    MAX_COVER_POINTS = len(cover_points)
+    set_max_cover_points(len(cover_points))
 
     return cover_points
 
@@ -160,7 +188,11 @@ def generate_sby_files(cover_points):
             sby_file.write(sby_file_content)
     
     log_message("Generated .sby files.")
-            
+
+def set_max_cover_points(max_cover_points):
+    global MAX_COVER_POINTS
+    MAX_COVER_POINTS = max_cover_points
+
 # 清理coverTasks文件夹
 def clean_cover_files():
     # 获取环境变量
@@ -189,8 +221,7 @@ def generate_empty_cover_points_file():
     if os.path.exists(cover_points_file_path):
         os.remove(cover_points_file_path)
         
-    global MAX_COVER_POINTS
-    MAX_COVER_POINTS = 11747
+    set_max_cover_points(11747)
     with open(cover_points_file_path, mode='w', newline='', encoding='utf-8') as file:
         field_name = ['Index', 'Covered']
         csv_writer = csv.DictWriter(file, fieldnames=field_name)
@@ -200,8 +231,9 @@ def generate_empty_cover_points_file():
             csv_writer.writerow({'Index': i, 'Covered': 0})
 
 if __name__ == "__main__":
-    # log_init()
-    # clean_cover_files()
-    # cover_points_name = generate_rtl_files()
+    clear_logs()
+    log_init()
+    clean_cover_files()
+    cover_points_name = generate_rtl_files()
     generate_empty_cover_points_file()
-    # generate_sby_files([3933, 4389, 4390, 4392])
+    generate_sby_files([3933, 4389, 4390, 4392])

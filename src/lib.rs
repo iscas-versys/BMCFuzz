@@ -90,7 +90,11 @@ fn main() -> i32 {
                 }
             }
         }
-        coverage::cover_display();
+        // coverage::cover_display();
+        if !args.fuzzing {
+            let cover_points_output = "./cover_points.csv";
+            harness::store_cover_points(cover_points_output.to_string());
+        }
     }
 
     if args.fuzzing {

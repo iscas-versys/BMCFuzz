@@ -163,8 +163,72 @@ files:
             inst_name: "mdTLB"
       - mod_name: "PTERequestFilter"
         insts:
-      - mod_name: "Cache_fake"
+      - mod_name: "CacheStage1"
         insts:
+      - mod_name: "CacheStage2"
+        insts:
+      - mod_name: "Arbiter"
+        insts:
+      - mod_name: "Arbiter_1"
+        insts:
+      - mod_name: "CacheStage3"
+        insts:
+          - mod_name: "Arbiter"
+            inst_name: "metaWriteArb"
+          - mod_name: "Arbiter_1"
+            inst_name: "dataWriteArb"
+      - mod_name: "SRAMTemplate_1"
+        insts:
+          - mod_name: "array_0_0"
+            inst_name: "array_0"
+          - mod_name: "array_0_0"
+            inst_name: "array_1"
+          - mod_name: "array_0_0"
+            inst_name: "array_2"
+          - mod_name: "array_0_0"
+            inst_name: "array_3"
+      - mod_name: "Arbiter_2"
+        insts:
+      - mod_name: "SRAMTemplateWithArbiter"
+        insts:
+          - mod_name: "SRAMTemplate_1"
+            inst_name: "ram"
+          - mod_name: "Arbiter_2"
+            inst_name: "readArb"
+      - mod_name: "SRAMTemplate_2"
+        insts:
+          - mod_name: "array_0_1"
+            inst_name: "array_0"
+          - mod_name: "array_0_1"
+            inst_name: "array_1"
+          - mod_name: "array_0_1"
+            inst_name: "array_2"
+          - mod_name: "array_0_1"
+            inst_name: "array_3"
+      - mod_name: "Arbiter_3"
+        insts:
+      - mod_name: "SRAMTemplateWithArbiter_1"
+        insts:
+          - mod_name: "SRAMTemplate_2"
+            inst_name: "ram"
+          - mod_name: "Arbiter_3"
+            inst_name: "readArb"
+      - mod_name: "Arbiter_4"
+        insts:
+      - mod_name: "Cache"
+        insts:
+          - mod_name: "CacheStage1"
+            inst_name: "s1"
+          - mod_name: "CacheStage2"
+            inst_name: "s2"
+          - mod_name: "CacheStage3"
+            inst_name: "s3"
+          - mod_name: "SRAMTemplateWithArbiter"
+            inst_name: "metaArray"
+          - mod_name: "SRAMTemplateWithArbiter_1"
+            inst_name: "dataArray"
+          - mod_name: "Arbiter_4"
+            inst_name: "arb"
       - mod_name: "EmbeddedTLBExec_1"
         insts:
       - mod_name: "EmbeddedTLBEmpty_1"
@@ -179,8 +243,74 @@ files:
             inst_name: "tlbEmpty"
           - mod_name: "EmbeddedTLBMD_1"
             inst_name: "mdTLB"
-      - mod_name: "Cache_fake_1"
+      - mod_name: "PTERequestFilter_1"
         insts:
+      - mod_name: "CacheStage1_1"
+        insts:
+      - mod_name: "CacheStage2_1"
+        insts:
+      - mod_name: "Arbiter_5"
+        insts:
+      - mod_name: "Arbiter_6"
+        insts:
+      - mod_name: "CacheStage3_1"
+        insts:
+          - mod_name: "Arbiter_5"
+            inst_name: "metaWriteArb"
+          - mod_name: "Arbiter_6"
+            inst_name: "dataWriteArb"
+      - mod_name: "SRAMTemplate_3"
+        insts:
+          - mod_name: "array_0_0"
+            inst_name: "array_0"
+          - mod_name: "array_0_0"
+            inst_name: "array_1"
+          - mod_name: "array_0_0"
+            inst_name: "array_2"
+          - mod_name: "array_0_0"
+            inst_name: "array_3"
+      - mod_name: "Arbiter_7"
+        insts:
+      - mod_name: "SRAMTemplateWithArbiter_2"
+        insts:
+          - mod_name: "SRAMTemplate_3"
+            inst_name: "ram"
+          - mod_name: "Arbiter_7"
+            inst_name: "readArb"
+      - mod_name: "SRAMTemplate_4"
+        insts:
+          - mod_name: "array_0_1"
+            inst_name: "array_0"
+          - mod_name: "array_0_1"
+            inst_name: "array_1"
+          - mod_name: "array_0_1"
+            inst_name: "array_2"
+          - mod_name: "array_0_1"
+            inst_name: "array_3"
+      - mod_name: "Arbiter_8"
+        insts:
+      - mod_name: "SRAMTemplateWithArbiter_3"
+        insts:
+          - mod_name: "SRAMTemplate_4"
+            inst_name: "ram"
+          - mod_name: "Arbiter_8"
+            inst_name: "readArb"
+      - mod_name: "Arbiter_9"
+        insts:
+      - mod_name: "Cache_1"
+        insts:
+          - mod_name: "CacheStage1_1"
+            inst_name: "s1"
+          - mod_name: "CacheStage2_1"
+            inst_name: "s2"
+          - mod_name: "CacheStage3_1"
+            inst_name: "s3"
+          - mod_name: "SRAMTemplateWithArbiter_2"
+            inst_name: "metaArray"
+          - mod_name: "SRAMTemplateWithArbiter_3"
+            inst_name: "dataArray"
+          - mod_name: "Arbiter_9"
+            inst_name: "arb"
       - mod_name: "NutCore"
         insts:
           - mod_name: "Frontend_inorder"
@@ -195,16 +325,90 @@ files:
             inst_name: "itlb"
           - mod_name: "PTERequestFilter"
             inst_name: "filter"
-          - mod_name: "Cache_fake"
+          - mod_name: "Cache"
             inst_name: "io_imem_cache"
           - mod_name: "EmbeddedTLB_1"
             inst_name: "dtlb"
-          - mod_name: "PTERequestFilter"
+          - mod_name: "PTERequestFilter_1"
             inst_name: "filter_1"
-          - mod_name: "Cache_fake_1"
+          - mod_name: "Cache_1"
             inst_name: "io_dmem_cache"
       - mod_name: "CoherenceManager"
         insts:
+      - mod_name: "LockingArbiter_2"
+        insts:
+      - mod_name: "SimpleBusCrossbarNto1_2"
+        insts:
+          - mod_name: "LockingArbiter_2"
+            inst_name: "inputArb"
+      - mod_name: "Prefetcher"
+        insts:
+      - mod_name: "CacheStage1_2"
+        insts:
+      - mod_name: "CacheStage2_2"
+        insts:
+      - mod_name: "Arbiter_10"
+        insts:
+      - mod_name: "Arbiter_11"
+        insts:
+      - mod_name: "CacheStage3_2"
+        insts:
+          - mod_name: "Arbiter_10"
+            inst_name: "metaWriteArb"
+          - mod_name: "Arbiter_11"
+            inst_name: "dataWriteArb"
+      - mod_name: "SRAMTemplate_5"
+        insts:
+          - mod_name: "array_0_2"
+            inst_name: "array_0"
+          - mod_name: "array_0_2"
+            inst_name: "array_1"
+          - mod_name: "array_0_2"
+            inst_name: "array_2"
+          - mod_name: "array_0_2"
+            inst_name: "array_3"
+      - mod_name: "Arbiter_12"
+        insts:
+      - mod_name: "SRAMTemplateWithArbiter_4"
+        insts:
+          - mod_name: "SRAMTemplate_5"
+            inst_name: "ram"
+          - mod_name: "Arbiter_12"
+            inst_name: "readArb"
+      - mod_name: "SRAMTemplate_6"
+        insts:
+          - mod_name: "array_0_3"
+            inst_name: "array_0"
+          - mod_name: "array_0_3"
+            inst_name: "array_1"
+          - mod_name: "array_0_3"
+            inst_name: "array_2"
+          - mod_name: "array_0_3"
+            inst_name: "array_3"
+      - mod_name: "Arbiter_13"
+        insts:
+      - mod_name: "SRAMTemplateWithArbiter_5"
+        insts:
+          - mod_name: "SRAMTemplate_6"
+            inst_name: "ram"
+          - mod_name: "Arbiter_13"
+            inst_name: "readArb"
+      - mod_name: "Arbiter_14"
+        insts:
+      - mod_name: "Cache_2"
+        insts:
+          - mod_name: "CacheStage1_2"
+            inst_name: "s1"
+          - mod_name: "CacheStage2_2"
+            inst_name: "s2"
+          - mod_name: "CacheStage3_2"
+            inst_name: "s3"
+          - mod_name: "SRAMTemplateWithArbiter_4"
+            inst_name: "metaArray"
+          - mod_name: "SRAMTemplateWithArbiter_5"
+            inst_name: "dataArray"
+          - mod_name: "Arbiter_14"
+            inst_name: "arb"
       - mod_name: "SimpleBusAddressMapper"
         insts:
       - mod_name: "SimpleBus2AXI4Converter"
@@ -217,14 +421,20 @@ files:
         insts:
       - mod_name: "AXI4PLIC"
         insts:
+      - mod_name: "SimpleBus2AXI4Converter_2"
+        insts:
       - mod_name: "NutShell"
         insts:
           - mod_name: "NutCore"
             inst_name: "nutcore"
           - mod_name: "CoherenceManager"
             inst_name: "cohMg"
-          - mod_name: "SimpleBusCrossbarNto1"
+          - mod_name: "SimpleBusCrossbarNto1_2"
             inst_name: "xbar"
+          - mod_name: "Prefetcher"
+            inst_name: "mem_l2cacheIn_prefetcher"
+          - mod_name: "Cache_2"
+            inst_name: "mem_l2cacheOut_cache"
           - mod_name: "SimpleBusAddressMapper"
             inst_name: "memAddrMap"
           - mod_name: "SimpleBus2AXI4Converter"
@@ -237,7 +447,7 @@ files:
             inst_name: "clint_io_in_bridge"
           - mod_name: "AXI4PLIC"
             inst_name: "plic"
-          - mod_name: "SimpleBus2AXI4Converter_1"
+          - mod_name: "SimpleBus2AXI4Converter_2"
             inst_name: "plic_io_in_bridge"
       - mod_name: "DifftestMem1P"
         insts:
@@ -249,11 +459,13 @@ files:
             inst_name: "rdata_mem"
       - mod_name: "LatencyPipe"
         insts:
+      - mod_name: "LatencyPipe_1"
+        insts:
       - mod_name: "AXI4Delayer"
         insts:
           - mod_name: "LatencyPipe"
             inst_name: "io_out_ar_pipe"
-          - mod_name: "LatencyPipe"
+          - mod_name: "LatencyPipe_1"
             inst_name: "io_out_aw_pipe"
       - mod_name: "SimpleBusCrossbar1toN_1"
         insts:
@@ -277,6 +489,16 @@ files:
         insts:
           - mod_name: "SDHelper"
             inst_name: "sdHelper"
+      - mod_name: "SimpleBus2AXI4Converter_3"
+        insts:
+      - mod_name: "SimpleBus2AXI4Converter_4"
+        insts:
+      - mod_name: "SimpleBus2AXI4Converter_5"
+        insts:
+      - mod_name: "SimpleBus2AXI4Converter_6"
+        insts:
+      - mod_name: "SimpleBus2AXI4Converter_7"
+        insts:
       - mod_name: "SimMMIO"
         insts:
           - mod_name: "SimpleBusCrossbar1toN_1"
@@ -289,15 +511,15 @@ files:
             inst_name: "flash"
           - mod_name: "AXI4DummySD"
             inst_name: "sd"
-          - mod_name: "SimpleBus2AXI4Converter_1"
+          - mod_name: "SimpleBus2AXI4Converter_3"
             inst_name: "uart_io_in_bridge"
-          - mod_name: "SimpleBus2AXI4Converter_1"
+          - mod_name: "SimpleBus2AXI4Converter_4"
             inst_name: "vga_io_in_fb_bridge"
-          - mod_name: "SimpleBus2AXI4Converter_1"
+          - mod_name: "SimpleBus2AXI4Converter_5"
             inst_name: "vga_io_in_ctrl_bridge"
-          - mod_name: "SimpleBus2AXI4Converter_1"
+          - mod_name: "SimpleBus2AXI4Converter_6"
             inst_name: "flash_io_in_bridge"
-          - mod_name: "SimpleBus2AXI4Converter_1"
+          - mod_name: "SimpleBus2AXI4Converter_7"
             inst_name: "sd_io_in_bridge"
       - mod_name: "SimTop"
         insts:
@@ -313,3 +535,19 @@ files:
         insts:
           - mod_name: "array_0_ext"
             inst_name: "array_0_ext"
+      - mod_name: "array_0_0"
+        insts:
+          - mod_name: "array_0_0_ext"
+            inst_name: "array_0_0_ext"
+      - mod_name: "array_0_1"
+        insts:
+          - mod_name: "array_0_1_ext"
+            inst_name: "array_0_1_ext"
+      - mod_name: "array_0_2"
+        insts:
+          - mod_name: "array_0_2_ext"
+            inst_name: "array_0_2_ext"
+      - mod_name: "array_0_3"
+        insts:
+          - mod_name: "array_0_3_ext"
+            inst_name: "array_0_3_ext"

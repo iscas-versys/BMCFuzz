@@ -1096,6 +1096,10 @@
                                     "initval": "None"
                                 },
                                 {
+                                    "regname": "[63:0] wbu_io_in_bits_r_intrNO",
+                                    "initval": "None"
+                                },
+                                {
                                     "regname": "[63:0] wbu_io_in_bits_r_commits_0",
                                     "initval": "None"
                                 },
@@ -1338,39 +1342,426 @@
                         },
                         {
                             "inst_name": "io_imem_cache",
-                            "mod_name": "Cache_fake",
-                            "children": [],
+                            "mod_name": "Cache",
+                            "children": [
+                                {
+                                    "inst_name": "s1",
+                                    "mod_name": "CacheStage1",
+                                    "children": [],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "s2",
+                                    "mod_name": "CacheStage2",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "isForwardMetaReg",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] forwardMetaReg_data_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] forwardMetaReg_waymask",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] victimWaymask_lfsr",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "isForwardDataReg",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] forwardDataReg_data_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] forwardDataReg_waymask",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "s3",
+                                    "mod_name": "CacheStage3",
+                                    "children": [
+                                        {
+                                            "inst_name": "metaWriteArb",
+                                            "mod_name": "Arbiter",
+                                            "children": [],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "dataWriteArb",
+                                            "mod_name": "Arbiter_1",
+                                            "children": [],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[3:0] state",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "needFlush",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] readBeatCnt_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] writeBeatCnt_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[1:0] state2",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_0_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_1_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_2_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_3_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "afterFirstRead",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "alreadyOutFire",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] inRdataRegDemand",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "metaArray",
+                                    "mod_name": "SRAMTemplateWithArbiter",
+                                    "children": [
+                                        {
+                                            "inst_name": "ram",
+                                            "mod_name": "SRAMTemplate_1",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_1",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_2",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_3",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "resetState",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[6:0] resetSet",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "readArb",
+                                            "mod_name": "Arbiter_2",
+                                            "children": [],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_0_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_0_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_1_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_1_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_2_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_2_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_3_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_3_valid",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "dataArray",
+                                    "mod_name": "SRAMTemplateWithArbiter_1",
+                                    "children": [
+                                        {
+                                            "inst_name": "ram",
+                                            "mod_name": "SRAMTemplate_2",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_1",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_2",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_3",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "readArb",
+                                            "mod_name": "Arbiter_3",
+                                            "children": [],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__0_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__1_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__2_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__3_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "REG_1",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_0_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_1_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_2_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_3_data",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "arb",
+                                    "mod_name": "Arbiter_4",
+                                    "children": [],
+                                    "reg_list": []
+                                }
+                            ],
                             "reg_list": [
                                 {
-                                    "regname": "[2:0] state",
+                                    "regname": "valid",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "ismmioRec",
+                                    "regname": "[31:0] s2_io_in_bits_r_req_addr",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "needFlush",
+                                    "regname": "[86:0] s2_io_in_bits_r_req_user",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "alreadyOutFire",
+                                    "regname": "valid_1",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[31:0] reqaddr",
+                                    "regname": "[31:0] s3_io_in_bits_r_req_addr",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[63:0] mmiordata",
+                                    "regname": "[86:0] s3_io_in_bits_r_req_user",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[63:0] memrdata",
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_0_tag",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[86:0] memuser",
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_1_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_2_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_3_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_0_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_1_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_2_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_3_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_hit",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] s3_io_in_bits_r_waymask",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_mmio",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_isForwardData",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_forwardData_data_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] s3_io_in_bits_r_forwardData_waymask",
                                     "initval": "None"
                                 }
                             ]
@@ -1522,10 +1913,6 @@
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[2:0] tlbExec_io_in_bits_r_size",
-                                    "initval": "None"
-                                },
-                                {
                                     "regname": "[3:0] tlbExec_io_in_bits_r_cmd",
                                     "initval": "None"
                                 },
@@ -1543,10 +1930,6 @@
                                 },
                                 {
                                     "regname": "[31:0] tlbEmpty_io_in_bits_r_addr",
-                                    "initval": "None"
-                                },
-                                {
-                                    "regname": "[2:0] tlbEmpty_io_in_bits_r_size",
                                     "initval": "None"
                                 },
                                 {
@@ -1569,7 +1952,7 @@
                         },
                         {
                             "inst_name": "filter_1",
-                            "mod_name": "PTERequestFilter",
+                            "mod_name": "PTERequestFilter_1",
                             "children": [],
                             "reg_list": [
                                 {
@@ -1580,55 +1963,486 @@
                         },
                         {
                             "inst_name": "io_dmem_cache",
-                            "mod_name": "Cache_fake_1",
-                            "children": [],
+                            "mod_name": "Cache_1",
+                            "children": [
+                                {
+                                    "inst_name": "s1",
+                                    "mod_name": "CacheStage1_1",
+                                    "children": [],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "s2",
+                                    "mod_name": "CacheStage2_1",
+                                    "children": [],
+                                    "reg_list": [
+                                        {
+                                            "regname": "isForwardMetaReg",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] forwardMetaReg_data_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "forwardMetaReg_data_dirty",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] forwardMetaReg_waymask",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] victimWaymask_lfsr",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "isForwardDataReg",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] forwardDataReg_data_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] forwardDataReg_waymask",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "s3",
+                                    "mod_name": "CacheStage3_1",
+                                    "children": [
+                                        {
+                                            "inst_name": "metaWriteArb",
+                                            "mod_name": "Arbiter_5",
+                                            "children": [],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "dataWriteArb",
+                                            "mod_name": "Arbiter_6",
+                                            "children": [],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "[2:0] writeL2BeatCnt_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[3:0] state",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] readBeatCnt_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] writeBeatCnt_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[1:0] state2",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_0_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_1_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_2_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] dataWay_3_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "afterFirstRead",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "alreadyOutFire",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] inRdataRegDemand",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] releaseLast_c_value",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[2:0] respToL1Last_c_value",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "metaArray",
+                                    "mod_name": "SRAMTemplateWithArbiter_2",
+                                    "children": [
+                                        {
+                                            "inst_name": "ram",
+                                            "mod_name": "SRAMTemplate_3",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_1",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_2",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_3",
+                                                    "mod_name": "array_0_0",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_0_ext",
+                                                            "mod_name": "array_0_0_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": [
+                                                {
+                                                    "regname": "resetState",
+                                                    "initval": "None"
+                                                },
+                                                {
+                                                    "regname": "[6:0] resetSet",
+                                                    "initval": "None"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "inst_name": "readArb",
+                                            "mod_name": "Arbiter_7",
+                                            "children": [],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_0_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_0_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_0_dirty",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_1_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_1_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_1_dirty",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_2_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_2_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_2_dirty",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[18:0] r_3_tag",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_3_valid",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "r_3_dirty",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "dataArray",
+                                    "mod_name": "SRAMTemplateWithArbiter_3",
+                                    "children": [
+                                        {
+                                            "inst_name": "ram",
+                                            "mod_name": "SRAMTemplate_4",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_1",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_2",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                },
+                                                {
+                                                    "inst_name": "array_3",
+                                                    "mod_name": "array_0_1",
+                                                    "children": [
+                                                        {
+                                                            "inst_name": "array_0_1_ext",
+                                                            "mod_name": "array_0_1_ext",
+                                                            "children": []
+                                                        }
+                                                    ],
+                                                    "reg_list": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "readArb",
+                                            "mod_name": "Arbiter_8",
+                                            "children": [],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "REG",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__0_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__1_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__2_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r__3_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "REG_1",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_0_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_1_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_2_data",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[63:0] r_1_3_data",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "arb",
+                                    "mod_name": "Arbiter_9",
+                                    "children": [],
+                                    "reg_list": []
+                                }
+                            ],
                             "reg_list": [
                                 {
-                                    "regname": "[2:0] state",
+                                    "regname": "valid",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "ismmioRec",
+                                    "regname": "[31:0] s2_io_in_bits_r_req_addr",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "alreadyOutFire",
+                                    "regname": "[3:0] s2_io_in_bits_r_req_cmd",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[31:0] reqaddr",
+                                    "regname": "[7:0] s2_io_in_bits_r_req_wmask",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[3:0] cmd",
+                                    "regname": "[63:0] s2_io_in_bits_r_req_wdata",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[2:0] size",
+                                    "regname": "valid_1",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[63:0] wdata",
+                                    "regname": "[31:0] s3_io_in_bits_r_req_addr",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[7:0] wmask",
+                                    "regname": "[3:0] s3_io_in_bits_r_req_cmd",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[63:0] mmiordata",
+                                    "regname": "[7:0] s3_io_in_bits_r_req_wmask",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[3:0] mmiocmd",
+                                    "regname": "[63:0] s3_io_in_bits_r_req_wdata",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[63:0] memrdata",
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_0_tag",
                                     "initval": "None"
                                 },
                                 {
-                                    "regname": "[3:0] memcmd",
+                                    "regname": "s3_io_in_bits_r_metas_0_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_1_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_metas_1_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_2_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_metas_2_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[18:0] s3_io_in_bits_r_metas_3_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_metas_3_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_0_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_1_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_2_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_datas_3_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_hit",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] s3_io_in_bits_r_waymask",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_mmio",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "s3_io_in_bits_r_isForwardData",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] s3_io_in_bits_r_forwardData_data_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] s3_io_in_bits_r_forwardData_waymask",
                                     "initval": "None"
                                 }
                             ]
@@ -2041,16 +2855,24 @@
                         {
                             "regname": "[31:0] reqLatch_addr",
                             "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] reqLatch_cmd",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] reqLatch_wdata",
+                            "initval": "None"
                         }
                     ]
                 },
                 {
                     "inst_name": "xbar",
-                    "mod_name": "SimpleBusCrossbarNto1",
+                    "mod_name": "SimpleBusCrossbarNto1_2",
                     "children": [
                         {
                             "inst_name": "inputArb",
-                            "mod_name": "LockingArbiter",
+                            "mod_name": "LockingArbiter_2",
                             "children": [],
                             "reg_list": [
                                 {
@@ -2071,6 +2893,507 @@
                         },
                         {
                             "regname": "inflightSrc",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "mem_l2cacheIn_prefetcher",
+                    "mod_name": "Prefetcher",
+                    "children": [],
+                    "reg_list": [
+                        {
+                            "regname": "getNewReq",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] prefetchReq_addr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] prefetchReq_wdata",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] lastReqAddr",
+                            "initval": "None"
+                        }
+                    ]
+                },
+                {
+                    "inst_name": "mem_l2cacheOut_cache",
+                    "mod_name": "Cache_2",
+                    "children": [
+                        {
+                            "inst_name": "s1",
+                            "mod_name": "CacheStage1_2",
+                            "children": [],
+                            "reg_list": []
+                        },
+                        {
+                            "inst_name": "s2",
+                            "mod_name": "CacheStage2_2",
+                            "children": [],
+                            "reg_list": [
+                                {
+                                    "regname": "isForwardMetaReg",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[16:0] forwardMetaReg_data_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "forwardMetaReg_data_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] forwardMetaReg_waymask",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] victimWaymask_lfsr",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "isForwardDataReg",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] forwardDataReg_data_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] forwardDataReg_waymask",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "s3",
+                            "mod_name": "CacheStage3_2",
+                            "children": [
+                                {
+                                    "inst_name": "metaWriteArb",
+                                    "mod_name": "Arbiter_10",
+                                    "children": [],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "dataWriteArb",
+                                    "mod_name": "Arbiter_11",
+                                    "children": [],
+                                    "reg_list": []
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "[2:0] writeL2BeatCnt_value",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[3:0] state",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] readBeatCnt_value",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] writeBeatCnt_value",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[1:0] state2",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] dataWay_0_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] dataWay_1_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] dataWay_2_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] dataWay_3_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "afterFirstRead",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "alreadyOutFire",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] inRdataRegDemand",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] releaseLast_c_value",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[2:0] respToL1Last_c_value",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "metaArray",
+                            "mod_name": "SRAMTemplateWithArbiter_4",
+                            "children": [
+                                {
+                                    "inst_name": "ram",
+                                    "mod_name": "SRAMTemplate_5",
+                                    "children": [
+                                        {
+                                            "inst_name": "array_0",
+                                            "mod_name": "array_0_2",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_2_ext",
+                                                    "mod_name": "array_0_2_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "array_1",
+                                            "mod_name": "array_0_2",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_2_ext",
+                                                    "mod_name": "array_0_2_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "array_2",
+                                            "mod_name": "array_0_2",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_2_ext",
+                                                    "mod_name": "array_0_2_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "array_3",
+                                            "mod_name": "array_0_2",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_2_ext",
+                                                    "mod_name": "array_0_2_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": [
+                                        {
+                                            "regname": "resetState",
+                                            "initval": "None"
+                                        },
+                                        {
+                                            "regname": "[8:0] resetSet",
+                                            "initval": "None"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "inst_name": "readArb",
+                                    "mod_name": "Arbiter_12",
+                                    "children": [],
+                                    "reg_list": []
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "REG",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[16:0] r_0_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_0_valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_0_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[16:0] r_1_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_1_valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_1_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[16:0] r_2_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_2_valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_2_dirty",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[16:0] r_3_tag",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_3_valid",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "r_3_dirty",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "dataArray",
+                            "mod_name": "SRAMTemplateWithArbiter_5",
+                            "children": [
+                                {
+                                    "inst_name": "ram",
+                                    "mod_name": "SRAMTemplate_6",
+                                    "children": [
+                                        {
+                                            "inst_name": "array_0",
+                                            "mod_name": "array_0_3",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_3_ext",
+                                                    "mod_name": "array_0_3_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "array_1",
+                                            "mod_name": "array_0_3",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_3_ext",
+                                                    "mod_name": "array_0_3_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "array_2",
+                                            "mod_name": "array_0_3",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_3_ext",
+                                                    "mod_name": "array_0_3_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        },
+                                        {
+                                            "inst_name": "array_3",
+                                            "mod_name": "array_0_3",
+                                            "children": [
+                                                {
+                                                    "inst_name": "array_0_3_ext",
+                                                    "mod_name": "array_0_3_ext",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "reg_list": []
+                                        }
+                                    ],
+                                    "reg_list": []
+                                },
+                                {
+                                    "inst_name": "readArb",
+                                    "mod_name": "Arbiter_13",
+                                    "children": [],
+                                    "reg_list": []
+                                }
+                            ],
+                            "reg_list": [
+                                {
+                                    "regname": "REG",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r__0_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r__1_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r__2_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r__3_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "REG_1",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r_1_0_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r_1_1_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r_1_2_data",
+                                    "initval": "None"
+                                },
+                                {
+                                    "regname": "[63:0] r_1_3_data",
+                                    "initval": "None"
+                                }
+                            ]
+                        },
+                        {
+                            "inst_name": "arb",
+                            "mod_name": "Arbiter_14",
+                            "children": [],
+                            "reg_list": []
+                        }
+                    ],
+                    "reg_list": [
+                        {
+                            "regname": "valid",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] s2_io_in_bits_r_req_addr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] s2_io_in_bits_r_req_cmd",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s2_io_in_bits_r_req_wdata",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "valid_1",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[31:0] s3_io_in_bits_r_req_addr",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] s3_io_in_bits_r_req_cmd",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s3_io_in_bits_r_req_wdata",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[16:0] s3_io_in_bits_r_metas_0_tag",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_metas_0_dirty",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[16:0] s3_io_in_bits_r_metas_1_tag",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_metas_1_dirty",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[16:0] s3_io_in_bits_r_metas_2_tag",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_metas_2_dirty",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[16:0] s3_io_in_bits_r_metas_3_tag",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_metas_3_dirty",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s3_io_in_bits_r_datas_0_data",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s3_io_in_bits_r_datas_1_data",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s3_io_in_bits_r_datas_2_data",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s3_io_in_bits_r_datas_3_data",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_hit",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] s3_io_in_bits_r_waymask",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_mmio",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "s3_io_in_bits_r_isForwardData",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[63:0] s3_io_in_bits_r_forwardData_data_data",
+                            "initval": "None"
+                        },
+                        {
+                            "regname": "[3:0] s3_io_in_bits_r_forwardData_waymask",
                             "initval": "None"
                         }
                     ]
@@ -2242,7 +3565,7 @@
                 },
                 {
                     "inst_name": "plic_io_in_bridge",
-                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "mod_name": "SimpleBus2AXI4Converter_2",
                     "children": [],
                     "reg_list": [
                         {
@@ -2354,7 +3677,7 @@
                 },
                 {
                     "inst_name": "io_out_aw_pipe",
-                    "mod_name": "LatencyPipe",
+                    "mod_name": "LatencyPipe_1",
                     "children": [],
                     "reg_list": []
                 }
@@ -2648,7 +3971,7 @@
                 },
                 {
                     "inst_name": "uart_io_in_bridge",
-                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "mod_name": "SimpleBus2AXI4Converter_3",
                     "children": [],
                     "reg_list": [
                         {
@@ -2667,7 +3990,7 @@
                 },
                 {
                     "inst_name": "vga_io_in_fb_bridge",
-                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "mod_name": "SimpleBus2AXI4Converter_4",
                     "children": [],
                     "reg_list": [
                         {
@@ -2686,7 +4009,7 @@
                 },
                 {
                     "inst_name": "vga_io_in_ctrl_bridge",
-                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "mod_name": "SimpleBus2AXI4Converter_5",
                     "children": [],
                     "reg_list": [
                         {
@@ -2705,7 +4028,7 @@
                 },
                 {
                     "inst_name": "flash_io_in_bridge",
-                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "mod_name": "SimpleBus2AXI4Converter_6",
                     "children": [],
                     "reg_list": [
                         {
@@ -2724,7 +4047,7 @@
                 },
                 {
                     "inst_name": "sd_io_in_bridge",
-                    "mod_name": "SimpleBus2AXI4Converter_1",
+                    "mod_name": "SimpleBus2AXI4Converter_7",
                     "children": [],
                     "reg_list": [
                         {

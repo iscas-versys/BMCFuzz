@@ -33,3 +33,6 @@ asms/*.bin
 asms/*.dump
 asms/*.o
 asms/*.elf
+SetInitValues/vcdvcd/.DS_Store
+SetInitValues/vcdvcd/__pycache__
+SetInitValues/*.vcd

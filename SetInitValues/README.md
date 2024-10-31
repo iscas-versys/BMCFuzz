@@ -52,42 +52,43 @@ cd ../
 输入：`hierarchy_emu.json`和`分离好的一个模块对应一个sv文件的_split文件夹`
 
 输出：`hierarchy_emu_new.json`
+## 波形转换
 
-## 波形VCD文件转换为JSON(Fix)
-
-### 原脚本
-
-脚本名：`vcd_to_json.py`
-
-输入：`test.vcd`
-
-输出：`testvcd.json`
-
-这个脚本暂时废弃了，由于使用的VCD导出的信号存在一定的问题，后续采用了新的Parser进行了尝试。
+波形从VCD转换为VCD不需要脚本，而是需要安装GTKWave 软件包。
 
 ```bash
-### 注意提前安装好依赖项
-### from pyDigitalWaveTools.vcd.parser import VcdParser
-python3 vcd_to_json.py ./test.vcd > testvcd.json
+    sudo apt-get install gtkwave
 ```
 
-### 修改后的脚本
+安装之后，不仅可以使用gtkwave，还可以使用`vcd2fst`和`fst2vcd`两个关键程序。
 
-请使用修改后的VCD_Parser库进行解析，生成新的JSON文件。
+### vcd转换为fst
+```bash
+    vcd2fst input.vcd output.fst
+```
 
-## 从波形的JSON文件中获得数据并生成含initval的新JSON文件(Fix)
+### fst转换为vcd
+```bash
+    fst2vcd output.fst > input2.vcd
+```
+
+可以尝试用来回的转换来将波形文件进行修正。
+
+## 波形VCD文件转换为JSON
+
+请使用vcd_parser.py将VCD文件转换为JSON文件。
+
+脚本名：`vcd_parser.py`
+
+输入：`VCD波形文件`
+
+输出：`vcd_parser.json`
+
+注意：直接Verilator生成的VCD存在读取问题的bug，需要经过转换后的vcd波形，可以理解为一种修复。
+
+## 从波形的JSON文件中获得数据并生成含initval的新JSON文件
 
 ### 原脚本
-
-脚本名：`connect_reginit_vcd.py`
-
-输入：`hierarchy_emu_new.json` 和 `testvcd.json`
-
-输出：`updated_hierarchy.json`
-
-这个脚本暂时废弃了，由于使用的VCD导出的信号存在一定的问题，后续采用了新的Parser进行了尝试。
-
-### 修改后的脚本
 
 脚本名：`connect_reginit_vcd_parser.py`
 
@@ -115,4 +116,6 @@ python3 vcd_to_json.py ./test.vcd > testvcd.json
 
 ## Formal相关
 
-TBD...
+如果使用了波形提供的默认值，那么就不用reset重置整个电路的状态了，详见difftest中reset_cycles部分。
+
+需要进一步优化......

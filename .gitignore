@@ -23,3 +23,13 @@ Formal/logs/*.log
 Formal/logs/fuzz/*.log
 
 Formal/__pycache__
+SetInitValues/*.sv
+SetInitValues/SimTop_Init/*.sv
+SetInitValues/SimTop_split/*.sv
+SetInitValues/bin/
+SetInitValues/*.json
+SetInitValues/*.yaml
+asms/*.bin
+asms/*.dump
+asms/*.o
+asms/*.elf

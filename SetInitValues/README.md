@@ -88,8 +88,6 @@ cd ../
 
 ## 从波形的JSON文件中获得数据并生成含initval的新JSON文件
 
-### 原脚本
-
 脚本名：`connect_reginit_vcd_parser.py`
 
 输入：`hierarchy_emu_new.json` 和 `vcd_parser.json`

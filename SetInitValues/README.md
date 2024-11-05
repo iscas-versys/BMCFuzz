@@ -49,6 +49,10 @@ cd ../
 
 输出：`hierarchy_emu.json`
 
+```bash
+    python3 generate_hierarchy.py
+```
+
 ## 在原始JSON中加入寄存器列表
 
 原始的JSON文件中没有寄存器列表（reg_list），通过分析源文件，可以获得每个模块的寄存器列表。
@@ -58,17 +62,11 @@ cd ../
 输入：`hierarchy_emu.json`和`分离好的一个模块对应一个sv文件的_split文件夹`
 
 输出：`hierarchy_emu_new.json`
-## 波形转换
 
-波形从VCD转换为VCD不需要脚本，而是需要安装GTKWave 软件包。
-
+命令：
 ```bash
-    sudo apt-get install gtkwave
+    python3 json_add_initval.py
 ```
-
-安装之后，不仅可以使用gtkwave，还可以使用`vcd2fst`和`fst2vcd`两个关键程序。
-
-可以尝试用来回的转换来将波形文件进行修正。
 
 ## 波形VCD文件转换为JSON(请先安装依赖)
 
@@ -94,6 +92,10 @@ cd ../
 
 输出：`updated_registers.json`
 
+命令：
+```bash
+    python3 connect_reginit_vcd_parser.py
+```
 该脚本提示的Unmatched Registers的列表应该为空。
 
 ## 还原为源文件
@@ -105,6 +107,11 @@ cd ../
 输出：`SimTop_Init 文件夹`以及`SimTop_init.sv`文件
 
 注意：`SimTop_init.sv`文件用于提供给原始仓库的Verilator重新编译生成新的emu仿真程序。
+
+命令：
+```bash
+    python3 new_init_folder.py
+```
 
 ## Verilator编译执行
 

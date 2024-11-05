@@ -1,5 +1,11 @@
 # 存放一些处理数据用的脚本
 
+## 依赖库安装
+
+```bash
+    pip install Verilog_VCD
+```
+
 ## FIXME
 
 - 暂不支持二维数组的信号名字的处理
@@ -62,19 +68,9 @@ cd ../
 
 安装之后，不仅可以使用gtkwave，还可以使用`vcd2fst`和`fst2vcd`两个关键程序。
 
-### vcd转换为fst
-```bash
-    vcd2fst input.vcd output.fst
-```
-
-### fst转换为vcd
-```bash
-    fst2vcd output.fst > input2.vcd
-```
-
 可以尝试用来回的转换来将波形文件进行修正。
 
-## 波形VCD文件转换为JSON
+## 波形VCD文件转换为JSON(请先安装依赖)
 
 请使用vcd_parser.py将VCD文件转换为JSON文件。
 
@@ -84,6 +80,10 @@ cd ../
 
 输出：`vcd_parser.json`
 
+命令：
+```bash
+    python3 vcd_parser.py  input.vcd > vcd_parser.json
+```
 注意：直接Verilator生成的VCD存在读取问题的bug，需要经过转换后的vcd波形，可以理解为一种修复。
 
 ## 从波形的JSON文件中获得数据并生成含initval的新JSON文件

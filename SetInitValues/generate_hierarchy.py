@@ -46,11 +46,7 @@ def build_hierarchy(modules, current_module):
             })
     return hierarchy
 
-def main():
-    yaml_file_path = 'hierarchy_emu.yaml'
-    json_file_path = 'hierarchy_emu.json'
-    top_module_name = 'SimTop'  # Specify the top module name here
-
+def hierarchy_yaml_parser(yaml_file_path, json_file_path, top_module_name):
     # Parse the YAML file
     data = parse_yaml(yaml_file_path)
 
@@ -63,7 +59,7 @@ def main():
     top_module = find_module_by_name(all_modules, top_module_name)
     if not top_module:
         print(f"Top module {top_module_name} not found in the YAML file.")
-        return
+        return -1
 
     # Build the hierarchy
     hierarchy = build_hierarchy(all_modules, top_module)
@@ -72,7 +68,13 @@ def main():
     with open(json_file_path, 'w') as json_file:
         json.dump(hierarchy, json_file, indent=4)
 
-    print(f"Hierarchy has been written to {json_file_path}")
+    print(f"[Step3] Hierarchy has been written to {json_file_path}")
+    return 0
 
+def main():
+    yaml_file_path = 'hierarchy_emu.yaml'
+    json_file_path = 'hierarchy_emu.json'
+    top_module_name = 'SimTop'  # Specify the top module name here
+    hierarchy_yaml_parser(yaml_file_path, json_file_path, top_module_name)
 if __name__ == "__main__":
     main()

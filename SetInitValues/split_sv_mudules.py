@@ -21,7 +21,7 @@ def split_sv_modules(file_path):
         with open(module_file_path, 'w') as module_file:
             module_file.write(module_content)
     
-    print(f"Modules have been split into {output_dir} directory.")
+    print(f"[Step1] Modules have been split into {output_dir} directory.")
 
 if __name__ == "__main__":
     input_file = './SimTop.sv'

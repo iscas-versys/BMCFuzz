@@ -22,22 +22,28 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net):
     
     return custom_format
 
-# 解析VCD文件
-vcd_data = parse_vcd(argv[1])
+def vcd_to_json(vcd_path, output_json_path):
+    # 解析VCD文件
+    vcd_data = parse_vcd(vcd_path)
+    # 初始化ID计数器
+    net_id = 1
+    # 创建一个列表来存储所有网络的自定义格式
+    custom_outputs = []
+    # 处理每个网络信息并添加到列表中
+    for netinfo in vcd_data.values():
+        for net in netinfo['nets']:
+            custom_output = convert_netinfo_to_custom_format(netinfo, net_id, net)
+            custom_outputs.append(custom_output)
+            net_id += 1
+    # 输出整个列表为JSON格式
+    json_output = json.dumps(custom_outputs, indent=4)
+    # save json to output_json_path
+    with open(output_json_path, 'w') as f:
+        f.write(json_output)
 
-# 初始化ID计数器
-net_id = 1
-
-# 创建一个列表来存储所有网络的自定义格式
-custom_outputs = []
-
-# 处理每个网络信息并添加到列表中
-for netinfo in vcd_data.values():
-    for net in netinfo['nets']:
-        custom_output = convert_netinfo_to_custom_format(netinfo, net_id, net)
-        custom_outputs.append(custom_output)
-        net_id += 1
-
-# 输出整个列表为JSON格式
-json_output = json.dumps(custom_outputs, indent=4)
-print(json_output)
+if __name__ == "__main__":
+    # 解析VCD文件
+    if len(argv) != 3:
+        print("[Error] Usage: python vcd_to_json.py <vcd_path> <output_json_path>")
+        exit(1)
+    vcd_to_json(argv[1], argv[2])

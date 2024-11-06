@@ -56,29 +56,35 @@ def update_registers_with_vcd(reg_paths, vcd_data):
 
     return unmatched_registers
 
-def main():
+def connect_json_vcd(hierarchy_regs_json_path, vcd_parser_json, updated_registers_json):
     # Load hierarchy_emu_new.json
-    with open('hierarchy_emu_new.json', 'r') as f:
+    with open(hierarchy_regs_json_path, 'r') as f:
         hierarchy_data = json.load(f)
 
     # Find all registers in the hierarchy
     reg_paths = find_registers(hierarchy_data)
 
     # Load vcd_parser.json
-    with open('vcd_parser.json', 'r') as f:
+    with open(vcd_parser_json, 'r') as f:
         vcd_data = json.load(f)
 
     # Update register initvals with VCD data
     unmatched_registers = update_registers_with_vcd(reg_paths, vcd_data)
 
     # Save the updated register paths to a new JSON file
-    with open('updated_registers.json', 'w') as f:
+    with open(updated_registers_json, 'w') as f:
         json.dump(reg_paths, f, indent=4, ensure_ascii=False)
 
     # Output unmatched registers
     print("\nUnmatched Registers:")
     for reg in unmatched_registers:
         print(reg)
+
+def main():
+    hierarchy_emu_new = "./hierarchy_emu_new.json"
+    vcd_parser_json = "./vcd_parser.json"
+    updated_registers_json = "./updated_registers.json"
+    connect_json_vcd(hierarchy_emu_new, vcd_parser_json, updated_registers_json)
 
 if __name__ == "__main__":
     main()

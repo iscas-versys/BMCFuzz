@@ -64,6 +64,7 @@ cd ../
 输出：`hierarchy_emu_new.json`
 
 命令：
+
 ```bash
     python3 json_add_initval.py
 ```
@@ -79,9 +80,11 @@ cd ../
 输出：`vcd_parser.json`
 
 命令：
+
 ```bash
-    python3 vcd_parser.py  input.vcd > vcd_parser.json
+    python3 vcd_parser.py  input.vcd vcd_parser.json
 ```
+
 注意：直接Verilator生成的VCD存在读取问题的bug，需要经过转换后的vcd波形，可以理解为一种修复。
 
 ## 从波形的JSON文件中获得数据并生成含initval的新JSON文件
@@ -93,9 +96,11 @@ cd ../
 输出：`updated_registers.json`
 
 命令：
+
 ```bash
     python3 connect_reginit_vcd_parser.py
 ```
+
 该脚本提示的Unmatched Registers的列表应该为空。
 
 ## 还原为源文件
@@ -109,6 +114,7 @@ cd ../
 注意：`SimTop_init.sv`文件用于提供给原始仓库的Verilator重新编译生成新的emu仿真程序。
 
 命令：
+
 ```bash
     python3 new_init_folder.py
 ```
@@ -124,3 +130,10 @@ cd ../
 如果使用了波形提供的默认值，那么就不用reset重置整个电路的状态了，详见difftest中reset_cycles部分。
 
 需要进一步优化......
+
+## 待办事项
+
+- 自动化reset的编译流程？ 用于调试，但是实际上并用不到，我们跑BMC
+- Fuzz找到状态变化后的波形 -> 反馈生成新的BMC验证Files
+- 注意1：上述过程除了波形收据前期的生成层次结构等都可以复用
+- 记录状态变化的指令序+波形 -> BMC新指令（可能需要assume） ->  新指令的反馈

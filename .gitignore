@@ -36,3 +36,4 @@ asms/*.elf
 SetInitValues/vcdvcd/.DS_Store
 SetInitValues/vcdvcd/__pycache__
 SetInitValues/*.vcd
+SetInitValues/__pycache__

@@ -76,9 +76,13 @@ def connect_json_vcd(hierarchy_regs_json_path, vcd_parser_json, updated_register
         json.dump(reg_paths, f, indent=4, ensure_ascii=False)
 
     # Output unmatched registers
-    print("\nUnmatched Registers:")
-    for reg in unmatched_registers:
-        print(reg)
+    if unmatched_registers:
+        print(f"\n[Error] {len(unmatched_registers)} registers not found in VCD:")
+        return 1
+    return 0
+    # print("\nUnmatched Registers:")
+    # for reg in unmatched_registers:
+    #     print(reg)
 
 def main():
     hierarchy_emu_new = "./hierarchy_emu_new.json"

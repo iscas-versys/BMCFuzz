@@ -48,7 +48,7 @@ def update_sv_files(target_dir, init_values):
         with open(sv_file_path, 'w') as new_sv_file:
             new_sv_file.write(new_content)
 
-        print(f"Updated {sv_file_path}")
+        # print(f"Updated {sv_file_path}")
 
 def merge_sv_files(target_dir, merged_file_name):
     merged_file_path = Path(merged_file_name)
@@ -64,16 +64,18 @@ def merge_sv_files(target_dir, merged_file_name):
     print(f"All .v and .sv files have been merged into {merged_file_path}")
 
 def create_init_files(source_dir, target_dir, json_file_path, merged_file_name):
+    source_dir_path = Path(source_dir)
+    target_dir_path = Path(target_dir)
     data = load_json(json_file_path)
-    create_target_directory(target_dir)
-    copy_sv_files(source_dir, target_dir)
+    create_target_directory(target_dir_path)
+    copy_sv_files(source_dir_path, target_dir_path)
     init_values = parse_json(data)
-    update_sv_files(target_dir, init_values)
-    merge_sv_files(target_dir, merged_file_name)
+    update_sv_files(target_dir_path, init_values)
+    merge_sv_files(target_dir_path, merged_file_name)
 
 if __name__ == "__main__":
-    source_dir = Path('SimTop_split')
-    target_dir = Path('SimTop_Init')
+    source_dir = './SimTop_split'
+    target_dir = './SimTop_Init'
     json_file_path = 'updated_registers.json'
     merged_file_name = 'SimTop_init.sv'
 

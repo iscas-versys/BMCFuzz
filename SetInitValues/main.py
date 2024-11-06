@@ -6,6 +6,7 @@ import vcd_parser
 import connect_reginit_vcd_parser
 import new_init_folder
 from pathlib import Path
+from sys import argv
 
 def run_svinst(file_path, output_yaml):
     # 使用格式化字符串插入变量
@@ -19,49 +20,53 @@ def run_svinst(file_path, output_yaml):
         print("Command failed with return code:", result.returncode)
         print("Error output:", result.stderr)
     return result.returncode
-
-if __name__ == "__main__":
-    # Step1 --------
+def generate_newinit_sv_files(default_sv_file, top_module_name, vcd_wave):
+    # Value Settings
+    hierarchy_yaml = './hierarchy_emu.yaml'
+    hierarchy_json = './hierarchy_emu.json'
+    hierarchy_json_with_regs = './hierarchy_emu_with_regs.json'
+    sv_split_dir = './' + top_module_name + '_split'
+    sv_init_dir  = './' + top_module_name + '_Init'
+    vcd_json = "./vcd_parser.json"
+    updated_registers_json = "./updated_registers.json"
+    new_init_file_name = './' + top_module_name + '_init.sv'
     print("[Step1] --------")
-    input_file = './SimTop.sv'
-    split_sv_mudules.split_sv_modules(input_file)
-    # Step2 --------
+    # 分割sv文件
+    split_sv_mudules.split_sv_modules(default_sv_file)
     print("[Step2] --------")
-    output_yaml = './hierarchy_emu.yaml'
-    ret_step2 = run_svinst(input_file, output_yaml)
+    # 生成含有文件层次结构信息的hierarchy.yaml
+    ret_step2 = run_svinst(default_sv_file, hierarchy_yaml)
     if ret_step2 != 0:
         exit(ret_step2)
-    # Step3 --------
     print("[Step3] --------")
-    yaml_file_path = './hierarchy_emu.yaml'
-    json_file_path = './hierarchy_emu.json'
-    top_module_name = 'SimTop'
-    ret_step3 = generate_hierarchy.hierarchy_yaml_parser(yaml_file_path, json_file_path, top_module_name)
+    # 将含有文件层次结构信息的hierarchy.yaml转换为JSON格式
+    ret_step3 = generate_hierarchy.hierarchy_yaml_parser(hierarchy_yaml, hierarchy_json, top_module_name)
     if ret_step3 != 0:
         exit(ret_step3)
-    # Step4 --------
     print("[Step4] --------")
-    json_file_regs_path = './hierarchy_emu_new.json'
-    sv_dir = './SimTop_split'
-    json_add_initval.add_regs(json_file_path, json_file_regs_path, sv_dir)
-    # Step5 --------
+    # 在JSON文件中添加寄存器初始值字段
+    json_add_initval.add_regs(hierarchy_json, hierarchy_json_with_regs, sv_split_dir)
     print("[Step5] --------")
-    # 转换VCD的JSON
-    vcd_path = "./input.vcd"
-    vcd_json_path = "./vcd_parser.json"
-    vcd_parser.vcd_to_json(vcd_path, vcd_json_path)
-    # Step6 --------
+    # 转换VCD到JSON
+    vcd_parser.vcd_to_json(vcd_wave, vcd_json)
     print("[Step6] --------")
-    # python3 connect_reginit_vcd_parser.py
-    hierarchy_emu_new = "./hierarchy_emu_new.json"
-    vcd_parser_json = "./vcd_parser.json"
-    updated_registers_json = "./updated_registers.json"
-    connect_reginit_vcd_parser.connect_json_vcd(hierarchy_emu_new, vcd_parser_json, updated_registers_json)
-    # Step7 --------
+    # 将寄存器初始值与VCD数据连接
+    ret_step6 = connect_reginit_vcd_parser.connect_json_vcd(hierarchy_json_with_regs, vcd_json, updated_registers_json)
+    if ret_step6 != 0:
+        exit(ret_step6)
     print("[Step7] --------")
-    # python3 new_init_folder.py # 输出 SimTop_Init 文件夹以及SimTop_init.sv文件
-    source_dir = Path('SimTop_split')
-    target_dir = Path('SimTop_Init')
-    json_file_path = 'updated_registers.json'
-    merged_file_name = 'SimTop_init.sv'
-    new_init_folder.create_init_files(source_dir, target_dir, json_file_path, merged_file_name)
+    # 生成新的初始化文件和单模块文件目录
+    new_init_folder.create_init_files(sv_split_dir, sv_init_dir, updated_registers_json, new_init_file_name)
+
+if __name__ == "__main__":
+    # default_sv_file = './SimTop.sv' # 提供该文件作为输入
+    # top_module_name = 'SimTop' # 提供该信息
+    # vcd_wave = "./input.vcd" # 提供该文件作为输入
+    # change to argv to run
+    default_sv_file = argv[1]
+    top_module_name = argv[2]
+    vcd_wave = argv[3]
+    if len(argv) != 4:
+        print("Usage: python3 main.py <default_sv_file> <top_module_name> <vcd_wave>")
+        exit(1)
+    generate_newinit_sv_files(default_sv_file, top_module_name, vcd_wave)

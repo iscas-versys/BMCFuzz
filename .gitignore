@@ -37,3 +37,4 @@ SetInitValues/vcdvcd/.DS_Store
 SetInitValues/vcdvcd/__pycache__
 SetInitValues/*.vcd
 SetInitValues/__pycache__
+SetInitValues/csr_wave/*

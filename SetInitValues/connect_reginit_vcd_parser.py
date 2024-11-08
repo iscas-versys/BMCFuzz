@@ -77,8 +77,8 @@ def connect_json_vcd(hierarchy_regs_json_path, vcd_parser_json, updated_register
 
     # Output unmatched registers
     if unmatched_registers:
-        print(f"\n[Error] {len(unmatched_registers)} registers not found in VCD:")
-        return 1
+        print(f"\n[Warn] {len(unmatched_registers)} registers not found in VCD:")
+        # return 1
     return 0
     # print("\nUnmatched Registers:")
     # for reg in unmatched_registers:

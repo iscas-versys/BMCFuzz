@@ -1,6 +1,8 @@
 [options]
 mode cover
-depth 20
+skip 10
+depth 30
+timeout 1800
 
 [engines]
 smtbmc

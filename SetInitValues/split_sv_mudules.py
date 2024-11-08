@@ -1,9 +1,10 @@
 import os
 import re
 
-def split_sv_modules(file_path):
+def split_sv_modules(file_path, output_dir=None):
     # Create output directory
-    output_dir = file_path.replace('.sv', '') + '_split'
+    if output_dir is None:
+        output_dir = file_path.replace('.sv', '') + '_split'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
@@ -21,7 +22,7 @@ def split_sv_modules(file_path):
         with open(module_file_path, 'w') as module_file:
             module_file.write(module_content)
     
-    print(f"[Step1] Modules have been split into {output_dir} directory.")
+    # print(f"[Step1] Modules have been split into {output_dir} directory.")
 
 if __name__ == "__main__":
     input_file = './SimTop.sv'

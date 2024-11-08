@@ -17,12 +17,16 @@ class Scheduler:
     module_name = []
     point2module = []
 
-    def init(self):
+    run_snapshot_fuzz = False
+
+    def init(self, run_snapshot_fuzz=False):
         log_message("Scheduler init")
+
+        self.run_snapshot_fuzz = run_snapshot_fuzz
         
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
-        cover_points_name = generate_rtl_files()
+        cover_points_name = generate_rtl_files(run_snapshot_fuzz)
 
         point_id = 0
         module_id = 0

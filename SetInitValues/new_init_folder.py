@@ -24,6 +24,8 @@ def parse_json(data):
         initval = value['initval']
         if module_name not in init_values:
             init_values[module_name] = []
+        if initval == 'None':
+            continue
         init_values[module_name].append(f"    {regname_clean} = {initval};")
     return init_values
 

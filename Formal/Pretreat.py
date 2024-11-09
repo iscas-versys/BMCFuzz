@@ -129,32 +129,34 @@ def parse_and_modify_rtl_files(run_snapshot_fuzz=False):
             has_inserted = True
     
     # 为每个reg插入Initial语句
-    # lines = []
-    # reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
-    # muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
-    # for line in new_lines:
-    #     lines.append(line)
-    #     reg_match = reg_pattern.search(line)
-    #     if reg_match:
-    #         if reg_match.group(3):
-    #             # log_message(f"skip reg with init value: {reg_name}, init_value: {reg_match.group(3)}", False)
-    #             continue
-    #         if "RAND" in reg_match.group(2):
-    #             # log_message(f"skip RAND reg: {reg_match.group(2)}", False)
-    #             continue
-    #         # log_message(f"reg_name: {reg_match.group(2)}", False)
-    #         reg_name = reg_match.group(2)
-    #         lines.append(f"  initial assume(!{reg_name});\n")
-    #     muti_reg_match = muti_reg_pattern.search(line)
-    #     if muti_reg_match:
-    #         reg_name = muti_reg_match.group(2)
-    #         reg_number = int(muti_reg_match.group(4)) - int(muti_reg_match.group(3)) + 1
-    #         if reg_number > 16:
-    #             # log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
-    #             continue
-    #         # log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
-    #         for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
-    #             lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
+    if not run_snapshot_fuzz:
+        lines = []
+        reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
+        muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
+        for line in new_lines:
+            lines.append(line)
+            reg_match = reg_pattern.search(line)
+            if reg_match:
+                if reg_match.group(3):
+                    # log_message(f"skip reg with init value: {reg_name}, init_value: {reg_match.group(3)}", False)
+                    continue
+                if "RAND" in reg_match.group(2):
+                    # log_message(f"skip RAND reg: {reg_match.group(2)}", False)
+                    continue
+                # log_message(f"reg_name: {reg_match.group(2)}", False)
+                reg_name = reg_match.group(2)
+                lines.append(f"  initial assume(!{reg_name});\n")
+            muti_reg_match = muti_reg_pattern.search(line)
+            if muti_reg_match:
+                reg_name = muti_reg_match.group(2)
+                reg_number = int(muti_reg_match.group(4)) - int(muti_reg_match.group(3)) + 1
+                if reg_number > 16:
+                    # log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
+                    continue
+                # log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
+                for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
+                    lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
+        new_lines = lines
     
     # 将修改后的内容写入新的RLT文件
     with open(rtl_file, 'w') as new_file:

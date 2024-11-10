@@ -8,21 +8,29 @@ from datetime import datetime
 
 MAX_COVER_POINTS = 0
 
-def log_init():
-    current_dir = os.path.dirname(os.path.realpath(__file__))
+def log_init(path=None):
+    if path is None:
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+    else:
+        current_dir = path
+        
     if not os.path.exists(os.path.join(current_dir, "logs")):
         os.makedirs(os.path.join(current_dir, "logs"))
     log_file_name = os.path.join(current_dir, "logs", datetime.now().strftime("%Y-%m-%d_%H-%M") + ".log")
-    print(log_file_name)
     logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(message)s')
+    log_message(f"Log initialized in {log_file_name}.")
 
 def log_message(message, print_message=True):
     logging.info(message)
     if print_message:
         print(message)
 
-def clear_logs():
-    current_dir = os.path.dirname(os.path.realpath(__file__))
+def clear_logs(path=None):
+    if path is None:
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+    else:
+        current_dir = path
+
     logs_dir = os.path.join(current_dir, "logs")
     if os.path.exists(logs_dir):
         shutil.rmtree(logs_dir)
@@ -31,9 +39,10 @@ def clear_logs():
     os.makedirs(fuzz_log_dir, exist_ok=True)
 
 # 复制、解析并修改RTL文件
-def generate_rtl_files():
+def generate_rtl_files(run_snapshot_fuzz=False):
     # 获取环境变量
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
+    rtl_init_dir = str(os.getenv("RTL_INIT_DIR"))
     rtl_src_dir = str(os.getenv("RTL_SRC_DIR"))
     rtl_dst_dir = str(os.getenv("RTL_DST_DIR"))
 
@@ -50,20 +59,27 @@ def generate_rtl_files():
     with os.scandir(rtl_src_dir) as entries:
         for entry in entries:
             if entry.name.endswith(".v") or entry.name.endswith(".sv"):
+                if run_snapshot_fuzz and entry.name == "SimTop.sv":
+                    init_file_path = os.path.join(rtl_init_dir, "SimTop_init.sv")
+                    shutil.copy(init_file_path, rtl_dst_dir)
+                    continue
                 shutil.copy(entry.path, rtl_dst_dir)
     
     # 解析并修改RTL文件
-    cover_points_name = parse_and_modify_rtl_files()
+    cover_points_name = parse_and_modify_rtl_files(run_snapshot_fuzz)
 
     log_message("Generated RTL files.")
     
     return cover_points_name
 
 # 解析并修改RTL文件
-def parse_and_modify_rtl_files():
+def parse_and_modify_rtl_files(run_snapshot_fuzz=False):
     # 获取环境变量
     rtl_dir = str(os.getenv("RTL_DST_DIR"))
-    rtl_file = rtl_dir + "/SimTop.sv"
+    if run_snapshot_fuzz:
+        rtl_file = rtl_dir + "/SimTop_init.sv"
+    else:
+        rtl_file = rtl_dir + "/SimTop.sv"
 
     with open(rtl_file, 'r') as file:
         lines = file.readlines()
@@ -113,36 +129,39 @@ def parse_and_modify_rtl_files():
             has_inserted = True
     
     # 为每个reg插入Initial语句
-    lines = []
-    reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
-    muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
-    for line in new_lines:
-        lines.append(line)
-        reg_match = reg_pattern.search(line)
-        if reg_match:
-            if reg_match.group(3):
-                # log_message(f"skip reg with init value: {reg_name}, init_value: {reg_match.group(3)}", False)
-                continue
-            if "RAND" in reg_match.group(2):
-                # log_message(f"skip RAND reg: {reg_match.group(2)}", False)
-                continue
-            # log_message(f"reg_name: {reg_match.group(2)}", False)
-            reg_name = reg_match.group(2)
-            lines.append(f"  initial assume(!{reg_name});\n")
-        muti_reg_match = muti_reg_pattern.search(line)
-        if muti_reg_match:
-            reg_name = muti_reg_match.group(2)
-            reg_number = int(muti_reg_match.group(4)) - int(muti_reg_match.group(3)) + 1
-            if reg_number > 16:
-                # log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
-                continue
-            # log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
-            for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
-                lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
+    if not run_snapshot_fuzz:
+        lines = []
+        reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
+        muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
+        for line in new_lines:
+            lines.append(line)
+            reg_match = reg_pattern.search(line)
+            if reg_match:
+                if reg_match.group(3):
+                    # log_message(f"skip reg with init value: {reg_name}, init_value: {reg_match.group(3)}", False)
+                    continue
+                if "RAND" in reg_match.group(2):
+                    # log_message(f"skip RAND reg: {reg_match.group(2)}", False)
+                    continue
+                # log_message(f"reg_name: {reg_match.group(2)}", False)
+                reg_name = reg_match.group(2)
+                lines.append(f"  initial assume(!{reg_name});\n")
+            muti_reg_match = muti_reg_pattern.search(line)
+            if muti_reg_match:
+                reg_name = muti_reg_match.group(2)
+                reg_number = int(muti_reg_match.group(4)) - int(muti_reg_match.group(3)) + 1
+                if reg_number > 16:
+                    # log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
+                    continue
+                # log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
+                for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
+                    lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
+        new_lines = lines
     
     # 将修改后的内容写入新的RLT文件
     with open(rtl_file, 'w') as new_file:
-        new_file.writelines(lines)
+        new_file.writelines(new_lines)
+        # new_file.writelines(lines)
     
     # 设置MAX_COVER_POINTS
     set_max_cover_points(len(cover_points))

@@ -26,6 +26,7 @@ Formal/__pycache__
 SetInitValues/*.sv
 SetInitValues/SimTop_Init/*.sv
 SetInitValues/SimTop_split/*.sv
+SetInitValues/SimTop_split_init/*.sv
 SetInitValues/bin/
 SetInitValues/*.json
 SetInitValues/*.yaml
@@ -37,3 +38,6 @@ SetInitValues/vcdvcd/.DS_Store
 SetInitValues/vcdvcd/__pycache__
 SetInitValues/*.vcd
 SetInitValues/__pycache__
+SetInitValues/csr_wave/*
+
+logs/*

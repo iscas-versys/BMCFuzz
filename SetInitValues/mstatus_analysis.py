@@ -46,7 +46,7 @@ def format_mstatus(mstatus):
 
 def main():
     # Define mstatus values in hex
-    mstatus_list = ['0x00001800', '0xa00001800', '0x000E0800', '0xa00001800', '0xa00000080']
+    mstatus_list = ['0x00001800', '0xa00001800', '0xa00001800', '0xa00000080', '0x000E0800', '0xa000E0800', '0xa00020800']
 
     # Ensure each mstatus value is a 64-bit hex string
     mstatus_list = [f"{int(mstatus, 16):016x}" for mstatus in mstatus_list]

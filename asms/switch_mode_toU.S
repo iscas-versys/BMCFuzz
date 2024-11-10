@@ -15,7 +15,7 @@ _start:
     and t0, t0, t1
     csrw mstatus, t0
 
-    # 执行mret以切换到S态
+    # 执行mret以切换到U态
     mret
 
 loop:

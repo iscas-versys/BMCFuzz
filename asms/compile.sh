@@ -16,7 +16,7 @@ for asm_file in *.S; do
     riscv64-linux-gnu-objcopy -O binary "${base_name}.elf" "${base_name}.bin"
     
     # 生成反汇编文件
-    riscv64-linux-gnu-objdump -d "${base_name}.elf" > "${base_name}.dump"
+    riscv64-linux-gnu-objdump -D "${base_name}.elf" > "${base_name}.dump"
     
     echo "Processed $asm_file: Generated ${base_name}.o, ${base_name}.elf, ${base_name}.bin, ${base_name}.dump"
 done

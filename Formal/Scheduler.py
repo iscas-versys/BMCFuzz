@@ -1,5 +1,7 @@
 import os
 import csv
+import time
+import argparse
 
 from datetime import datetime
 
@@ -17,16 +19,19 @@ class Scheduler:
     module_name = []
     point2module = []
 
-    run_snapshot_fuzz = False
+    run_snapshot = False
 
-    def init(self, run_snapshot_fuzz=False):
+    cover_type = "toggle"
+
+    def init(self, run_snapshot=False, cover_type="toggle"):
         log_message("Scheduler init")
 
-        self.run_snapshot_fuzz = run_snapshot_fuzz
+        self.run_snapshot = run_snapshot
+        self.cover_type = cover_type
         
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
-        cover_points_name = generate_rtl_files(run_snapshot_fuzz)
+        cover_points_name = generate_rtl_files(run_snapshot, cover_type)
 
         point_id = 0
         module_id = 0
@@ -129,25 +134,42 @@ class Scheduler:
         log_message(f"Fuzz return code: {return_code}")
 
 
-def run(args = None):
+def run(args=None):
     # 初始化log
     clear_logs()
     log_init()
 
+    # argparse
+    run_snapshot = False
+    if args.run_snapshot:
+        run_snapshot = True
+    cover_type = args.cover_type
+
+    log_message(f"run snapshot:{run_snapshot}")
+    log_message(f"cover type:{cover_type}")
+    
     # current_dir = os.path.dirname(os.path.realpath(__file__))
     # os.chdir(current_dir)
 
     scheduler = Scheduler()
-    scheduler.init()
+    scheduler.init(run_snapshot, cover_type)
 
-    scheduler.run_loop(2)
+    scheduler.run_loop(1)
 
-def test_formal():
+def test_formal(args=None):
     clear_logs()
     log_init()
 
+    run_snapshot = False
+    if args.run_snapshot:
+        run_snapshot = True
+    cover_type = args.cover_type
+
+    log_message(f"run snapshot:{run_snapshot}")
+    log_message(f"cover type:{cover_type}")
+
     scheduler = Scheduler()
-    scheduler.init()
+    scheduler.init(run_snapshot, cover_type)
     all_points = [i for i in range(len(scheduler.points_name))]
     # hexbin_dir = os.getenv("COVER_POINTS_OUT") + "/hexbin"
     # with os.scandir(hexbin_dir) as entries:
@@ -159,29 +181,35 @@ def test_formal():
     #                 all_points.remove(cover_id)
 
     log_message(f"all_points_len: {len(all_points)}")
+    log_message("Sleep 10 seconds for background running.")
+    time.sleep(10)
+    log_message("Start formal.")
     scheduler.run_formal(all_points)
 
-def test_fuzz():
+def test_fuzz(args=None):
     clear_logs()
     log_init()
+
+    run_snapshot = False
+    if args.run_snapshot:
+        run_snapshot = True
+    cover_type = args.cover_type
+
+    log_message(f"run snapshot:{run_snapshot}")
+    log_message(f"cover type:{cover_type}")
+
     scheduler = Scheduler()
     scheduler.run_fuzz(0.01)
 
 if __name__ == "__main__":
-    # # 初始化Coverage对象
-    # coverage = Coverage()
-    
-    # # 清理并重新生成cover points文件
-    # clean_cover_files()
-    # cover_points = generate_rtl_files()
-    # coverage.init_cover_points(cover_points)
-    # coverage.generate_cover_file()
-    
-    # # 生成样例sby文件
-    # sample_cover_points = [3933, 4389, 4390, 4392]
-    # generate_sby_files(sample_cover_points)
+    parser = argparse.ArgumentParser()
 
-    run()
+    parser.add_argument('--run_snapshot', '-r', action='store_true')
+    parser.add_argument('--cover_type', '-c', type=str, default="toggle")
+
+    args = parser.parse_args()
+
+    run(args)
     # generate_empty_cover_points_file()
     # test_fuzz()
     # test_formal()

@@ -39,12 +39,14 @@ def clear_logs(path=None):
     os.makedirs(fuzz_log_dir, exist_ok=True)
 
 # 复制、解析并修改RTL文件
-def generate_rtl_files(run_snapshot_fuzz=False):
+def generate_rtl_files(run_snapshot=False, cover_type="toggle"):
     # 获取环境变量
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     rtl_init_dir = str(os.getenv("RTL_INIT_DIR"))
     rtl_src_dir = str(os.getenv("RTL_SRC_DIR"))
     rtl_dst_dir = str(os.getenv("RTL_DST_DIR"))
+
+    rtl_src_dir = rtl_src_dir+"_"+cover_type
 
     # 清理输出目录
     if os.path.exists(cover_tasks_path):
@@ -59,24 +61,24 @@ def generate_rtl_files(run_snapshot_fuzz=False):
     with os.scandir(rtl_src_dir) as entries:
         for entry in entries:
             if entry.name.endswith(".v") or entry.name.endswith(".sv"):
-                if run_snapshot_fuzz and entry.name == "SimTop.sv":
+                if run_snapshot and entry.name == "SimTop.sv":
                     init_file_path = os.path.join(rtl_init_dir, "SimTop_init.sv")
                     shutil.copy(init_file_path, rtl_dst_dir)
                     continue
                 shutil.copy(entry.path, rtl_dst_dir)
     
     # 解析并修改RTL文件
-    cover_points_name = parse_and_modify_rtl_files(run_snapshot_fuzz)
+    cover_points_name = parse_and_modify_rtl_files(run_snapshot)
 
     log_message("Generated RTL files.")
     
     return cover_points_name
 
 # 解析并修改RTL文件
-def parse_and_modify_rtl_files(run_snapshot_fuzz=False):
+def parse_and_modify_rtl_files(run_snapshot=False):
     # 获取环境变量
     rtl_dir = str(os.getenv("RTL_DST_DIR"))
-    if run_snapshot_fuzz:
+    if run_snapshot:
         rtl_file = rtl_dir + "/SimTop_init.sv"
     else:
         rtl_file = rtl_dir + "/SimTop.sv"
@@ -129,7 +131,7 @@ def parse_and_modify_rtl_files(run_snapshot_fuzz=False):
             has_inserted = True
     
     # 为每个reg插入Initial语句
-    if not run_snapshot_fuzz:
+    if not run_snapshot:
         lines = []
         reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
         muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")

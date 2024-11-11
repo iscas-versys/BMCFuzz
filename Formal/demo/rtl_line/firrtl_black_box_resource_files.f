@@ -1,0 +1,11 @@
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/SDHelper.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/FBHelper.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/MemRWHelper.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/DifftestIntWriteback.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/DifftestInstrCommit.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/DifftestTrapEvent.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/DifftestArchEvent.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/DifftestCSRState.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/DifftestArchIntRegState.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/GEN_w1_line.v
+/home/chooaa/HW_formal_verification/nutshell-fv/build/rtl/array_0_ext.v

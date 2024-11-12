@@ -9,7 +9,6 @@
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 mod coverage;
 mod fuzzer;
 mod harness;
@@ -44,6 +43,8 @@ struct Arguments {
     cover_points_output: Option<String>,
     #[clap(default_value_t = -1.0, long)]
     formal_cover_rate: f64,
+    #[clap(default_value_t = false, long)]
+    insert_nop: bool,
 
     // Run options
     #[clap(default_value_t = 1, long)]
@@ -111,8 +112,10 @@ fn main() -> i32 {
         println!("save_errors: {:?}", args.save_errors);
         println!("cover_points_output: {:?}", args.cover_points_output);
         println!("formal_cover_rate: {:?}", args.formal_cover_rate);
+        println!("insert nop: {:?}", args.insert_nop);
         harness::set_fuzz_cover_output(args.cover_points_output);
         harness::set_formal_cover_rate(args.formal_cover_rate);
+        harness::set_insert_nop(args.insert_nop);
         harness::set_cover_points();
         fuzzer::run_fuzzer(
             args.random_input,

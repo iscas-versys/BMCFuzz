@@ -9,11 +9,10 @@
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 use crate::harness::get_cover_number;
 
-use std::time::Instant;
 use std::collections::VecDeque;
+use std::time::Instant;
 
 const RATE_WINDOW_SIZE: usize = 100;
 
@@ -92,16 +91,24 @@ impl Coverage {
         self.rate_window.push_back(new_cover_rate);
         self.rate_sum += new_cover_rate;
         println!("Covered Points: {}", self.accumulated_num);
-        println!("Coverage: {:.3}%", 100.0 * self.accumulated_num as f64 / self.len() as f64);
-        println!("Cover Rate: {:.3} per second", self.rate_sum / self.rate_window.len() as f64);
+        println!(
+            "Coverage: {:.3}%",
+            100.0 * self.accumulated_num as f64 / self.len() as f64
+        );
+        println!(
+            "Cover Rate: {:.3} per second",
+            self.rate_sum / self.rate_window.len() as f64
+        );
     }
 
-    pub fn get_cover_rate(& self) -> f64 {
+    pub fn get_cover_rate(&self) -> f64 {
         if self.rate_window.len() < RATE_WINDOW_SIZE {
-            println!("Cover Rate Window Size: {}(not enough)", self.rate_window.len());
+            println!(
+                "Cover Rate Window Size: {}(not enough)",
+                self.rate_window.len()
+            );
             100.0
-        }
-        else {
+        } else {
             self.rate_sum / self.rate_window.len() as f64
         }
     }

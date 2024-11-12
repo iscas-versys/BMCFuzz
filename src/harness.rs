@@ -23,7 +23,7 @@ use libc::*;
 
 // use std::fs::File;
 // use std::os::unix::io::AsRawFd; // 用于获取文件的文件描述符
-use csv::{Writer, Reader};
+use csv::{Reader, Writer};
 
 extern "C" {
     pub fn sim_main(argc: c_int, argv: *const *const c_char) -> c_int;
@@ -100,6 +100,8 @@ pub static mut MAX_RUNS: u64 = u64::MAX;
 pub static mut COVER_POINTS_OUTPUT: Option<String> = None;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 
+pub static mut INSERT_NOP: bool = false;
+
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // insert c.nop in the beginning of the input
     let mut input_bytes = input.bytes().to_vec();
@@ -113,6 +115,11 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
         sim_run_from_memory(&b)
     } else {
         sim_run_from_memory(&new_input)
+        // if unsafe { INSERT_NOP } {
+        //     sim_run_from_memory(&new_input)
+        // } else {
+        //     sim_run_from_memory(&input)
+        // }
     };
 
     // get coverage
@@ -133,7 +140,9 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
         println!("<<<<<< Bug triggered >>>>>>");
         // store the accumulated coverage points
         if unsafe { COVER_POINTS_OUTPUT.is_some() } {
-            store_cover_points(unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
+            store_cover_points(unsafe {
+                COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv"
+            });
         }
         // unsafe { display_uncovered_points() }
         panic!("<<<<<< Bug triggered >>>>>>");
@@ -156,7 +165,9 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
 
         // store the accumulated coverage points
         if unsafe { COVER_POINTS_OUTPUT.is_some() } {
-            store_cover_points(unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
+            store_cover_points(unsafe {
+                COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv"
+            });
         }
 
         panic!("Exit due to fuzz_cover_rate < formal_cover_rate");
@@ -223,7 +234,8 @@ pub(crate) fn store_cover_points(cover_points_output: String) {
     wtr.write_record(&["Index", "Covered"]).unwrap();
     // write records
     for (i, covered) in accumulated_points.iter().enumerate() {
-        wtr.write_record(&[i.to_string(), covered.to_string()]).unwrap();
+        wtr.write_record(&[i.to_string(), covered.to_string()])
+            .unwrap();
     }
     wtr.flush().unwrap();
 }
@@ -236,11 +248,16 @@ pub(crate) fn set_formal_cover_rate(rate: f64) {
     unsafe { FORMAL_COVER_RATE = rate };
 }
 
+pub(crate) fn set_insert_nop(insert_nop: bool) {
+    unsafe { INSERT_NOP = insert_nop };
+}
+
 pub(crate) fn set_cover_points() {
     // read the accumulated coverage points from the file
-    let cover_file_path = unsafe{ COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" };
+    let cover_file_path =
+        unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" };
     let mut rdr = Reader::from_path(cover_file_path).unwrap();
-    let len = unsafe{ get_cover_number() as usize };
+    let len = unsafe { get_cover_number() as usize };
     let mut accumulated_points = vec![0; len];
     // read header
     rdr.headers().unwrap();

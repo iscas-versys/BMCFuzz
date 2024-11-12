@@ -9,7 +9,6 @@
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 use std::path::PathBuf;
 
 use crate::coverage::*;
@@ -22,7 +21,6 @@ use libafl::stages::StdMutationalStage;
 use libafl::state::StdState;
 use libafl::StdFuzzer;
 use libafl_bolts::{current_nanos, rands::StdRand, tuples::tuple_list};
-
 
 pub(crate) fn run_fuzzer(
     random_input: bool,
@@ -88,7 +86,7 @@ pub(crate) fn run_fuzzer(
                         &corpus_dirs, err
                     )
                 });
-                println!("Preparing for corpus OK!!\n");
+            println!("Preparing for corpus OK!!\n");
         } else {
             let mut generator = RandBytesGenerator::new(16384);
             state
@@ -133,6 +131,10 @@ pub(crate) fn run_fuzzer(
     if corpus_output.is_some() {
         monitor::store_testcases(&mut state, corpus_output.unwrap());
     };
+
+
+    let cover_points_output = "./tmp/cover_points.csv";
+    harness::store_cover_points(cover_points_output.to_string());
 
     // Store cover points
     // println!("Storing cover points\n");

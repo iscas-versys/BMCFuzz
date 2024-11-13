@@ -133,7 +133,9 @@ pub(crate) fn run_fuzzer(
     };
 
 
+    println!("Fuzzing Looping OK...\n");
     let cover_points_output = "./tmp/cover_points.csv";
+    println!("Storing cover points:{:?}\n", cover_points_output);
     harness::store_cover_points(cover_points_output.to_string());
 
     // Store cover points

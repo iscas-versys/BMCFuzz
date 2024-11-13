@@ -16,6 +16,8 @@ mod monitor;
 
 use clap::Parser;
 
+use std::env;
+
 #[derive(Parser, Default, Debug)]
 struct Arguments {
     // Fuzzer options
@@ -93,7 +95,8 @@ fn main() -> i32 {
         }
         // coverage::cover_display();
         if !args.fuzzing {
-            let cover_points_output = "./cover_points.csv";
+            let noop_home = env::var("NOOP_HOME").unwrap();
+            let cover_points_output = format!("{}/tmp/sim_run_cover_points.csv", noop_home);
             harness::store_cover_points(cover_points_output.to_string());
         }
     }

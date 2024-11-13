@@ -13,6 +13,9 @@ use crate::harness::get_cover_number;
 
 use std::collections::VecDeque;
 use std::time::Instant;
+use std::env;
+
+use csv::Reader;
 
 const RATE_WINDOW_SIZE: usize = 100;
 
@@ -70,11 +73,26 @@ impl Coverage {
         100.0 * covered_num as f64 / self.len() as f64
     }
 
-    pub fn display(&self) {
+    pub fn accumulate_from_file(&mut self) {
+        let cover_points_file = format!("{}/tmp/sim_run_cover_points.csv", env::var("NOOP_HOME").unwrap());
+        let mut reader = Reader::from_path(cover_points_file).unwrap();
+        reader.headers().unwrap();
+        for record in reader.records() {
+            let record = record.unwrap();
+            let index: usize = record[0].parse().unwrap();
+            let covered: i8 = record[1].parse().unwrap();
+            if covered != 0 && self.accumulated[index] == 0 {
+                self.accumulated[index] = 1;
+                self.accumulated_num += 1;
+            }
+        }
+    }
+
+    pub fn display_coverage(&self) {
         // println!("Total Covered Points: {:?}", self.accumulated);
         println!(
             "Total Coverage:       {:.3}%",
-            self.get_accumulative_coverage()
+            100.0 * self.accumulated_num as f64 / self.len() as f64
         );
     }
 
@@ -91,10 +109,7 @@ impl Coverage {
         self.rate_window.push_back(new_cover_rate);
         self.rate_sum += new_cover_rate;
         println!("Covered Points: {}", self.accumulated_num);
-        println!(
-            "Coverage: {:.3}%",
-            100.0 * self.accumulated_num as f64 / self.len() as f64
-        );
+        self.display_coverage();
         println!(
             "Cover Rate: {:.3} per second",
             self.rate_sum / self.rate_window.len() as f64
@@ -136,8 +151,12 @@ pub(crate) fn cover_accumulate() {
     unsafe { ICOVERAGE.as_mut().unwrap().accumulate() }
 }
 
+pub(crate) fn cover_accumulate_from_file() {
+    unsafe { ICOVERAGE.as_mut().unwrap().accumulate_from_file() }
+}
+
 pub(crate) fn cover_display() {
-    unsafe { ICOVERAGE.as_ref().unwrap().display() }
+    unsafe { ICOVERAGE.as_ref().unwrap().display_coverage() }
 }
 
 pub(crate) fn cover_get_accumulated_points() -> Vec<i8> {

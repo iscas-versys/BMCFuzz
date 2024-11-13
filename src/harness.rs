@@ -12,7 +12,9 @@
 extern crate libc;
 extern crate rand;
 
+use std::env;
 use std::ffi::CString;
+use std::process::Command;
 // use std::io::{self, Write};
 
 use crate::coverage::*;
@@ -67,14 +69,38 @@ fn sim_run(workload: &String) -> i32 {
     ret
 }
 
-fn sim_run_from_memory(input: &BytesInput) -> i32 {
-    // create a workload-in-memory name for the input bytes
-    let wim_bytes = input.bytes();
-    let wim_addr = wim_bytes.as_ptr();
-    let wim_size = wim_bytes.len() as u64;
-    let wim_name = format!("wim@{wim_addr:p}+0x{wim_size:x}");
-    // pass the in-memory workload to sim_run
-    sim_run(&wim_name)
+// fn sim_run_from_memory(input: &BytesInput) -> i32 {
+//     // create a workload-in-memory name for the input bytes
+//     let wim_bytes = input.bytes();
+//     let wim_addr = wim_bytes.as_ptr();
+//     let wim_size = wim_bytes.len() as u64;
+//     let wim_name = format!("wim@{wim_addr:p}+0x{wim_size:x}");
+//     // pass the in-memory workload to sim_run
+//     clone_to_run_sim(&wim_name)
+// }
+
+fn clone_to_run_sim(workload: &String) -> i32 {
+    let fuzzer = format!("{}/build/fuzzer", env::var("NOOP_HOME").unwrap());
+    // prepare the simulation arguments in Vec<String> format
+    let mut sim_args: Vec<String> = vec!["-c".to_string(), unsafe{COVER_NAME.clone().unwrap()} , "--".to_string(), workload.to_string()]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+    unsafe { sim_args.extend(SIM_ARGS.iter().cloned()) };
+    // send simulation arguments to sim_main and get the return code
+    println!("Sim args: {:?}", sim_args);
+
+    let ret = Command::new(fuzzer)
+        .args(sim_args)
+        .output()
+        .expect("failed to execute process");
+
+    println!("child stdout:\n{}", String::from_utf8_lossy(&ret.stdout));
+
+    cover_accumulate_from_file();
+
+    // ret.code().unwrap()
+    0
 }
 
 pub(crate) fn sim_run_multiple(workloads: &Vec<String>, auto_exit: bool) -> i32 {
@@ -94,33 +120,33 @@ pub(crate) fn sim_run_multiple(workloads: &Vec<String>, auto_exit: bool) -> i32 
 pub static mut USE_RANDOM_INPUT: bool = false;
 pub static mut CONTINUE_ON_ERRORS: bool = false;
 pub static mut SAVE_ERRORS: bool = true;
-// pub static mut NUM_RUNS: u64 = 0;
+pub static mut NUM_RUNS: u64 = 0;
 pub static mut MAX_RUNS: u64 = u64::MAX;
-
 pub static mut COVER_POINTS_OUTPUT: Option<String> = None;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
-
 pub static mut INSERT_NOP: bool = false;
+pub static mut COVER_NAME: Option<String> = None;
 
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // insert c.nop in the beginning of the input
     let mut input_bytes = input.bytes().to_vec();
     input_bytes.insert(0, 0x00);
     input_bytes.insert(0, 0x01);
-    let new_input = BytesInput::new(input_bytes);
 
-    let ret = if unsafe { USE_RANDOM_INPUT } {
+    let new_input: BytesInput;
+    if unsafe { USE_RANDOM_INPUT } {
         let random_bytes: Vec<u8> = (0..1024).map(|_| rand::random::<u8>()).collect();
         let b = BytesInput::new(random_bytes);
-        sim_run_from_memory(&b)
+        new_input = b;
     } else {
-        sim_run_from_memory(&new_input)
-        // if unsafe { INSERT_NOP } {
-        //     sim_run_from_memory(&new_input)
-        // } else {
-        //     sim_run_from_memory(&input)
-        // }
+        if unsafe { INSERT_NOP } {
+            new_input = BytesInput::new(input_bytes);
+        } else {
+            new_input = input.clone();
+        }
     };
+    store_testcase(&new_input, &format!("{}/tmp", env::var("NOOP_HOME").unwrap()), Some("fuzz_testcase".to_string()));
+    let ret = clone_to_run_sim(&format!("{}/tmp/fuzz_testcase", env::var("NOOP_HOME").unwrap()));
 
     // get coverage
     // cover_display();
@@ -174,27 +200,27 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     }
 
     // panic to exit the fuzzer if max_runs is reached
-    // unsafe { NUM_RUNS += 1 };
-    // let do_exit = unsafe { NUM_RUNS >= MAX_RUNS };
-    // if do_exit {
-    //     println!("Exit due to max_runs == 0");
-    //     // stdout -> file & display uncovered points
-    //     let cover_file_path = unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover.log" };
-    //     let cover_file = File::create(cover_file_path).unwrap();
-    //     let fd = cover_file.as_raw_fd();
-    //     let stdout = unsafe { dup(STDOUT_FILENO) };
-    //     unsafe { dup2(fd, STDOUT_FILENO) };
-    //     unsafe { display_uncovered_points() }
-    //     unsafe { dup2(stdout, STDOUT_FILENO) };
-    //     unsafe { close(stdout) };
+    unsafe { NUM_RUNS += 1 };
+    let do_exit = unsafe { NUM_RUNS >= MAX_RUNS };
+    if do_exit {
+        println!("Exit due to max_runs == 0");
+        // stdout -> file & display uncovered points
+        // let cover_file_path = unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover.log" };
+        // let cover_file = File::create(cover_file_path).unwrap();
+        // let fd = cover_file.as_raw_fd();
+        // let stdout = unsafe { dup(STDOUT_FILENO) };
+        // unsafe { dup2(fd, STDOUT_FILENO) };
+        // unsafe { display_uncovered_points() }
+        // unsafe { dup2(stdout, STDOUT_FILENO) };
+        // unsafe { close(stdout) };
 
-    //     // store the accumulated coverage points
-    //     if unsafe { COVER_POINTS_OUTPUT.is_some() } {
-    //         store_cover_points(unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
-    //     }
+        // store the accumulated coverage points
+        if unsafe { COVER_POINTS_OUTPUT.is_some() } {
+            store_cover_points(unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
+        }
 
-    //     panic!("Exit due to max_runs == 0");
-    // }
+        panic!("Exit due to max_runs == 0");
+    }
 
     ExitKind::Ok
 }
@@ -206,7 +232,8 @@ pub(crate) fn set_sim_env(
     emu_args: Vec<String>,
 ) {
     let cover_name = CString::new(coverage.as_bytes()).unwrap();
-    println!("{}", coverage);
+    println!("cover type:{}", coverage);
+    unsafe { COVER_NAME = Some(coverage) };
     unsafe { set_cover_feedback(cover_name.as_ptr()) }
 
     if verbose {
@@ -261,15 +288,10 @@ pub(crate) fn set_cover_points() {
     let mut accumulated_points = vec![0; len];
     // read header
     rdr.headers().unwrap();
-    let mut count = 0;
     for result in rdr.records() {
         let record = result.unwrap();
         let idx = record[0].parse::<usize>().unwrap();
         let covered = record[1].parse::<i8>().unwrap();
-        if count < 100 {
-            println!("{}: {}", idx, covered);
-            count += 1;
-        }
         accumulated_points[idx] = covered;
     }
     cover_set_accumulated(accumulated_points);

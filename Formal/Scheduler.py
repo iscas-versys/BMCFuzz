@@ -150,6 +150,9 @@ def run(args=None):
     scheduler = Scheduler()
     scheduler.init(run_snapshot, cover_type)
 
+    log_message("Sleep 10 seconds for background running.")
+    time.sleep(10)
+    log_message("Start formal.")
     scheduler.run_loop(500)
 
 def test_formal(args=None):

@@ -76,7 +76,7 @@ fn sim_run_from_memory(input: &BytesInput) -> i32 {
     let wim_size = wim_bytes.len() as u64;
     let wim_name = format!("wim@{wim_addr:p}+0x{wim_size:x}");
     // pass the in-memory workload to sim_run
-    clone_to_run_sim(&wim_name)
+    sim_run(&wim_name)
 }
 
 fn clone_to_run_sim(workload: &String) -> i32 {

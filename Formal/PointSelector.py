@@ -3,7 +3,7 @@ import random
 from Pretreat import *
 
 class PointSelector:
-    MAX_POINT_NUM = 10
+    MAX_POINT_NUM = 200
     module_contain_points = []
     point2module = []
     

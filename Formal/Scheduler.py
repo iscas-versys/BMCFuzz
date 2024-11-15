@@ -123,8 +123,8 @@ class Scheduler:
         FUZZ_LOG = os.getenv("FUZZ_LOG")
         fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
         fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
-                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
-                        --corpus-input $CORPUS_DIR --cover-points-output $COVER_POINTS_OUT -c firrtl.toggle -- --no-diff -I 100 -e 0 \
+                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} --continue-on-errors \
+                        --corpus-input $CORPUS_DIR --cover-points-output $COVER_POINTS_OUT -c firrtl.toggle --insert-nop -- -I 100 -C 500 -e 0 \
                         > {fuzz_log_file} 2>&1'"
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")

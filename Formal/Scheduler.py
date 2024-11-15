@@ -212,5 +212,5 @@ if __name__ == "__main__":
     run(args)
     # generate_empty_cover_points_file()
     # test_fuzz()
-    # test_formal()
+    # test_formal(args)
     

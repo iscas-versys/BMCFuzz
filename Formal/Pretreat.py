@@ -68,14 +68,39 @@ def generate_rtl_files(run_snapshot=False, cover_type="toggle"):
                 shutil.copy(entry.path, rtl_dst_dir)
     
     # 解析并修改RTL文件
-    cover_points_name = parse_and_modify_rtl_files(run_snapshot)
+    cover_points_name = parse_and_modify_rtl_files(run_snapshot, cover_type)
 
     log_message("Generated RTL files.")
     
     return cover_points_name
 
 # 解析并修改RTL文件
-def parse_and_modify_rtl_files(run_snapshot=False):
+def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
+    # cover name to cover id
+    rtl_dir = str(os.getenv("RTL_SRC_DIR"))
+    rtl_dir = rtl_dir+"_"+cover_type
+    cover_name_file = rtl_dir + "/firrtl-cover.cpp"
+    covername2id = {}
+    cover_id = 0
+    with open(cover_name_file, 'r') as file:
+        lines = file.readlines()
+    cover_name_begin = re.compile(r"static const char \*\w+_NAMES\[\] = {")
+    cover_name_end = re.compile(r'};')
+    cover_name = re.compile(r'\"(.*)\"')
+    cover_name_flag = False
+    for line in lines:
+        cover_name_match = cover_name_begin.search(line)
+        if cover_name_match:
+            cover_name_flag = True
+            continue
+        if cover_name_flag:
+            if cover_name_end.search(line):
+                break
+            cover_name_match = cover_name.search(line)
+            if cover_name_match:
+                covername2id[cover_name_match.group(1)] = cover_id
+                cover_id += 1
+
     # 获取环境变量
     rtl_dir = str(os.getenv("RTL_DST_DIR"))
     if run_snapshot:
@@ -88,13 +113,12 @@ def parse_and_modify_rtl_files(run_snapshot=False):
     os.remove(rtl_file)
     
     cover_points = []
-    cover_statements = []
     current_module = None
-    cover_id = 0
 
     # 正则表达式匹配模块声明和cover语句
     module_pattern = re.compile(r'\bmodule\s+(\w+)')
     cover_pattern = re.compile(r'cover\s*\(\s*([^\)]+)\s*\)')
+    sub_toggle_pattern = re.compile(r'(_t)(\[\d+\])?$')
 
     # initial reset
     module_end_pattern = re.compile(r'\);')
@@ -115,11 +139,12 @@ def parse_and_modify_rtl_files(run_snapshot=False):
         if cover_match and current_module:
             signal_name = cover_match.group(1)
             # 修改 cover 语句，生成带有新的 label 的格式
+            cover_name = current_module + "." + signal_name
+            cover_name = re.sub(sub_toggle_pattern, r'\2', cover_name)
+            cover_id = covername2id.get(cover_name, -1)
             new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
             new_lines.append(new_cover_line)
-            cover_statements.append(f"[{cover_id}] {current_module}.{signal_name}")
             cover_points.append((current_module, signal_name))
-            cover_id += 1
         else:
             # 如果不是 cover 语句，直接将原内容加入到新文件
             new_lines.append(line)

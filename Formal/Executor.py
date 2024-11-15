@@ -40,7 +40,7 @@ def execute_cover_tasks(cover_points):
     # os.chdir(output_dir)
     cover_cases = []
     strat_time = time.time()
-    max_workers = min(100, os.cpu_count())
+    max_workers = min(200, os.cpu_count())
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(execute_cover_task, env_path, cover, output_dir): cover for cover in cover_points}
         with tqdm(total=len(futures), desc="Processing covers") as pbar:
@@ -127,11 +127,11 @@ if __name__ == "__main__":
     log_init()
     
     clean_cover_files()
-    # set_max_cover_points(11747)
-    set_max_cover_points(1990)
-    sample_cover_points = [100]
+    set_max_cover_points(11747)
+    # set_max_cover_points(1990)
+    sample_cover_points = [7334]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
-    generate_rtl_files()
+    generate_rtl_files(True)
     generate_sby_files(sample_cover_points)
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")

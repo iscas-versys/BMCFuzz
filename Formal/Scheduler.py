@@ -34,7 +34,7 @@ class Scheduler:
         
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
-        cover_points_name = generate_rtl_files(run_snapshot, cover_type)
+        cover_points_name = generate_rtl_files(False, cover_type)
 
         point_id = 0
         module_id = 0
@@ -79,6 +79,8 @@ class Scheduler:
                 break
 
     def run_formal(self):
+        if self.run_snapshot:
+            generate_rtl_files(True, self.cover_type)
         cover_points = self.point_selector.generate_cover_points()
         while(True):
             # 清理并重新生成cover points文件

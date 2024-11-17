@@ -13,6 +13,7 @@ mod coverage;
 mod fuzzer;
 mod harness;
 mod monitor;
+// mod csr_transition;
 
 use clap::Parser;
 
@@ -41,12 +42,16 @@ struct Arguments {
     continue_on_errors: bool,
     #[clap(default_value_t = false, long)]
     save_errors: bool,
-    #[clap(long)]
-    cover_points_output: Option<String>,
     #[clap(default_value_t = -1.0, long)]
     formal_cover_rate: f64,
     #[clap(default_value_t = false, long)]
     insert_nop: bool,
+
+    // run snapshot
+    #[clap(default_value_t = false, long)]
+    run_snapshot: bool,
+    #[clap(long)]
+    snapshot_file: Option<String>,
 
     // Run options
     #[clap(default_value_t = 1, long)]
@@ -113,13 +118,17 @@ fn main() -> i32 {
         println!("corpus_output: {:?}", args.corpus_output);
         println!("continue_on_errors: {:?}", args.continue_on_errors);
         println!("save_errors: {:?}", args.save_errors);
-        println!("cover_points_output: {:?}", args.cover_points_output);
         println!("formal_cover_rate: {:?}", args.formal_cover_rate);
         println!("insert nop: {:?}", args.insert_nop);
-        harness::set_fuzz_cover_output(args.cover_points_output);
+        println!("run_snapshot: {:?}", args.run_snapshot);
+        println!("snapshot_file: {:?}", args.snapshot_file);
         harness::set_formal_cover_rate(args.formal_cover_rate);
         harness::set_insert_nop(args.insert_nop);
+        harness::set_run_snapshot(args.run_snapshot, args.snapshot_file);
         harness::set_cover_points();
+        if corpus_input.is_some() {
+            harness::set_corpus_num(corpus_input.clone().unwrap());
+        }
         fuzzer::run_fuzzer(
             args.random_input,
             args.max_iters,

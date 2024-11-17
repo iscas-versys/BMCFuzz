@@ -1,6 +1,7 @@
 import os
 import csv
 import sys
+import shutil
 import subprocess
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Formal"))
@@ -15,8 +16,11 @@ from SetInitValues.vcd_parser import vcd_to_json
 from SetInitValues.connect_reginit_vcd_parser import connect_json_vcd
 from SetInitValues.new_init_folder import create_init_files
 
+from SetInitValues.CSRTransitionSelect import CSRTransitionSelect
+
 from Formal.Scheduler import Scheduler
 from Formal.Pretreat import log_message, clear_logs, log_init
+from Formal.Executor import run_command
 
 class SnapshotFuzz:
     split_sv_modules_dir = None
@@ -25,8 +29,12 @@ class SnapshotFuzz:
     formal_dir = None
     set_init_values_dir = None
     csr_wave_dir = None
+
+    csr_transition_selector = None
+
+    scheduler = None
     
-    def init(self):
+    def init(self, cover_type="toggle"):
         current_dir = os.path.dirname(os.path.realpath(__file__))
 
         set_init_values_dir = os.path.join(current_dir, 'SetInitValues')
@@ -43,8 +51,9 @@ class SnapshotFuzz:
         # step1: split_sv_modules
         log_message(f"Step1: Split modules")
         split_sv_modules_dir = os.path.join(set_init_values_dir, default_top_module_name + '_split')
-        if not os.path.exists(split_sv_modules_dir):
-            split_sv_modules(default_sv_file, split_sv_modules_dir)
+        if os.path.exists(split_sv_modules_dir):
+            shutil.rmtree(split_sv_modules_dir)
+        split_sv_modules(default_sv_file, split_sv_modules_dir)
         self.split_sv_modules_dir = split_sv_modules_dir
         log_message(f"Modules has been split into {split_sv_modules_dir} directory.")
 
@@ -63,11 +72,12 @@ class SnapshotFuzz:
         # step3: hierarchy yaml parser
         log_message(f"Step3: Generate hierarchy json")
         output_json = os.path.join(set_init_values_dir, default_top_module_name + '.json')
-        if not os.path.exists(output_json):
-            result = hierarchy_yaml_parser(output_yaml, output_json, default_top_module_name)
-            if result != 0:
-                log_message(f"Generate hierarchy json failed with return code: {result}")
-                exit(result)
+        if os.path.exists(output_json):
+            os.remove(output_json)
+        result = hierarchy_yaml_parser(output_yaml, output_json, default_top_module_name)
+        if result != 0:
+            log_message(f"Generate hierarchy json failed with return code: {result}")
+            exit(result)
         log_message(f"Generate hierarchy json executed successfully.")
 
         # step4: add regs init values
@@ -81,14 +91,75 @@ class SnapshotFuzz:
         self.csr_wave_dir = os.path.join(set_init_values_dir, 'csr_wave')
         
         log_message("End Set Init Values")
+
+        """ CSR Transition Select """
+        log_message("Start CSR Transition Selector Init")
+        self.csr_transition_selector = CSRTransitionSelect()
+        self.csr_transition_selector.file_init()
+        log_message("End CSR Transition Selector Init")
+
+        """ Formal """
+        log_message("Start Formal Init")
+        self.scheduler = Scheduler()
+        self.scheduler.init(True, cover_type)
+        log_message("End Formal Init")
+
+        """ clean errors&crashes """
+        log_message("Clean Errors & Crashes")
+        if os.path.exists(os.path.join(os.getenv("NOOP_HOME"), 'errors')):
+            shutil.rmtree(os.path.join(os.getenv("NOOP_HOME"), 'errors'))
+        os.mkdir(os.path.join(os.getenv("NOOP_HOME"), 'errors'))
+        if os.path.exists(os.path.join(os.getenv("NOOP_HOME"), 'crashes')):
+            shutil.rmtree(os.path.join(os.getenv("NOOP_HOME"), 'crashes'))
+        os.mkdir(os.path.join(os.getenv("NOOP_HOME"), 'crashes'))
+        
     
-    def run_on_wave(self, wave_vcd_path):
+    def run_loop(self, loop_count):
+        fuzz_log_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'logs', 'fuzz')
+
+        self.scheduler.run_snapshot_fuzz_init(fuzz_log_dir)
+        self.scheduler.update_coverage()
+
+        self.csr_transition_selector.update()
+        for i in range(loop_count):
+            log_message(f"Start Loop {i}")
+
+            # select highest score snapshot
+            snapshot_id, snapshot_cycle, snapshot_transition, snapshot_score = self.csr_transition_selector.select_highest_score_snapshot()
+            log_message(f"Best Snapshot ID: {snapshot_id} Cycle: {snapshot_cycle}")
+            log_message(f"Transition:\npast:{snapshot_transition[0]}\nnow:{snapshot_transition[1]}")
+            log_message(f"Score: {snapshot_score}")
+            snapshot_file = os.path.join(self.set_init_values_dir, 'csr_snapshot', f'{snapshot_id}')
+            wave_file = os.path.join(self.csr_wave_dir, f'{snapshot_id}.vcd')
+
+            # generate init file
+            self.generate_init_file(wave_file)
+
+            # start formal
+            if not self.scheduler.run_formal():
+                log_message(f"Exit: no more points to cover.")
+                exit(1)
+            
+            # start snapshot fuzz
+            self.scheduler.run_snapshot_fuzz(snapshot_file, snapshot_cycle)
+
+            # update coverage
+            self.scheduler.update_coverage()
+
+            # delete snapshot file
+            self.csr_transition_selector.delete_snapshot_file(snapshot_id)
+            self.csr_transition_selector.delete_waveform_file(snapshot_id)
+
+            log_message(f"End Loop {i}")
+    
+    def generate_init_file(self, wave_vcd_path):
         log_message("Start Run On Wave")
         
         # convert wave vcd to json
         wave_json_path = wave_vcd_path.replace('.vcd', '.json')
-        if not os.path.exists(wave_json_path):
-            vcd_to_json(wave_vcd_path, wave_json_path)
+        if os.path.exists(wave_json_path):
+            os.remove(wave_json_path)
+        vcd_to_json(wave_vcd_path, wave_json_path)
         log_message(f"Convert wave vcd to json executed successfully.")
 
         # set regs init values
@@ -113,11 +184,7 @@ def run():
 
     fuzz = SnapshotFuzz()
     fuzz.init()
-    fuzz.run_on_wave(os.path.join(fuzz.csr_wave_dir, 'csr_wave_0.vcd'))
-
-    scheduler = Scheduler()
-    scheduler.init(True)
-    scheduler.run_loop(1)
+    fuzz.run_loop(1)
 
 def run_set_init_values():
     current_dir = os.path.dirname(os.path.realpath(__file__))

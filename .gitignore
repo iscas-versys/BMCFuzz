@@ -39,5 +39,7 @@ SetInitValues/vcdvcd/__pycache__
 SetInitValues/*.vcd
 SetInitValues/__pycache__
 SetInitValues/csr_wave/*
+SetInitValues/csr_snapshot/*
+SetInitValues/csr_transition/*
 
 logs/*

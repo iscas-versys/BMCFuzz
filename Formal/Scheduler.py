@@ -15,6 +15,8 @@ class Scheduler:
 
     point_selector = PointSelector()
 
+    pre_fuzz_covered_num = 0
+
     points_name = []
     module_name = []
     point2module = []
@@ -51,6 +53,8 @@ class Scheduler:
         self.coverage.init(covered_num, cover_points)
 
         self.point_selector.init(module_id, self.point2module)
+
+        generate_empty_cover_points_file(point_id)
     
     def run_loop(self, max_iter, target_coverage=0.9):
         pre_fuzz_covered_num = 0
@@ -58,44 +62,23 @@ class Scheduler:
             log_message(f"Loop {i+1}")
 
             # 选点并执行formal任务
-            cover_points = self.point_selector.generate_cover_points()
-            if not self.run_formal(cover_points):
+            if not self.run_formal():
+                self.coverage.display_coverage()
                 log_message("Exit:No more cover points!")
                 break
 
             # 执行fuzz任务
-            self.run_fuzz(self.coverage.get_formal_cover_rate())
+            self.run_fuzz()
 
             # 获取fuzz结果并更新Coverage、PointSelector
-            cover_points_path = os.getenv("COVER_POINTS_OUT") + "/cover_points.csv"
-            covered_num = 0
-            cover_points = []
-            with open(cover_points_path, mode='r', newline='', encoding='utf-8') as file:
-                csv_reader = csv.DictReader(file)
-                for row in csv_reader:
-                    if int(row['Covered']) == 1:
-                        covered_num += 1
-                    cover_points.append(int(row['Covered']))
-            
-            fuzz_covered_num = covered_num - pre_fuzz_covered_num
-            pre_fuzz_covered_num = covered_num
-            log_message(f"Fuzz covered num: {fuzz_covered_num}")
-            self.coverage.update_fuzz(cover_points)
-            self.point_selector.update(self.coverage.cover_points)
-
-            if fuzz_covered_num == 0:
-                log_message("Exit:Fuzz covered num is 0!")
-                break
-
-            # Coverage信息
-            log_message(f"Covered: {covered_num}/{len(cover_points)}")
-            log_message(f"Coverage: {self.coverage.get_coverage()*100:.2f}%")
+            self.update_coverage()
 
             if self.coverage.get_coverage() >= target_coverage:
                 log_message("Exit:Coverage reached target!")
                 break
 
-    def run_formal(self, cover_points):
+    def run_formal(self):
+        cover_points = self.point_selector.generate_cover_points()
         while(True):
             # 清理并重新生成cover points文件
             clean_cover_files()
@@ -117,21 +100,94 @@ class Scheduler:
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
-        self.coverage.update_formal(cover_cases)
+        # self.coverage.update_formal(cover_cases)
         self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
 
         return True
     
-    def run_fuzz(self, formal_cover_rate):
+    def run_fuzz(self):
+        formal_cover_rate = self.coverage.get_formal_cover_rate()
         NOOP_HOME = os.getenv("NOOP_HOME")
         FUZZ_LOG = os.getenv("FUZZ_LOG")
         fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
         fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
-                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
-                        --corpus-input $CORPUS_DIR --cover-points-output $COVER_POINTS_OUT -c firrtl.toggle -- --no-diff -I 100 -e 0 \
+                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} --continue-on-errors \
+                        --corpus-input $CORPUS_DIR -c firrtl.toggle --insert-nop -- -I 100 -C 500 -b 0 \
                         > {fuzz_log_file} 2>&1'"
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
+    
+    def run_snapshot_fuzz_init(self, fuzz_log_dir=None):
+        log_message("Start Run Snapshot Fuzz Init")
+
+        NOOP_HOME = os.getenv("NOOP_HOME")
+        if fuzz_log_dir is None:
+            FUZZ_LOG = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
+        else:
+            FUZZ_LOG = fuzz_log_dir
+        fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+
+        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
+                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate 0.0001 --continue-on-errors \
+                        --corpus-input $RISCV_CORPUS -c firrtl.toggle --insert-nop -- -C 10000 -b 0 \
+                        > {fuzz_log_file} 2>&1'"
+
+        self.clean_fuzz_run()
+        return_code = run_command(fuzz_command, shell=True)
+
+        log_message(f"Fuzz return code: {return_code}")
+        
+    
+    def run_snapshot_fuzz(self, snapshot_file, cycles):
+        log_message("Start Run Snapshot Fuzz")
+
+        NOOP_HOME = os.getenv("NOOP_HOME")
+        FUZZ_LOG = os.getenv("FUZZ_LOG")
+        fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+        formal_cover_rate = self.coverage.get_formal_cover_rate()
+
+        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
+                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
+                        --continue-on-errors --run-snapshot --snapshot-file {snapshot_file} \
+                        --corpus-input $CORPUS_DIR -c firrtl.toggle --insert-nop -- -I 100 -C 500 -b 0 \
+                        --snapshot-cycles {cycles} \
+                        > {fuzz_log_file} 2>&1'"
+        
+        self.clean_fuzz_run()
+        return_code = run_command(fuzz_command, shell=True)
+
+        log_message(f"Fuzz return code: {return_code}")
+    
+    def display_coverage(self):
+        self.coverage.display_coverage()
+    
+    def update_coverage(self):
+        cover_points_path = os.getenv("COVER_POINTS_OUT") + "/cover_points.csv"
+        covered_num = 0
+        cover_points = []
+        with open(cover_points_path, mode='r', newline='', encoding='utf-8') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if int(row['Covered']) == 1:
+                    covered_num += 1
+                cover_points.append(int(row['Covered']))
+
+        self.coverage.update_fuzz(cover_points)
+        self.point_selector.update(self.coverage.cover_points)
+
+        fuzz_covered_num = covered_num - self.pre_fuzz_covered_num
+        self.pre_fuzz_covered_num = covered_num
+
+        log_message(f"Fuzz covered num: {covered_num}")
+
+        # Coverage信息
+        self.coverage.display_coverage()
+    
+    def clean_fuzz_run(self):
+        fuzz_run_dir = os.getenv("NOOP_HOME") + "/tmp/fuzz_run"
+        if os.path.exists(fuzz_run_dir):
+            shutil.rmtree(fuzz_run_dir)
+        os.mkdir(fuzz_run_dir)
 
 
 def run(args=None):
@@ -154,7 +210,10 @@ def run(args=None):
     scheduler = Scheduler()
     scheduler.init(run_snapshot, cover_type)
 
-    scheduler.run_loop(1)
+    log_message("Sleep 10 seconds for background running.")
+    time.sleep(10)
+    log_message("Start formal.")
+    scheduler.run_loop(args.run_loop)
 
 def test_formal(args=None):
     clear_logs()
@@ -206,6 +265,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--run_snapshot', '-r', action='store_true')
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
+    parser.add_argument('--run_loop', '-l', type=int, default=1)
 
     args = parser.parse_args()
 

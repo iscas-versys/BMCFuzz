@@ -76,10 +76,10 @@ def execute_cover_task(env_path, cover, output_dir):
     else:
         log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
     
-    # if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
-    #     os.remove(f"{output_dir}/cover_{cover}.sby")
-    # if os.path.exists(f"{output_dir}/cover_{cover}"):
-    #     shutil.rmtree(f"{output_dir}/cover_{cover}")
+    if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
+        os.remove(f"{output_dir}/cover_{cover}.sby")
+    if os.path.exists(f"{output_dir}/cover_{cover}"):
+        shutil.rmtree(f"{output_dir}/cover_{cover}")
     
     return cover_point
     

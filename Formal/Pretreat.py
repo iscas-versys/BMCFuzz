@@ -16,6 +16,8 @@ def log_init(path=None):
         
     if not os.path.exists(os.path.join(current_dir, "logs")):
         os.makedirs(os.path.join(current_dir, "logs"))
+    if not os.path.exists(os.path.join(current_dir, "logs", "fuzz")):
+        os.makedirs(os.path.join(current_dir, "logs", "fuzz"))
     log_file_name = os.path.join(current_dir, "logs", datetime.now().strftime("%Y-%m-%d_%H-%M") + ".log")
     logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(message)s')
     log_message(f"Log initialized in {log_file_name}.")
@@ -259,7 +261,7 @@ def clean_cover_files():
     
     log_message("Cleaned cover files.")
 
-def generate_empty_cover_points_file():
+def generate_empty_cover_points_file(cover_num=0):
     cover_points_out = str(os.getenv("COVER_POINTS_OUT"))
     cover_points_file_path = cover_points_out + "/cover_points.csv"
     
@@ -267,7 +269,7 @@ def generate_empty_cover_points_file():
     if os.path.exists(cover_points_file_path):
         os.remove(cover_points_file_path)
         
-    set_max_cover_points(11747)
+    set_max_cover_points(cover_num)
     with open(cover_points_file_path, mode='w', newline='', encoding='utf-8') as file:
         field_name = ['Index', 'Covered']
         csv_writer = csv.DictWriter(file, fieldnames=field_name)
@@ -279,7 +281,7 @@ def generate_empty_cover_points_file():
 if __name__ == "__main__":
     clear_logs()
     log_init()
-    clean_cover_files()
-    cover_points_name = generate_rtl_files()
-    generate_empty_cover_points_file()
-    generate_sby_files([3933, 4389, 4390, 4392])
+    # clean_cover_files()
+    # cover_points_name = generate_rtl_files()
+    generate_empty_cover_points_file(11747)
+    # generate_sby_files([3933, 4389, 4390, 4392])

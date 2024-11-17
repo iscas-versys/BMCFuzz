@@ -15,10 +15,12 @@ extern crate rand;
 use std::env;
 use std::ffi::CString;
 use std::process::Command;
+use std::fs;
 // use std::io::{self, Write};
 
 use crate::coverage::*;
 use crate::monitor::store_testcase;
+
 
 use libafl::prelude::*;
 use libc::*;
@@ -26,6 +28,7 @@ use libc::*;
 // use std::fs::File;
 // use std::os::unix::io::AsRawFd; // 用于获取文件的文件描述符
 use csv::{Reader, Writer};
+use chrono::Local;
 
 extern "C" {
     pub fn sim_main(argc: c_int, argv: *const *const c_char) -> c_int;
@@ -81,13 +84,28 @@ fn sim_run(workload: &String) -> i32 {
 
 fn clone_to_run_sim(workload: &String) -> i32 {
     let fuzzer = format!("{}/build/fuzzer", env::var("NOOP_HOME").unwrap());
+    let image: String;
+    if unsafe{ RUN_SNAPSHOT } {
+        image = unsafe{ SNAPSHOT_IMAGE.clone().unwrap() };
+    }
+    else {
+        image = workload.clone();
+    }
     // prepare the simulation arguments in Vec<String> format
-    let mut sim_args: Vec<String> = vec!["-c".to_string(), unsafe{COVER_NAME.clone().unwrap()} , "--".to_string(), workload.to_string()]
+    let mut sim_args: Vec<String> = vec!["-c".to_string(), unsafe{COVER_NAME.clone().unwrap()} , "--".to_string(), image.to_string()]
         .iter()
         .map(|s| s.to_string())
         .collect();
     unsafe { sim_args.extend(SIM_ARGS.iter().cloned()) };
     // send simulation arguments to sim_main and get the return code
+    sim_args.push("--fuzz-id".to_string());
+    sim_args.push(unsafe{NUM_RUNS.to_string()});
+    sim_args.push("--dump-csr-change".to_string());
+    sim_args.push("--dump-wave-full".to_string());
+    if unsafe{ RUN_SNAPSHOT } {
+        sim_args.push("--snapshot-image".to_string());
+        sim_args.push(workload.to_string());
+    }
     println!("Sim args: {:?}", sim_args);
 
     let ret = Command::new(fuzzer)
@@ -95,12 +113,18 @@ fn clone_to_run_sim(workload: &String) -> i32 {
         .output()
         .expect("failed to execute process");
 
-    println!("child stdout:\n{}", String::from_utf8_lossy(&ret.stdout));
+    println!("child stdout:\n{}\n", String::from_utf8_lossy(&ret.stdout));
+    println!("child stderr:\n{}\n", String::from_utf8_lossy(&ret.stderr));
 
     cover_accumulate_from_file();
 
-    // ret.code().unwrap()
-    0
+    if ret.status.success() {
+        return 0
+    }
+    else {
+        return -1
+    }
+    
 }
 
 pub(crate) fn sim_run_multiple(workloads: &Vec<String>, auto_exit: bool) -> i32 {
@@ -122,10 +146,14 @@ pub static mut CONTINUE_ON_ERRORS: bool = false;
 pub static mut SAVE_ERRORS: bool = true;
 pub static mut NUM_RUNS: u64 = 0;
 pub static mut MAX_RUNS: u64 = u64::MAX;
-pub static mut COVER_POINTS_OUTPUT: Option<String> = None;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 pub static mut INSERT_NOP: bool = false;
 pub static mut COVER_NAME: Option<String> = None;
+
+pub static mut RUN_SNAPSHOT: bool = false;
+pub static mut SNAPSHOT_IMAGE: Option<String> = None;
+
+pub static mut CORPUS_NUM: u64 = 0;
 
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // insert c.nop in the beginning of the input
@@ -145,8 +173,16 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
             new_input = input.clone();
         }
     };
-    store_testcase(&new_input, &format!("{}/tmp", env::var("NOOP_HOME").unwrap()), Some("fuzz_testcase".to_string()));
-    let ret = clone_to_run_sim(&format!("{}/tmp/fuzz_testcase", env::var("NOOP_HOME").unwrap()));
+    let fuzz_id = unsafe { NUM_RUNS };
+    let fuzz_run_dir = format!("{}/tmp/fuzz_run/{}", env::var("NOOP_HOME").unwrap(), fuzz_id);
+    if fs::read_dir(&fuzz_run_dir).is_ok() {
+        fs::remove_dir_all(&fuzz_run_dir).unwrap();
+    }
+    fs::create_dir_all(&fuzz_run_dir).unwrap();
+    fs::create_dir_all(fuzz_run_dir.clone()+"/csr_wave").unwrap();
+    fs::create_dir_all(fuzz_run_dir.clone()+"/csr_transition").unwrap();
+    store_testcase(&new_input, &fuzz_run_dir, Some("fuzz_testcase".to_string()));
+    let ret = clone_to_run_sim(&format!("{}/fuzz_testcase", fuzz_run_dir));
 
     // get coverage
     // cover_display();
@@ -157,7 +193,10 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     if do_save {
         println!("<<<<<< Bug triggered >>>>>>");
         println!("<<<<<< Save the testcase >>>>>>");
-        store_testcase(&new_input, &"errors".to_string(), None);
+        let timestamp = Local::now().format("%Y-%m-%d-%H-%M-%S").to_string();
+        let testcase_name = format!("{}_{}", timestamp, fuzz_id);
+        println!("Testcase name: {}", testcase_name);
+        store_testcase(&new_input, &"errors".to_string(), Some(testcase_name));
     }
 
     // panic if return code is non-zero (this is for fuzzers to catch crashes)
@@ -165,18 +204,18 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     if do_panic {
         println!("<<<<<< Bug triggered >>>>>>");
         // store the accumulated coverage points
-        if unsafe { COVER_POINTS_OUTPUT.is_some() } {
-            store_cover_points(unsafe {
-                COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv"
-            });
-        }
+        store_cover_points(env::var("COVER_POINTS_OUT").unwrap()+"/cover_points.csv");
         // unsafe { display_uncovered_points() }
         panic!("<<<<<< Bug triggered >>>>>>");
     }
 
     // panic to exit the fuzzer if fuzz_cover_rate < formal_cover_rate
     cover_update_cover_rate();
-    let fuzz_cover_rate = cover_get_cover_rate();
+    let mut fuzz_cover_rate = cover_get_cover_rate();
+    if unsafe{NUM_RUNS < CORPUS_NUM} {
+        unsafe {println!("RUNS:{}, CORPUS_NUM:{} not enough", NUM_RUNS, CORPUS_NUM) };
+        fuzz_cover_rate = 100.0;
+    }
     if fuzz_cover_rate < unsafe { FORMAL_COVER_RATE } {
         println!("Exit due to fuzz_cover_rate < formal_cover_rate");
         // stdout -> file & display uncovered points
@@ -190,11 +229,7 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
         // unsafe { close(stdout) };
 
         // store the accumulated coverage points
-        if unsafe { COVER_POINTS_OUTPUT.is_some() } {
-            store_cover_points(unsafe {
-                COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv"
-            });
-        }
+        store_cover_points(env::var("COVER_POINTS_OUT").unwrap()+"/cover_points.csv");
 
         panic!("Exit due to fuzz_cover_rate < formal_cover_rate");
     }
@@ -215,9 +250,7 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
         // unsafe { close(stdout) };
 
         // store the accumulated coverage points
-        if unsafe { COVER_POINTS_OUTPUT.is_some() } {
-            store_cover_points(unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" });
-        }
+        store_cover_points(env::var("COVER_POINTS_OUT").unwrap()+"/cover_points.csv");
 
         panic!("Exit due to max_runs == 0");
     }
@@ -267,10 +300,6 @@ pub(crate) fn store_cover_points(cover_points_output: String) {
     wtr.flush().unwrap();
 }
 
-pub(crate) fn set_fuzz_cover_output(output: Option<String>) {
-    unsafe { COVER_POINTS_OUTPUT = output };
-}
-
 pub(crate) fn set_formal_cover_rate(rate: f64) {
     unsafe { FORMAL_COVER_RATE = rate };
 }
@@ -279,10 +308,21 @@ pub(crate) fn set_insert_nop(insert_nop: bool) {
     unsafe { INSERT_NOP = insert_nop };
 }
 
+pub(crate) fn set_run_snapshot(snapshot: bool, snapshot_file: Option<String>) {
+    unsafe { RUN_SNAPSHOT = snapshot };
+    unsafe { SNAPSHOT_IMAGE = snapshot_file };
+}
+
+pub(crate) fn set_corpus_num(corpus_dir: String) {
+    let entries = fs::read_dir(corpus_dir).unwrap(); // 读取文件夹中的所有条目
+    let count = entries.filter(|entry| entry.is_ok()).count(); // 过滤有效条目并计数
+    unsafe { CORPUS_NUM = count as u64 };
+    println!("Set init corpus runs:{}", count);
+}
+
 pub(crate) fn set_cover_points() {
     // read the accumulated coverage points from the file
-    let cover_file_path =
-        unsafe { COVER_POINTS_OUTPUT.as_ref().unwrap().clone() + "/cover_points.csv" };
+    let cover_file_path = env::var("COVER_POINTS_OUT").unwrap()+"/cover_points.csv";
     let mut rdr = Reader::from_path(cover_file_path).unwrap();
     let len = unsafe { get_cover_number() as usize };
     let mut accumulated_points = vec![0; len];

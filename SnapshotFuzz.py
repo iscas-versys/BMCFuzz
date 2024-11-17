@@ -147,8 +147,8 @@ class SnapshotFuzz:
             self.scheduler.update_coverage()
 
             # delete snapshot file
-            self.csr_transition_selector.delete_snapshot_file(snapshot_id)
-            self.csr_transition_selector.delete_waveform_file(snapshot_id)
+            self.csr_transition_selector.delete_snapshot(snapshot_id)
+            self.csr_transition_selector.delete_waveform(snapshot_id)
 
             log_message(f"End Loop {i}")
     

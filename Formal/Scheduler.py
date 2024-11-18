@@ -152,7 +152,7 @@ class Scheduler:
         fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
                         {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
                         --continue-on-errors --run-snapshot --snapshot-file {snapshot_file} \
-                        --corpus-input $CORPUS_DIR -c firrtl.toggle --insert-nop -- -I 100 -C 500 -b 0 \
+                        --corpus-input $CORPUS_DIR -c firrtl.toggle --insert-nop -- -C 10000 -b 0 \
                         --snapshot-cycles {cycles} \
                         > {fuzz_log_file} 2>&1'"
         
@@ -181,7 +181,7 @@ class Scheduler:
         fuzz_covered_num = covered_num - self.pre_fuzz_covered_num
         self.pre_fuzz_covered_num = covered_num
 
-        log_message(f"Fuzz covered num: {covered_num}")
+        log_message(f"Fuzz covered num: {fuzz_covered_num}")
 
         # Coverage信息
         self.coverage.display_coverage()

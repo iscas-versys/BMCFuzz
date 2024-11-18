@@ -62,6 +62,10 @@ class CSRTransitionSelect:
                     self.id2cycle[self.transition_id] = case_cycle
     
     def select_highest_score_snapshot(self):
+        for csr_score, csr_id in self.total_transitions:
+            print("Score: ", -csr_score, "ID: ", csr_id)
+            print("Transition: ", self.id2transition[csr_id])
+            print("Cycle: ", self.id2cycle[csr_id])
         best_score, best_id = heapq.heappop(self.total_transitions)
         best_score = -best_score
         return best_id, self.id2cycle[best_id], self.id2transition[best_id], best_score
@@ -101,13 +105,16 @@ class CSRTransitionSelect:
 
         for C_i, (past_bits, now_bits), power in criteria:
             transition = (past_bits, now_bits)
-            if past_bits != now_bits:
-                if C_i == 'C_2' and (not vm_is_enabled(now['privilegeMode'], now['mstatus'], now['satp'])):
-                    continue
+            if past_bits == now_bits:
+                continue
+            if C_i == 'C_2' and (not vm_is_enabled(now['privilegeMode'], now['mstatus'], now['satp'])):
+                continue
             if transition not in self.transition_map[C_i]:
                 self.transition_map[C_i][transition] = power
             else:
                 power = self.transition_map[C_i][transition]
+            if power == 0:
+                continue
             score += 2 ** power
             self.transition_map[C_i][transition] = max(0, self.transition_map[C_i][transition] - 1)
         

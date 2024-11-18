@@ -102,6 +102,8 @@ fn clone_to_run_sim(workload: &String) -> i32 {
     sim_args.push(unsafe{NUM_RUNS.to_string()});
     sim_args.push("--dump-csr-change".to_string());
     sim_args.push("--dump-wave-full".to_string());
+    sim_args.push("--wave-path".to_string());
+    sim_args.push(format!("{}/tmp/run_wave.vcd", env::var("NOOP_HOME").unwrap()));
     if unsafe{ RUN_SNAPSHOT } {
         sim_args.push("--snapshot-image".to_string());
         sim_args.push(workload.to_string());

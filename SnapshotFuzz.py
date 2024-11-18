@@ -45,6 +45,9 @@ class SnapshotFuzz:
 
         """ Set Init Values """
         log_message("Start Set Init Values")
+        if os.path.exists(set_init_values_dir+'/SimTop.sv'):
+            os.remove(set_init_values_dir+'/SimTop.sv')
+        shutil.copyfile(set_init_values_dir+f'/rtl_src/SimTop_{cover_type}.sv', set_init_values_dir+'/SimTop.sv')
         default_sv_file = os.path.join(set_init_values_dir, 'SimTop.sv')
         default_top_module_name = 'SimTop'
 
@@ -147,8 +150,8 @@ class SnapshotFuzz:
             self.scheduler.update_coverage()
 
             # delete snapshot file
-            self.csr_transition_selector.delete_snapshot(snapshot_id)
-            self.csr_transition_selector.delete_waveform(snapshot_id)
+            # self.csr_transition_selector.delete_snapshot(snapshot_id)
+            # self.csr_transition_selector.delete_waveform(snapshot_id)
 
             log_message(f"End Loop {i}")
     

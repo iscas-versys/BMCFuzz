@@ -55,19 +55,35 @@ class CSRTransitionSelect:
                     if score == 0:
                         continue
                     self.transition_id += 1
-                    heapq.heappush(self.total_transitions, (-score, self.transition_id))
+                    self.total_transitions.append((score, self.transition_id))
                     self.generate_snapshot_file(testcase, self.transition_id)
                     self.generate_waveform_file(wave_file, self.transition_id)
                     self.id2transition[self.transition_id] = (past, now)
                     self.id2cycle[self.transition_id] = case_cycle
     
     def select_highest_score_snapshot(self):
+        best_score = 0
+        best_id = 0
         for csr_score, csr_id in self.total_transitions:
-            print("Score: ", -csr_score, "ID: ", csr_id)
+            if csr_score > best_score:
+                best_score = csr_score
+                best_id = csr_id
+            print("Score: ", csr_score, "ID: ", csr_id)
             print("Transition: ", self.id2transition[csr_id])
             print("Cycle: ", self.id2cycle[csr_id])
-        best_score, best_id = heapq.heappop(self.total_transitions)
-        best_score = -best_score
+        
+        self.update_transition_map(self.id2transition[best_id][0], self.id2transition[best_id][1])
+
+        new_transition = []
+        for _, csr_id in self.total_transitions:
+            csr_score = self.calculate_score(self.id2transition[csr_id][0], self.id2transition[csr_id][1])
+            if csr_score == 0:
+                self.delete_snapshot(csr_id)
+                self.delete_waveform(csr_id)
+                continue
+            new_transition.append((csr_score, csr_id))
+        self.total_transitions = new_transition
+
         return best_id, self.id2cycle[best_id], self.id2transition[best_id], best_score
 
     def calculate_score(self, past, now):
@@ -116,9 +132,48 @@ class CSRTransitionSelect:
             if power == 0:
                 continue
             score += 2 ** power
-            self.transition_map[C_i][transition] = max(0, self.transition_map[C_i][transition] - 1)
         
         return score
+    
+    def update_transition_map(self, past, now):
+        past_c1 = past['privilegeMode']
+        now_c1 = now['privilegeMode']
+
+        past_c2 = parse_c2_bits(past['mstatus'], get_satp_hi(past['satp']), past['privilegeMode'])
+        now_c2 = parse_c2_bits(now['mstatus'], get_satp_hi(now['satp']), now['privilegeMode'])
+        
+        past_c3 = parse_c3_bits(past['mstatus'])
+        now_c3 = parse_c3_bits(now['mstatus'])
+        
+        past_c4 = parse_c4_bits(past['mstatus'])
+        now_c4 = parse_c4_bits(now['mstatus'])
+        
+        past_c5 = past['medeleg']
+        now_c5 = now['medeleg']
+        
+        criteria = [
+            # C1: Privilege mode changed
+            ('C_1', (past_c1, now_c1), 6),
+            # C2: Virtual memory enabled
+            ('C_2', (past_c2, now_c2), 5),
+            # C3: Single function changed (TSR, TW, TVM)
+            ('C_3', (past_c3, now_c3), 4),
+            # C4: Other mstatus bits changed (MPP, SPP, MPIE, SPIE, MIE, SIE)
+            ('C_4', (past_c4, now_c4), 3),
+            # C5: M mode delegation changed
+            ('C_5', (past_c5, now_c5), 2),
+            # C6: Other custom CSRs changed
+            # ('C_6', (past_custom_csrs, now_custom_csrs), k)
+        ]
+
+        for C_i, (past_bits, now_bits), power in criteria:
+            transition = (past_bits, now_bits)
+            if past_bits == now_bits:
+                continue
+            if C_i == 'C_2' and (not vm_is_enabled(now['privilegeMode'], now['mstatus'], now['satp'])):
+                continue
+            self.transition_map[C_i][transition] = max(0, self.transition_map[C_i][transition] - 1)
+
 
     def delete_snapshot(self, snapshot_id):
         set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"
@@ -144,6 +199,20 @@ if __name__ == "__main__":
     csr_transition_select = CSRTransitionSelect()
     csr_transition_select.file_init()
     csr_transition_select.update()
-    csr_transition_select.select_highest_score_snapshot()
+    best_id, cycle, transition, best_score = csr_transition_select.select_highest_score_snapshot()
+    print("Best ID: ", best_id)
+    print("Cycle: ", cycle)
+    print("Transition: ", transition)
+    print("Score: ", best_score)
+    best_id, cycle, transition, best_score = csr_transition_select.select_highest_score_snapshot()
+    print("Best ID: ", best_id)
+    print("Cycle: ", cycle)
+    print("Transition: ", transition)
+    print("Score: ", best_score)
+    best_id, cycle, transition, best_score = csr_transition_select.select_highest_score_snapshot()
+    print("Best ID: ", best_id)
+    print("Cycle: ", cycle)
+    print("Transition: ", transition)
+    print("Score: ", best_score)
     
     pass

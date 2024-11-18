@@ -1,6 +1,5 @@
 [options]
 mode cover
-skip 10
 depth 30
 timeout 3600
 

@@ -64,3 +64,43 @@ def parse_mstatus(mstatus_hex):
 def get_satp_hi(satp):
     satp_bin = bin(int(satp, 16))[2:].zfill(64)
     return satp_bin[:4]
+
+if __name__ == "__main__":
+    Transition = ({'privilegeMode': '3', 'mstatus': ' a00001800', 'satp': ' 0', 'medeleg': ' 0'}, {'privilegeMode': '3', 'mstatus': ' a00141800', 'satp': ' 0', 'medeleg': ' 0'})
+    past = Transition[0]
+    now = Transition[1]
+    past_c1 = past['privilegeMode']
+    now_c1 = now['privilegeMode']
+    past_c2 = parse_c2_bits(past['mstatus'], get_satp_hi(past['satp']), past['privilegeMode'])
+    now_c2 = parse_c2_bits(now['mstatus'], get_satp_hi(now['satp']), now['privilegeMode'])
+    past_c3 = parse_c3_bits(past['mstatus'])
+    now_c3 = parse_c3_bits(now['mstatus'])
+    past_c4 = parse_c4_bits(past['mstatus'])
+    now_c4 = parse_c4_bits(now['mstatus'])
+    past_c5 = past['medeleg']
+    now_c5 = now['medeleg']
+    
+    criteria = [
+        # C1: Privilege mode changed
+        ('C_1', (past_c1, now_c1), 6),
+        # C2: Virtual memory enabled
+        ('C_2', (past_c2, now_c2), 5),
+        # C3: Single function changed (TSR, TW, TVM)
+        ('C_3', (past_c3, now_c3), 4),
+        # C4: Other mstatus bits changed (MPP, SPP, MPIE, SPIE, MIE, SIE)
+        ('C_4', (past_c4, now_c4), 3),
+        # C5: M mode delegation changed
+        ('C_5', (past_c5, now_c5), 2),
+        # C6: Other custom CSRs changed
+        # ('C_6', (past_custom_csrs, now_custom_csrs), k)
+    ]
+
+    score = 0
+    for C_i, (past_bits, now_bits), power in criteria:
+        transition = (past_bits, now_bits)
+        if past_bits == now_bits:
+            continue
+        if C_i == 'C_2' and (not vm_is_enabled(now['privilegeMode'], now['mstatus'], now['satp'])):
+            continue
+        print(C_i, transition, power)
+        print(2 ** power)

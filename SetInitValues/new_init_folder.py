@@ -19,8 +19,9 @@ def parse_json(data):
     for key, value in data.items():
         module_name = value['module_name']
         regname = value['regname']
-        match = re.search(r'\b(\w+)\s*\[\d+:\d+\]|\[\d+:\d+\]\s*(\w+)', regname)
-        regname_clean = (match.group(1) or match.group(2)) if match else regname
+        range_match = re.search(r'\[(\d+:\d+)\]', regname)
+        regname_clean = re.sub("\["+range_match.group(1)+"\]", '', regname) if range_match else regname
+        
         initval = value['initval']
         if module_name not in init_values:
             init_values[module_name] = []

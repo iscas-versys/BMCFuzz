@@ -187,7 +187,7 @@ def run():
 
     fuzz = SnapshotFuzz()
     fuzz.init()
-    fuzz.run_loop(1)
+    fuzz.run_loop(60)
 
 def run_set_init_values():
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -196,7 +196,14 @@ def run_set_init_values():
 
     fuzz = SnapshotFuzz()
     fuzz.init()
-    fuzz.run_on_wave(os.path.join(fuzz.csr_wave_dir, 'csr_wave_0.vcd'))
+    # fuzz.csr_wave_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'SetInitValues', 'csr_wave')
+    # fuzz.set_init_values_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'SetInitValues')
+    # fuzz.formal_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'Formal')
+
+    # fuzz.module_with_regs_json = os.path.join(fuzz.set_init_values_dir, 'SimTop_with_regs.json')
+    # fuzz.split_sv_modules_dir = os.path.join(fuzz.set_init_values_dir, 'SimTop_split')
+    
+    fuzz.generate_init_file(os.path.join(fuzz.csr_wave_dir, '0.vcd'))
 
 if __name__ == "__main__":
     run()

@@ -131,7 +131,7 @@ class Scheduler:
         fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
 
         fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
-                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate 0.0001 --continue-on-errors \
+                        {NOOP_HOME}/build/fuzzer -f --max-runs 2000 --continue-on-errors \
                         --corpus-input $RISCV_CORPUS -c firrtl.toggle --insert-nop -- -C 10000 -b 0 \
                         > {fuzz_log_file} 2>&1'"
 

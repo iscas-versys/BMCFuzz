@@ -152,7 +152,7 @@ class Scheduler:
         fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
                         {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
                         --continue-on-errors --run-snapshot --snapshot-file {snapshot_file} \
-                        --corpus-input $CORPUS_DIR -c firrtl.toggle --insert-nop -- -C 10000 -b 0 \
+                        --corpus-input $CORPUS_DIR -c firrtl.toggle -- -C 10000 -b 0 \
                         --snapshot-cycles {cycles} \
                         > {fuzz_log_file} 2>&1'"
         

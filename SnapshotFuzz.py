@@ -34,7 +34,7 @@ class SnapshotFuzz:
 
     scheduler = None
     
-    def init(self, cover_type="toggle"):
+    def init(self, cover_type="toggle", special_wave=False):
         current_dir = os.path.dirname(os.path.realpath(__file__))
 
         set_init_values_dir = os.path.join(current_dir, 'SetInitValues')
@@ -98,7 +98,8 @@ class SnapshotFuzz:
         """ CSR Transition Select """
         log_message("Start CSR Transition Selector Init")
         self.csr_transition_selector = CSRTransitionSelect()
-        self.csr_transition_selector.file_init()
+        if not special_wave:
+            self.csr_transition_selector.file_init()
         log_message("End CSR Transition Selector Init")
 
         """ Formal """
@@ -155,6 +156,31 @@ class SnapshotFuzz:
 
             log_message(f"End Loop {i}")
     
+    def run_loop_with_special_wave(self, loop_count, wave_vcd_path, snapshot_file, snapshot_cycle):
+        fuzz_log_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'logs', 'fuzz')
+
+        self.scheduler.run_snapshot_fuzz_init(fuzz_log_dir)
+        self.scheduler.update_coverage()
+
+        # generate init file
+        self.generate_init_file(wave_vcd_path)
+
+        for i in range(loop_count):
+            log_message(f"Start Loop {i}")
+
+            # start formal
+            if not self.scheduler.run_formal():
+                log_message(f"Exit: no more points to cover.")
+                exit(1)
+            
+            # start snapshot fuzz
+            self.scheduler.run_snapshot_fuzz(snapshot_file, snapshot_cycle)
+
+            # update coverage
+            self.scheduler.update_coverage()
+
+            log_message(f"End Loop {i}")
+    
     def generate_init_file(self, wave_vcd_path):
         log_message("Start Run On Wave")
         
@@ -189,24 +215,22 @@ def run():
     fuzz.init()
     fuzz.run_loop(60)
 
-def run_set_init_values():
+def run_on_special_wave():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     clear_logs(current_dir)
     log_init(current_dir)
 
     fuzz = SnapshotFuzz()
-    fuzz.init()
-    # fuzz.csr_wave_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'SetInitValues', 'csr_wave')
-    # fuzz.set_init_values_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'SetInitValues')
-    # fuzz.formal_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'Formal')
+    fuzz.init(special_wave=True)
 
-    # fuzz.module_with_regs_json = os.path.join(fuzz.set_init_values_dir, 'SimTop_with_regs.json')
-    # fuzz.split_sv_modules_dir = os.path.join(fuzz.set_init_values_dir, 'SimTop_split')
-    
-    fuzz.generate_init_file(os.path.join(fuzz.csr_wave_dir, '0.vcd'))
+    # generate init file
+    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'))
+
+    # test switch_mode_toU cycle: 211
+    # fuzz.run_loop_with_special_wave(1, os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'), os.path.join(fuzz.set_init_values_dir, 'csr_snapshot', '1'), 211)
 
 if __name__ == "__main__":
-    run()
-    # run_set_init_values()
+    # run()
+    run_on_special_wave()
     pass
 

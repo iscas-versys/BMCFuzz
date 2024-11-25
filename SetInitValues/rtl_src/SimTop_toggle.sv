@@ -79139,6 +79139,7 @@ module SimMMIO(
   assign sd_io_in_bridge_io_out_r_bits_data = sd_io_in_r_bits_data; // @[src/main/scala/sim/SimMMIO.scala 58:12]
 endmodule
 module SimTop(
+  input         reset,
   input         clock,
   output [63:0] difftest_exit, // @[difftest/src/main/scala/Difftest.scala 496:22]
   output [63:0] difftest_step, // @[difftest/src/main/scala/Difftest.scala 496:22]
@@ -79152,7 +79153,7 @@ module SimTop(
   output        difftest_uart_in_valid, // @[difftest/src/main/scala/Difftest.scala 496:22]
   input  [7:0]  difftest_uart_in_ch // @[difftest/src/main/scala/Difftest.scala 496:22]
 );
-reg reset = 1'b0;
+assume(reset == 1'b0);
 `ifdef RANDOMIZE_REG_INIT
   reg [63:0] _RAND_0;
   reg [63:0] _RAND_1;

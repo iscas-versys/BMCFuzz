@@ -56,6 +56,8 @@ fn sim_run(workload: &String) -> i32 {
         .collect();
     unsafe { sim_args.extend(SIM_ARGS.iter().cloned()) };
 
+    println!("Sim args: {:?}", sim_args);
+
     // convert the simulation arguments into c_char**
     let sim_args: Vec<_> = sim_args
         .iter()
@@ -108,7 +110,6 @@ fn clone_to_run_sim(workload: &String) -> i32 {
         sim_args.push("--snapshot-image".to_string());
         sim_args.push(workload.to_string());
     }
-    println!("Sim args: {:?}", sim_args);
 
     let ret = Command::new(fuzzer)
         .args(sim_args)

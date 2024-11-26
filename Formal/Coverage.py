@@ -20,7 +20,6 @@ class Coverage:
         self.covered_num += len(cover_cases)
         for cover in cover_cases:
             self.cover_points[cover] = 1
-            self.covered_num += 1
 
     def update_fuzz(self, cover_points):
         for index, cover in enumerate(cover_points):

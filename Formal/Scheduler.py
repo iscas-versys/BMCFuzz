@@ -276,10 +276,14 @@ if __name__ == "__main__":
     parser.add_argument('--run_snapshot', '-r', action='store_true')
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
     parser.add_argument('--run_loop', '-l', type=int, default=1)
+    parser.add_argument('--test_formal', '-t', action='store_true')
 
     args = parser.parse_args()
 
-    run(args)
+    if args.test_formal:
+        test_formal(args)
+    else:
+        run(args)
     # generate_empty_cover_points_file()
     # test_fuzz()
     # test_formal(args)

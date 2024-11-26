@@ -34,7 +34,7 @@ class Scheduler:
         
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
-        cover_points_name = generate_rtl_files(False, cover_type)
+        cover_points_name = generate_rtl_files(run_snapshot, cover_type)
 
         point_id = 0
         module_id = 0
@@ -78,7 +78,7 @@ class Scheduler:
                 log_message("Exit:Coverage reached target!")
                 break
 
-    def run_formal(self):
+    def run_formal(self, test_formal=False):
         if self.run_snapshot:
             generate_rtl_files(True, self.cover_type)
         cover_points = self.point_selector.generate_cover_points()
@@ -103,7 +103,8 @@ class Scheduler:
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
-        # self.coverage.update_formal(cover_cases)
+        if test_formal:
+            self.coverage.update_formal(cover_cases)
         self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
 
         return True
@@ -246,7 +247,13 @@ def test_formal(args=None):
     log_message("Sleep 10 seconds for background running.")
     time.sleep(10)
     log_message("Start formal.")
-    scheduler.run_formal(all_points)
+    
+    while(True):
+        if not scheduler.run_formal(True):
+            log_message("Exit: no more points to cover.")
+            scheduler.display_coverage()
+            break
+        scheduler.display_coverage()
 
 def test_fuzz(args=None):
     clear_logs()

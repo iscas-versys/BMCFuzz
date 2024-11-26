@@ -34,7 +34,8 @@ class Scheduler:
         
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
-        cover_points_name = generate_rtl_files(run_snapshot, cover_type)
+        # False for snapshot fuzz init
+        cover_points_name = generate_rtl_files(False, cover_type)
 
         point_id = 0
         module_id = 0

@@ -79153,7 +79153,7 @@ module SimTop(
   output        difftest_uart_in_valid, // @[difftest/src/main/scala/Difftest.scala 496:22]
   input  [7:0]  difftest_uart_in_ch // @[difftest/src/main/scala/Difftest.scala 496:22]
 );
-assume(reset == 1'b0);
+assume property(reset == 1'b0);
 `ifdef RANDOMIZE_REG_INIT
   reg [63:0] _RAND_0;
   reg [63:0] _RAND_1;

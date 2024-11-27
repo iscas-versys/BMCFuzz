@@ -82,6 +82,8 @@ class Scheduler:
     def run_formal(self, test_formal=False):
         if self.run_snapshot:
             generate_rtl_files(True, self.cover_type)
+        if test_formal:
+            self.point_selector.MAX_POINT_NUM = len(self.points_name)
         cover_points = self.point_selector.generate_cover_points()
         while(True):
             # 清理并重新生成cover points文件

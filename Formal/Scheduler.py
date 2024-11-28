@@ -26,7 +26,6 @@ class Scheduler:
     cover_type = "toggle"
 
     def init(self, run_snapshot=False, cover_type="toggle"):
-        clear_logs()
         log_message("Scheduler init")
 
         self.run_snapshot = run_snapshot

@@ -38,6 +38,46 @@ _start:
     csrr t0, mstatus
     # 由于状态VCD波形的导出当前以mstatus变换为准则 把mstatus值修改放在最后
     # val satp = RegInit(UInt(XLEN.W), "h8000_0000_0008_0002".U)
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
 
 virtual_memory:
     # 刷新TLB

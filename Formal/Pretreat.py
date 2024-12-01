@@ -144,6 +144,9 @@ def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
             cover_name = current_module + "." + signal_name
             cover_name = re.sub(sub_toggle_pattern, r'\2', cover_name)
             cover_id = covername2id.get(cover_name, -1)
+            if cover_id == -1:
+                log_message(f"cover_name: {cover_name} not found in covername2id.")
+                cover_id = len(cover_points)
             new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
             new_lines.append(new_cover_line)
             cover_points.append((current_module, signal_name))
@@ -287,6 +290,8 @@ if __name__ == "__main__":
     clear_logs()
     log_init()
     clean_cover_files()
-    cover_points_name = generate_rtl_files()
-    generate_empty_cover_points_file(11747)
+    # run_snapshot = False
+    run_snapshot = True
+    cover_points_name = generate_rtl_files(run_snapshot)
+    generate_empty_cover_points_file(len(cover_points_name))
     # generate_sby_files([3933, 4389, 4390, 4392])

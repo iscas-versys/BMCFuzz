@@ -2,7 +2,9 @@ import os
 import csv
 import sys
 import shutil
+import argparse
 import subprocess
+
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Formal"))
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "SetInitValues"))
@@ -206,22 +208,22 @@ class SnapshotFuzz:
 
         log_message("End Run On Wave")
 
-def run():
+def run(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     clear_logs(current_dir)
     log_init(current_dir)
 
     fuzz = SnapshotFuzz()
-    fuzz.init()
+    fuzz.init(cover_type=args.cover_type)
     fuzz.run_loop(60)
 
-def run_on_special_wave():
+def run_on_special_wave(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     clear_logs(current_dir)
     log_init(current_dir)
 
     fuzz = SnapshotFuzz()
-    fuzz.init(special_wave=True)
+    fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
     fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'))
@@ -230,7 +232,20 @@ def run_on_special_wave():
     # fuzz.run_loop_with_special_wave(1, os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'), os.path.join(fuzz.set_init_values_dir, 'csr_snapshot', '1'), 211)
 
 if __name__ == "__main__":
-    # run()
-    run_on_special_wave()
+    parser = argparse.ArgumentParser()
+    
+
+    parser.add_argument("--fuzz", "-f", action='store_true', help="Run fuzz")
+    parser.add_argument("--special-wave", "-s", action='store_true', help="Run on special wave")
+
+    parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
+
+    args = parser.parse_args()
+    
+    if args.fuzz:
+        run(args)
+    if args.special_wave:
+        run_on_special_wave(args)
+
     pass
 

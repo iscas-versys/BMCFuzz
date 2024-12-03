@@ -26,6 +26,17 @@ _start:
     srli t0, t0, 12            # 页表基地址右移12位
     or t0, t0, t1              # 组合模式和基地址
     csrw satp, t0              # 写入satp寄存器
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     # 配置satp结束
     # 清除mstatus寄存器的MPP字段，设置为U态 (00)
     csrr t0, mstatus

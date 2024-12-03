@@ -14,6 +14,14 @@ _start:
     li a1, 0x8000000000000000 # Sv39模式
     or a0, a0, a1
     csrw satp, a0
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
 
     # 刷新TLB
     sfence.vma
@@ -25,9 +33,25 @@ _start:
     # 设置mstatus寄存器，启用S模式
     li a0, (1 << 11)         # 设置MPP为S模式
     csrs mstatus, a0
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
 
     # 切换到S模式
     mret
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
 
 supervisor_mode:
     # 示例虚拟地址访问

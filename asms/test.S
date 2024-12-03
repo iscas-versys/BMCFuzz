@@ -20,13 +20,6 @@ _start:
     nop
     nop
     nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
     mret
 
 loop:
@@ -60,6 +53,19 @@ loop:
     nop
     nop
     nop
+    slli t0, t0, 1
+    csrw satp, t0
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     nop
     nop
     nop
@@ -71,3 +77,7 @@ loop:
     nop
     nop
     j loop
+    nop
+    nop
+    nop
+    nop

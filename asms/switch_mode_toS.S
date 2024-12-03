@@ -10,6 +10,19 @@ _start:
     li t0, 0x1
     slli t0, t0, 11
     csrs mstatus, t0
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
 
     # 执行mret以切换到S态
     mret

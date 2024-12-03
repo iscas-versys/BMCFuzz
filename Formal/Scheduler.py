@@ -10,6 +10,66 @@ from Pretreat import *
 from PointSelector import PointSelector
 from Executor import execute_cover_tasks, run_command
 
+NOOP_HOME = os.getenv("NOOP_HOME")
+
+class FuzzArgs:
+    fuzzing = False
+    cover_type = "toggle"
+    max_runs = 2000
+    corpus_input = ""
+    
+    continue_on_errors = False
+    insert_nop = False
+    save_errors = False
+
+    formal_cover_rate = -1.0
+
+    # emu
+    max_instr = 100
+    max_cycle = 500
+    begin_trace = 0
+
+    no_diff = False
+    
+    output_file = ""
+
+    def generate_fuzz_command(self):
+        fuzz_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && {NOOP_HOME}/build/fuzzer"
+
+        if self.fuzzing:
+            fuzz_command += " -f"
+        fuzz_command += f" -c firrtl.{self.cover_type}"
+        if self.max_runs > 0:
+            fuzz_command += f" --max-runs {self.max_runs}"
+        if self.corpus_input != "":
+            fuzz_command += f" --corpus-input {self.corpus_input}"
+        
+        if self.continue_on_errors:
+            fuzz_command += " --continue-on-errors"
+        if self.insert_nop:
+            fuzz_command += " --insert-nop"
+        if self.save_errors:
+            fuzz_command += " --save-errors"
+        
+        if self.formal_cover_rate > 0:
+            fuzz_command += f" --formal-cover-rate {self.formal_cover_rate}"
+        
+        fuzz_command += " --"
+        fuzz_command += f" -I {self.max_instr}"
+        fuzz_command += f" -C {self.max_cycle}"
+        fuzz_command += f" -b {self.begin_trace}"
+
+        if self.no_diff:
+            fuzz_command += " --no-diff"
+
+        if self.output_file != "":
+            fuzz_command += f" > {self.output_file}"
+            fuzz_command += " 2>&1"
+        
+        fuzz_command = "bash -c \'" + fuzz_command + "\'"
+        log_message(f"Fuzz command: {fuzz_command}")
+        return fuzz_command
+
 class Scheduler:
     coverage = Coverage()
 

@@ -100,12 +100,13 @@ fn clone_to_run_sim(workload: &String) -> i32 {
         .collect();
     unsafe { sim_args.extend(SIM_ARGS.iter().cloned()) };
     // send simulation arguments to sim_main and get the return code
+    let fuzz_id = unsafe { NUM_RUNS };
     sim_args.push("--fuzz-id".to_string());
-    sim_args.push(unsafe{NUM_RUNS.to_string()});
+    sim_args.push(fuzz_id.to_string());
     sim_args.push("--dump-csr-change".to_string());
     sim_args.push("--dump-wave-full".to_string());
     sim_args.push("--wave-path".to_string());
-    sim_args.push(format!("{}/tmp/run_wave.vcd", env::var("NOOP_HOME").unwrap()));
+    sim_args.push(format!("{}/tmp/fuzz_run/{}/run_wave.vcd", env::var("NOOP_HOME").unwrap(), fuzz_id));
     if unsafe{ RUN_SNAPSHOT } {
         sim_args.push("--snapshot-image".to_string());
         sim_args.push(workload.to_string());

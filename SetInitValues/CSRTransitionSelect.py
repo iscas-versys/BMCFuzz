@@ -38,7 +38,7 @@ class CSRTransitionSelect:
 
         for fuzz_id in os.listdir(fuzz_run_dir):
             dirpath = fuzz_run_dir + "/" + fuzz_id
-            testcase = dirpath + "/fuzz_testcase"
+            # testcase = dirpath + "/fuzz_testcase"
             csr_transition_dir = dirpath + "/csr_transition"
             csr_waveform_dir = dirpath + "/csr_wave"
             cycle_pattern = re.compile(r"csr_wave_(\d+)_(\d+).vcd")
@@ -56,7 +56,7 @@ class CSRTransitionSelect:
                         continue
                     self.transition_id += 1
                     self.total_transitions.append((score, self.transition_id))
-                    self.generate_snapshot_file(testcase, self.transition_id)
+                    # self.generate_snapshot_file(testcase, self.transition_id)
                     self.generate_waveform_file(wave_file, self.transition_id)
                     self.id2transition[self.transition_id] = (past, now)
                     self.id2cycle[self.transition_id] = case_cycle
@@ -106,7 +106,7 @@ class CSRTransitionSelect:
         
         criteria = [
             # C1: Privilege mode changed
-            ('C_1', (past_c1, now_c1), 6),
+            ('C_1', (past_c1, now_c1), 3),
             # C2: Virtual memory enabled
             ('C_2', (past_c2, now_c2), 5),
             # C3: Single function changed (TSR, TW, TVM)

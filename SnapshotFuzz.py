@@ -20,9 +20,11 @@ from SetInitValues.new_init_folder import create_init_files
 
 from SetInitValues.CSRTransitionSelect import CSRTransitionSelect
 
-from Formal.Scheduler import Scheduler
+from Formal.Scheduler import Scheduler, FuzzArgs
 from Formal.Pretreat import log_message, clear_logs, log_init
 from Formal.Executor import run_command
+
+NOOP_HOME = os.getenv("NOOP_HOME")
 
 class SnapshotFuzz:
     split_sv_modules_dir = None
@@ -35,6 +37,8 @@ class SnapshotFuzz:
     csr_transition_selector = None
 
     scheduler = None
+
+    cover_type = "toggle"
     
     def init(self, cover_type="toggle", special_wave=False):
         current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -119,6 +123,59 @@ class SnapshotFuzz:
             shutil.rmtree(os.path.join(os.getenv("NOOP_HOME"), 'crashes'))
         os.mkdir(os.path.join(os.getenv("NOOP_HOME"), 'crashes'))
         
+    def generate_init_file(self, wave_vcd_path):
+        log_message("Start Run On Wave")
+        
+        # convert wave vcd to json
+        wave_json_path = wave_vcd_path.replace('.vcd', '.json')
+        if os.path.exists(wave_json_path):
+            os.remove(wave_json_path)
+        vcd_to_json(wave_vcd_path, wave_json_path)
+        log_message(f"Convert wave vcd to json executed successfully.")
+
+        # set regs init values
+        updated_registers_json = os.path.join(self.set_init_values_dir, 'updated_registers.json')
+        result = connect_json_vcd(self.module_with_regs_json, wave_json_path, updated_registers_json)
+        if result != 0:
+            log_message(f"Set regs init values failed with return code: {result}")
+            exit(result)
+        log_message(f"Set regs init values executed successfully.")
+
+        # create init files
+        init_file_path = os.path.join(self.set_init_values_dir, 'SimTop_init.sv')
+        create_init_files(self.split_sv_modules_dir, self.split_sv_modules_dir + '_init', updated_registers_json, init_file_path)
+        log_message(f"Create init files executed successfully.")
+
+        log_message("End Run On Wave")
+
+    def fuzz_init(self):
+        fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'logs')
+        fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+
+        fuzz_args = FuzzArgs()
+        fuzz_args.fuzzing = True
+        fuzz_args.cover_type = self.cover_type
+        fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
+
+        fuzz_args.continue_on_errors = True
+        fuzz_args.insert_nop = True
+        fuzz_args.save_errors = True
+        
+        fuzz_args.max_cycle = 10000
+        fuzz_args.max_instr = 2000
+
+        fuzz_args.output_file = fuzz_log_file
+        
+        fuzz_command = fuzz_args.generate_fuzz_command()
+        self.scheduler.clean_fuzz_run()
+        return_code = run_command(fuzz_command, shell=True)
+
+        self.scheduler.update_coverage()
+        
+        self.csr_transition_selector.update()
+    
+    def bmc_reset_init(self):
+        pass
     
     def run_loop(self, loop_count):
         fuzz_log_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'logs', 'fuzz')
@@ -158,56 +215,6 @@ class SnapshotFuzz:
 
             log_message(f"End Loop {i}")
     
-    def run_loop_with_special_wave(self, loop_count, wave_vcd_path, snapshot_file, snapshot_cycle):
-        fuzz_log_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'logs', 'fuzz')
-
-        self.scheduler.run_snapshot_fuzz_init(fuzz_log_dir)
-        self.scheduler.update_coverage()
-
-        # generate init file
-        self.generate_init_file(wave_vcd_path)
-
-        for i in range(loop_count):
-            log_message(f"Start Loop {i}")
-
-            # start formal
-            if not self.scheduler.run_formal():
-                log_message(f"Exit: no more points to cover.")
-                exit(1)
-            
-            # start snapshot fuzz
-            self.scheduler.run_snapshot_fuzz(snapshot_file, snapshot_cycle)
-
-            # update coverage
-            self.scheduler.update_coverage()
-
-            log_message(f"End Loop {i}")
-    
-    def generate_init_file(self, wave_vcd_path):
-        log_message("Start Run On Wave")
-        
-        # convert wave vcd to json
-        wave_json_path = wave_vcd_path.replace('.vcd', '.json')
-        if os.path.exists(wave_json_path):
-            os.remove(wave_json_path)
-        vcd_to_json(wave_vcd_path, wave_json_path)
-        log_message(f"Convert wave vcd to json executed successfully.")
-
-        # set regs init values
-        updated_registers_json = os.path.join(self.set_init_values_dir, 'updated_registers.json')
-        result = connect_json_vcd(self.module_with_regs_json, wave_json_path, updated_registers_json)
-        if result != 0:
-            log_message(f"Set regs init values failed with return code: {result}")
-            exit(result)
-        log_message(f"Set regs init values executed successfully.")
-
-        # create init files
-        init_file_path = os.path.join(self.set_init_values_dir, 'SimTop_init.sv')
-        create_init_files(self.split_sv_modules_dir, self.split_sv_modules_dir + '_init', updated_registers_json, init_file_path)
-        log_message(f"Create init files executed successfully.")
-
-        log_message("End Run On Wave")
-
 def run(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     clear_logs(current_dir)
@@ -231,12 +238,22 @@ def run_on_special_wave(args):
     # test switch_mode_toU cycle: 211
     # fuzz.run_loop_with_special_wave(1, os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'), os.path.join(fuzz.set_init_values_dir, 'csr_snapshot', '1'), 211)
 
+def test(args):
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    clear_logs(current_dir)
+    log_init(current_dir)
+
+    fuzz = SnapshotFuzz()
+    fuzz.init(cover_type=args.cover_type)
+    fuzz.fuzz_init(args.cover_type)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
 
     parser.add_argument("--fuzz", "-f", action='store_true', help="Run fuzz")
     parser.add_argument("--special-wave", "-s", action='store_true', help="Run on special wave")
+    parser.add_argument("--test", "-t", action='store_true', help="Run test")
 
     parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
 
@@ -246,6 +263,6 @@ if __name__ == "__main__":
         run(args)
     if args.special_wave:
         run_on_special_wave(args)
-
-    pass
+    if args.test:
+        test(args)
 

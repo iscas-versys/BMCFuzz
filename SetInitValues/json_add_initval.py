@@ -2,6 +2,8 @@ import json
 import re
 import os
 
+from tools import log_message
+
 reg_cnt = 0
 
 def parse_sv_file(filepath):
@@ -41,7 +43,7 @@ def parse_sv_file(filepath):
                 init_val = 'None'
 
                 if reg_num > 16:
-                    print(f"skip multi_reg with reg_num > 16: {reg_name} {reg_num}")
+                    log_message(f"skip multi_reg with reg_num > 16: {reg_name} {reg_num}", print_message=False)
                     continue
 
                 for i in range(reg_num):
@@ -86,7 +88,7 @@ def add_regs(input_json_path, output_json_path, sv_dir):
     with open(output_json_path, 'w') as json_file:
         json.dump(updated_json_data, json_file, indent=4)
     
-    print(f"reg_cnt:{reg_cnt}")
+    log_message(f"Total register count: {reg_cnt}")
 
 def main():
     input_json_path = './hierarchy_emu.json'  # 输入的JSON文件路径

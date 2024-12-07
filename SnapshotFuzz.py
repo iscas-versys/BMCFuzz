@@ -125,6 +125,7 @@ class SnapshotFuzz:
         
     def generate_init_file(self, wave_vcd_path):
         log_message("Start Run On Wave")
+        log_message(f"Wave VCD Path: {wave_vcd_path}")
         
         # convert wave vcd to json
         wave_json_path = wave_vcd_path.replace('.vcd', '.json')
@@ -149,11 +150,13 @@ class SnapshotFuzz:
         log_message("End Run On Wave")
 
     def fuzz_init(self):
+        # init fuzz log
         fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'logs')
+        make_log_file = os.path.join(fuzz_log_dir, f'make_{datetime.now().strftime("%Y-%m-%d_%H%M")}.log')
         fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
 
+        # init fuzz args
         fuzz_args = FuzzArgs()
-        fuzz_args.fuzzing = True
         fuzz_args.cover_type = self.cover_type
         fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
 
@@ -164,56 +167,66 @@ class SnapshotFuzz:
         fuzz_args.max_cycle = 10000
         fuzz_args.max_instr = 2000
 
+        fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
-        
-        fuzz_command = fuzz_args.generate_fuzz_command()
+
+        # make fuzzer and clean fuzz run dir
+        fuzz_args.make_fuzzer()
         self.scheduler.clean_fuzz_run()
+        
+        # generate fuzz command and run
+        fuzz_command = fuzz_args.generate_fuzz_command()
         return_code = run_command(fuzz_command, shell=True)
+        log_message(f"fuzz init return code: {return_code}")
 
         self.scheduler.update_coverage()
         
         self.csr_transition_selector.update()
     
-    def bmc_reset_init(self):
-        pass
-    
-    def run_loop(self, loop_count):
-        fuzz_log_dir = os.path.join(os.getenv("NOOP_HOME"), 'ccover', 'logs', 'fuzz')
+    def run_hybrid_loop(self):
+        loop_count = 0
+        while(True):
+            loop_count += 1
+            log_message(f"Hybrid Loop {loop_count}")
 
-        self.scheduler.run_snapshot_fuzz_init(fuzz_log_dir)
-        self.scheduler.update_coverage()
-
-        self.csr_transition_selector.update()
-        for i in range(loop_count):
-            log_message(f"Start Loop {i}")
-
-            # select highest score snapshot
-            snapshot_id, snapshot_cycle, snapshot_transition, snapshot_score = self.csr_transition_selector.select_highest_score_snapshot()
-            log_message(f"Best Snapshot ID: {snapshot_id} Cycle: {snapshot_cycle}")
-            log_message(f"Transition:\npast:{snapshot_transition[0]}\nnow:{snapshot_transition[1]}")
-            log_message(f"Score: {snapshot_score}")
-            snapshot_file = os.path.join(self.set_init_values_dir, 'csr_snapshot', f'{snapshot_id}')
-            wave_file = os.path.join(self.csr_wave_dir, f'{snapshot_id}.vcd')
-
-            # generate init file
-            self.generate_init_file(wave_file)
-
-            # start formal
+            # run formal
             if not self.scheduler.run_formal():
-                log_message(f"Exit: no more points to cover.")
-                exit(1)
-            
-            # start snapshot fuzz
-            self.scheduler.run_snapshot_fuzz(snapshot_file, snapshot_cycle)
+                log_message(f"Hybrid Loop End: no more points to cover.")
+                break
+                
+            # run snapshot fuzz
+            self.scheduler.run_snapshot_fuzz()
 
             # update coverage
             self.scheduler.update_coverage()
+        
+        # restart init
+        self.scheduler.restart_init()
+    
+    def run(self):
+        # run fuzz init and generate csr transition waves
+        self.fuzz_init()
 
-            # delete snapshot file
-            # self.csr_transition_selector.delete_snapshot(snapshot_id)
-            # self.csr_transition_selector.delete_waveform(snapshot_id)
+        loop_count = 0
+        while(True):
+            loop_count += 1
+            log_message(f"Snapshot Loop {loop_count}")
+            
+            # select highest score snapshot
+            best_snapshot_id = self.csr_transition_selector.select_highest_score_snapshot()
+            wave_path = os.path.join(self.csr_wave_dir, f'{best_snapshot_id}.vcd')
+            if best_snapshot_id == -1:
+                log_message(f"Exit: no more csr transitions.")
+                break
 
-            log_message(f"End Loop {i}")
+            # generate init file
+            self.generate_init_file(wave_path)
+
+            # run hybrid loop
+            self.run_hybrid_loop()
+        
+        log_message("End Snapshot Loop")
+        self.scheduler.display_coverage()
     
 def run(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -222,7 +235,7 @@ def run(args):
 
     fuzz = SnapshotFuzz()
     fuzz.init(cover_type=args.cover_type)
-    fuzz.run_loop(60)
+    fuzz.run()
 
 def run_on_special_wave(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -233,7 +246,7 @@ def run_on_special_wave(args):
     fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
-    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'))
+    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'rtl_src', 'reset_toggle.vcd'))
 
     # test switch_mode_toU cycle: 211
     # fuzz.run_loop_with_special_wave(1, os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'), os.path.join(fuzz.set_init_values_dir, 'csr_snapshot', '1'), 211)
@@ -245,7 +258,7 @@ def test(args):
 
     fuzz = SnapshotFuzz()
     fuzz.init(cover_type=args.cover_type)
-    fuzz.fuzz_init(args.cover_type)
+    fuzz.fuzz_init()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

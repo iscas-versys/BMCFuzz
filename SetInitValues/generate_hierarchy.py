@@ -2,6 +2,8 @@ import yaml
 import json
 import os
 
+from tools import log_message
+
 def parse_yaml(file_path):
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
@@ -14,7 +16,7 @@ def find_module_by_name(modules, mod_name):
 
 def build_hierarchy(modules, current_module):
     if current_module is None:
-        print("Error: current_module is None")
+        log_message("Error: current_module is None")
         return {}
 
     hierarchy = {
@@ -24,11 +26,11 @@ def build_hierarchy(modules, current_module):
     
     insts = current_module.get('insts')
     if insts is None:
-        print(f"Warning: No instances found in module {current_module.get('mod_name', 'Unknown')}")
+        log_message(f"Warning: No instances found in module {current_module.get('mod_name', 'Unknown')}", print_message=False)
         return hierarchy
 
     for inst in insts:
-        print(f"Processing instance {inst['inst_name']} of module {inst['mod_name']}")
+        log_message(f"Processing instance {inst['inst_name']} of module {inst['mod_name']}", print_message=False)
         child_module = find_module_by_name(modules, inst['mod_name'])
         if child_module:
             child_hierarchy = build_hierarchy(modules, child_module)
@@ -38,7 +40,7 @@ def build_hierarchy(modules, current_module):
                 "children": child_hierarchy.get('insts', [])
             })
         else:
-            print(f"Warning: child module {inst['mod_name']} not found")
+            log_message(f"Warning: child module {inst['mod_name']} not found", print_message=False)
             hierarchy['insts'].append({
                 "inst_name": inst['inst_name'],
                 "mod_name": inst['mod_name'],
@@ -58,7 +60,7 @@ def hierarchy_yaml_parser(yaml_file_path, json_file_path, top_module_name):
     # Find the top module
     top_module = find_module_by_name(all_modules, top_module_name)
     if not top_module:
-        print(f"Top module {top_module_name} not found in the YAML file.")
+        log_message(f"Top module {top_module_name} not found in the YAML file.")
         return -1
 
     # Build the hierarchy
@@ -68,7 +70,7 @@ def hierarchy_yaml_parser(yaml_file_path, json_file_path, top_module_name):
     with open(json_file_path, 'w') as json_file:
         json.dump(hierarchy, json_file, indent=4)
 
-    print(f"[Step3] Hierarchy has been written to {json_file_path}")
+    log_message(f"[Step3] Hierarchy has been written to {json_file_path}")
     return 0
 
 def main():

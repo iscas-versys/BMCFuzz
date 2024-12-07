@@ -86,13 +86,7 @@ fn sim_run(workload: &String) -> i32 {
 
 fn clone_to_run_sim(workload: &String) -> i32 {
     let fuzzer = format!("{}/build/fuzzer", env::var("NOOP_HOME").unwrap());
-    let image: String;
-    if unsafe{ RUN_SNAPSHOT } {
-        image = unsafe{ SNAPSHOT_IMAGE.clone().unwrap() };
-    }
-    else {
-        image = workload.clone();
-    }
+    let image: String = workload.clone();
     // prepare the simulation arguments in Vec<String> format
     let mut sim_args: Vec<String> = vec!["-c".to_string(), unsafe{COVER_NAME.clone().unwrap()} , "--".to_string(), image.to_string()]
         .iter()
@@ -107,10 +101,6 @@ fn clone_to_run_sim(workload: &String) -> i32 {
     sim_args.push("--dump-wave-full".to_string());
     sim_args.push("--wave-path".to_string());
     sim_args.push(format!("{}/tmp/fuzz_run/{}/run_wave.vcd", env::var("NOOP_HOME").unwrap(), fuzz_id));
-    if unsafe{ RUN_SNAPSHOT } {
-        sim_args.push("--snapshot-image".to_string());
-        sim_args.push(workload.to_string());
-    }
 
     let ret = Command::new(fuzzer)
         .args(sim_args)
@@ -153,9 +143,6 @@ pub static mut MAX_RUNS: u64 = u64::MAX;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 pub static mut INSERT_NOP: bool = false;
 pub static mut COVER_NAME: Option<String> = None;
-
-pub static mut RUN_SNAPSHOT: bool = false;
-pub static mut SNAPSHOT_IMAGE: Option<String> = None;
 
 pub static mut CORPUS_NUM: u64 = 0;
 
@@ -310,11 +297,6 @@ pub(crate) fn set_formal_cover_rate(rate: f64) {
 
 pub(crate) fn set_insert_nop(insert_nop: bool) {
     unsafe { INSERT_NOP = insert_nop };
-}
-
-pub(crate) fn set_run_snapshot(snapshot: bool, snapshot_file: Option<String>) {
-    unsafe { RUN_SNAPSHOT = snapshot };
-    unsafe { SNAPSHOT_IMAGE = snapshot_file };
 }
 
 pub(crate) fn set_corpus_num(corpus_dir: String) {

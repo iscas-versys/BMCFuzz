@@ -1,4 +1,36 @@
 
+def generate_csr_transition_criteria(transition_map, past, now):
+    past_c1 = past['privilegeMode']
+    now_c1 = now['privilegeMode']
+
+    past_c2 = parse_c2_bits(past['mstatus'], get_satp_hi(past['satp']), past['privilegeMode'])
+    now_c2 = parse_c2_bits(now['mstatus'], get_satp_hi(now['satp']), now['privilegeMode'])
+    
+    past_c3 = parse_c3_bits(past['mstatus'])
+    now_c3 = parse_c3_bits(now['mstatus'])
+    
+    past_c4 = parse_c4_bits(past['mstatus'])
+    now_c4 = parse_c4_bits(now['mstatus'])
+    
+    past_c5 = past['medeleg']
+    now_c5 = now['medeleg']
+    
+    criteria = [
+        # C1: Privilege mode changed
+        ('C_1', (past_c1, now_c1), 6),
+        # C2: Virtual memory enabled
+        ('C_2', (past_c2, now_c2), 5),
+        # C3: Single function changed (TSR, TW, TVM)
+        ('C_3', (past_c3, now_c3), 4),
+        # C4: Other mstatus bits changed (MPP, SPP, MPIE, SPIE, MIE, SIE)
+        ('C_4', (past_c4, now_c4), 3),
+        # C5: M mode delegation changed
+        ('C_5', (past_c5, now_c5), 2),
+        # C6: Other custom CSRs changed
+        # ('C_6', (past_custom_csrs, now_custom_csrs), k)
+    ]
+
+    return criteria
 
 def parse_c2_bits(mstatus, satp_mode, privilege_mode):
     parsed_mstatus = parse_mstatus(mstatus)
@@ -67,33 +99,18 @@ def get_satp_hi(satp):
 
 if __name__ == "__main__":
     Transition = ({'privilegeMode': '3', 'mstatus': ' a00001800', 'satp': ' 0', 'medeleg': ' 0'}, {'privilegeMode': '3', 'mstatus': ' a00141800', 'satp': ' 0', 'medeleg': ' 0'})
+    transition_map = {
+        'C_1': {},
+        'C_2': {},
+        'C_3': {},
+        'C_4': {},
+        'C_5': {},
+        'C_6': {}
+    }
     past = Transition[0]
     now = Transition[1]
-    past_c1 = past['privilegeMode']
-    now_c1 = now['privilegeMode']
-    past_c2 = parse_c2_bits(past['mstatus'], get_satp_hi(past['satp']), past['privilegeMode'])
-    now_c2 = parse_c2_bits(now['mstatus'], get_satp_hi(now['satp']), now['privilegeMode'])
-    past_c3 = parse_c3_bits(past['mstatus'])
-    now_c3 = parse_c3_bits(now['mstatus'])
-    past_c4 = parse_c4_bits(past['mstatus'])
-    now_c4 = parse_c4_bits(now['mstatus'])
-    past_c5 = past['medeleg']
-    now_c5 = now['medeleg']
     
-    criteria = [
-        # C1: Privilege mode changed
-        ('C_1', (past_c1, now_c1), 6),
-        # C2: Virtual memory enabled
-        ('C_2', (past_c2, now_c2), 5),
-        # C3: Single function changed (TSR, TW, TVM)
-        ('C_3', (past_c3, now_c3), 4),
-        # C4: Other mstatus bits changed (MPP, SPP, MPIE, SPIE, MIE, SIE)
-        ('C_4', (past_c4, now_c4), 3),
-        # C5: M mode delegation changed
-        ('C_5', (past_c5, now_c5), 2),
-        # C6: Other custom CSRs changed
-        # ('C_6', (past_custom_csrs, now_custom_csrs), k)
-    ]
+    criteria = generate_csr_transition_criteria(transition_map, past, now)
 
     score = 0
     for C_i, (past_bits, now_bits), power in criteria:

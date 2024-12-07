@@ -47,12 +47,6 @@ struct Arguments {
     #[clap(default_value_t = false, long)]
     insert_nop: bool,
 
-    // run snapshot
-    #[clap(default_value_t = false, long)]
-    run_snapshot: bool,
-    #[clap(long)]
-    snapshot_file: Option<String>,
-
     // Run options
     #[clap(default_value_t = 1, long)]
     repeat: usize,
@@ -120,11 +114,8 @@ fn main() -> i32 {
         println!("save_errors: {:?}", args.save_errors);
         println!("formal_cover_rate: {:?}", args.formal_cover_rate);
         println!("insert nop: {:?}", args.insert_nop);
-        println!("run_snapshot: {:?}", args.run_snapshot);
-        println!("snapshot_file: {:?}", args.snapshot_file);
         harness::set_formal_cover_rate(args.formal_cover_rate);
         harness::set_insert_nop(args.insert_nop);
-        harness::set_run_snapshot(args.run_snapshot, args.snapshot_file);
         harness::set_cover_points();
         if corpus_input.is_some() {
             harness::set_corpus_num(corpus_input.clone().unwrap());

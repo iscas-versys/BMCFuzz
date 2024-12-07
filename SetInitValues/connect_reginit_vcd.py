@@ -1,5 +1,7 @@
 import json
 
+from tools import log_message
+
 def find_registers(hierarchy, path="SimTop"):
     """Recursively find all registers with their paths in the hierarchy."""
     reg_paths = {}
@@ -69,7 +71,7 @@ def main():
     # print(formatted_output)
     top_module_key = find_top_moudle_key(vcd_data['children'], "SimTop")
     if(top_module_key == None):
-       print("[ERROR] No top module found")
+       log_message("[ERROR] Top module not found in VCD data.")
        return
     # # # Update register initial values based on VCD data
     update_registers_with_vcd_data(vcd_data['children'][top_module_key], reg_paths)
@@ -77,7 +79,7 @@ def main():
     # # # Write the updated hierarchy to a new file
     with open('updated_hierarchy.json', 'w') as f:
         json.dump(hierarchy_data, f, indent=4)
-    print("[INFO] Updated hierarchy written to updated_hierarchy.json")
+    log_message("[INFO] Updated hierarchy written to updated_hierarchy.json")
     # print(vcd_data['children'][-1]['name'])
 if __name__ == "__main__":
     main()

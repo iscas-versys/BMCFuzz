@@ -13,7 +13,7 @@ from Executor import execute_cover_tasks, run_command
 NOOP_HOME = os.getenv("NOOP_HOME")
 
 class FuzzArgs:
-    fuzzing = False
+    fuzzing = True
     cover_type = "toggle"
     max_runs = 2000
     corpus_input = ""
@@ -21,6 +21,7 @@ class FuzzArgs:
     continue_on_errors = False
     insert_nop = False
     save_errors = False
+    run_snapshot = False
 
     formal_cover_rate = -1.0
 
@@ -31,7 +32,53 @@ class FuzzArgs:
 
     no_diff = False
     
+    make_log_file = ""
     output_file = ""
+
+    def make_fuzzer(self):
+        make_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && make clean"
+        if self.run_snapshot:
+            # make src
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
+            make_command += f" > {self.make_log_file} 2>&1"
+            make_command = "bash -c \'" + make_command + "\'"
+            log_message(f"Make src command: {make_command}")
+            return_code = run_command(make_command, shell=True)
+            log_message(f"Make src return code: {return_code}")
+
+            # replace src
+            src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "SimTop_init.sv")
+            dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "SimTop.sv")
+
+            if os.path.exists(dst_rtl):
+                os.remove(dst_rtl)
+            
+            src_lines = []
+            with open(src_rtl, mode='r', encoding='utf-8') as src_file:
+                src_lines = src_file.readlines()
+                for line in src_lines:
+                    if line.startswith("assume"):
+                        src_lines.remove(line)
+            
+            with open(dst_rtl, mode='w', encoding='utf-8') as dst_file:
+                dst_file.writelines(src_lines)
+
+            # make fuzzer
+            make_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh"
+            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
+            make_command += f" >> {self.make_log_file} 2>&1"
+            make_command = "bash -c \'" + make_command + "\'"
+            log_message(f"Make fuzzer command: {make_command}")
+            return_code = run_command(make_command, shell=True)
+            log_message(f"Make fuzzer return code: {return_code}")
+        else:
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
+            make_command += f" > {self.make_log_file} 2>&1"
+            make_command = "bash -c \'" + make_command + "\'"
+            log_message(f"Make fuzzer command: {make_command}")
+            return_code = run_command(make_command, shell=True)
+            log_message(f"Make fuzzer return code: {return_code}")
+
 
     def generate_fuzz_command(self):
         fuzz_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && {NOOP_HOME}/build/fuzzer"
@@ -50,6 +97,8 @@ class FuzzArgs:
             fuzz_command += " --insert-nop"
         if self.save_errors:
             fuzz_command += " --save-errors"
+        if self.run_snapshot:
+            fuzz_command += " --run-snapshot"
         
         if self.formal_cover_rate > 0:
             fuzz_command += f" --formal-cover-rate {self.formal_cover_rate}"
@@ -117,15 +166,19 @@ class Scheduler:
 
         generate_empty_cover_points_file(point_id)
     
-    def run_loop(self, max_iter, target_coverage=0.9):
-        pre_fuzz_covered_num = 0
-        for i in range(max_iter):
-            log_message(f"Loop {i+1}")
+    def restart_init(self):
+        self.point_selector.reset_uncovered_points(self.coverage.cover_points)
+    
+    def run_loop(self):
+        loop_count = 0
+        while(True):
+            loop_count += 1
+            log_message(f"Hybrid Loop {loop_count}")
 
             # 选点并执行formal任务
             if not self.run_formal():
                 self.coverage.display_coverage()
-                log_message("Exit:No more cover points!")
+                log_message("Hybrid Loop End:No more cover points!")
                 break
 
             # 执行fuzz任务
@@ -133,10 +186,6 @@ class Scheduler:
 
             # 获取fuzz结果并更新Coverage、PointSelector
             self.update_coverage()
-
-            if self.coverage.get_coverage() >= target_coverage:
-                log_message("Exit:Coverage reached target!")
-                break
 
     def run_formal(self, test_formal=False):
         if self.run_snapshot:
@@ -183,45 +232,39 @@ class Scheduler:
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
     
-    def run_snapshot_fuzz_init(self, fuzz_log_dir=None):
-        log_message("Start Run Snapshot Fuzz Init")
+    def run_snapshot_fuzz(self):
+        # init fuzz log
+        fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
+        make_log_file = os.path.join(fuzz_log_dir, f"make_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+        fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
 
-        NOOP_HOME = os.getenv("NOOP_HOME")
-        if fuzz_log_dir is None:
-            FUZZ_LOG = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
-        else:
-            FUZZ_LOG = fuzz_log_dir
-        fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+        # set fuzz args
+        fuzz_args = FuzzArgs()
+        fuzz_args.cover_type = self.cover_type
+        fuzz_args.corpus_input = os.getenv("CORPUS_DIR")
 
-        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
-                        {NOOP_HOME}/build/fuzzer -f --max-runs 2000 --continue-on-errors \
-                        --corpus-input $RISCV_CORPUS -c firrtl.toggle --insert-nop -- -C 10000 -b 0 \
-                        > {fuzz_log_file} 2>&1'"
+        fuzz_args.continue_on_errors = True
+        fuzz_args.save_errors = True
+        fuzz_args.run_snapshot = True
 
+        fuzz_args.formal_cover_rate = self.coverage.get_formal_cover_rate()
+
+        fuzz_args.max_instr = 300
+        fuzz_args.max_cycle = 1000
+
+        fuzz_args.no_diff = True
+
+        fuzz_args.make_log_file = make_log_file
+        fuzz_args.output_file = fuzz_log_file
+
+        fuzz_command = fuzz_args.generate_fuzz_command()
+
+        # make fuzzer and clean fuzz run dir
+        fuzz_args.make_fuzzer()
         self.clean_fuzz_run()
+
+        # run fuzz
         return_code = run_command(fuzz_command, shell=True)
-
-        log_message(f"Fuzz return code: {return_code}")
-        
-    
-    def run_snapshot_fuzz(self, snapshot_file, cycles):
-        log_message("Start Run Snapshot Fuzz")
-
-        NOOP_HOME = os.getenv("NOOP_HOME")
-        FUZZ_LOG = os.getenv("FUZZ_LOG")
-        fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
-        formal_cover_rate = self.coverage.get_formal_cover_rate()
-
-        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
-                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} \
-                        --continue-on-errors --run-snapshot --snapshot-file {snapshot_file} \
-                        --corpus-input $CORPUS_DIR -c firrtl.toggle -- -C 10000 -b 0 \
-                        --snapshot-cycles {cycles} \
-                        > {fuzz_log_file} 2>&1'"
-        
-        self.clean_fuzz_run()
-        return_code = run_command(fuzz_command, shell=True)
-
         log_message(f"Fuzz return code: {return_code}")
     
     def display_coverage(self):
@@ -279,7 +322,7 @@ def run(args=None):
     log_message("Sleep 10 seconds for background running.")
     time.sleep(10)
     log_message("Start formal.")
-    scheduler.run_loop(args.run_loop)
+    scheduler.run_loop()
 
 def test_formal(args=None):
     clear_logs()
@@ -337,7 +380,6 @@ if __name__ == "__main__":
 
     parser.add_argument('--run_snapshot', '-r', action='store_true')
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
-    parser.add_argument('--run_loop', '-l', type=int, default=1)
     parser.add_argument('--test_formal', '-t', action='store_true')
 
     args = parser.parse_args()

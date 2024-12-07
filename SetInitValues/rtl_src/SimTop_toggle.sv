@@ -51,8 +51,8 @@ module SRAMTemplate(
   reg  rdata_REG; // @[src/main/scala/utils/Hold.scala 28:106]
   reg [73:0] rdata_r_0; // @[src/main/scala/utils/Hold.scala 23:65]
   wire [73:0] _GEN_14 = rdata_REG ? array_0_R0_data : rdata_r_0; // @[src/main/scala/utils/Hold.scala 23:{65,65,65}]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  resetState_p; // @[src/main/scala/utils/SRAMTemplate.scala 80:30]
   wire  resetState_t = resetState ^ resetState_p; // @[src/main/scala/utils/SRAMTemplate.scala 80:30]
   wire  toggle_0_clock;
@@ -659,8 +659,8 @@ module BPU_inorder(
   wire [3:0] _io_brIdx_T_1 = {1'h1,crosslineJump,_T_9}; // @[src/main/scala/nutcore/frontend/BPU.scala 419:35]
   wire [3:0] _GEN_7 = {{1'd0}, btbRead_brIdx}; // @[src/main/scala/nutcore/frontend/BPU.scala 419:30]
   wire [3:0] _io_brIdx_T_2 = _GEN_7 & _io_brIdx_T_1; // @[src/main/scala/nutcore/frontend/BPU.scala 419:30]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  flush_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  flush_t = flush ^ flush_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_85_clock;
@@ -1311,8 +1311,8 @@ module IFU_inorder(
   reg  r; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  _GEN_3 = io_imem_req_valid | r; // @[src/main/scala/utils/StopWatch.scala 24:20 30:{20,24}]
   wire  _T_4 = |io_flushVec; // @[src/main/scala/nutcore/frontend/IFU.scala 396:37]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [38:0] pc_p; // @[src/main/scala/nutcore/frontend/IFU.scala 323:19]
   wire [38:0] pc_t = pc ^ pc_p; // @[src/main/scala/nutcore/frontend/IFU.scala 323:19]
   wire  toggle_169_clock;
@@ -2007,8 +2007,8 @@ module NaiveRVCAlignBuffer(
   wire  _io_out_bits_brIdx_T_10 = pnpcOut == _pnpcOut_T_9 & _rvcFinish_T_1 | pnpcOut == _pnpcOut_T_7 & isRVC ? 1'h0 : 1'h1
     ; // @[src/main/scala/nutcore/frontend/NaiveIBF.scala 193:27]
   wire  _io_out_bits_exceptionVec_12_T_2 = _instr_T_1 | _instr_T; // @[src/main/scala/nutcore/frontend/NaiveIBF.scala 199:133]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] state_p; // @[src/main/scala/nutcore/frontend/NaiveIBF.scala 41:22]
   wire [1:0] state_t = state ^ state_p; // @[src/main/scala/nutcore/frontend/NaiveIBF.scala 41:22]
   wire  toggle_249_clock;
@@ -3731,8 +3731,8 @@ module FlushableQueue(
   wire  do_deq = io_deq_ready & io_deq_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [1:0] _value_T_1 = enq_ptr_value + 2'h1; // @[src/main/scala/chisel3/util/Counter.scala 77:24]
   wire [1:0] _value_T_3 = deq_ptr_value + 2'h1; // @[src/main/scala/chisel3/util/Counter.scala 77:24]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] enq_ptr_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire [1:0] enq_ptr_value_t = enq_ptr_value ^ enq_ptr_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire  toggle_349_clock;
@@ -4404,8 +4404,8 @@ module Frontend_inorder(
   reg  idu_io_in_0_bits_r_exceptionVec_12; // @[src/main/scala/utils/Pipeline.scala 30:28]
   reg [3:0] idu_io_in_0_bits_r_brIdx; // @[src/main/scala/utils/Pipeline.scala 30:28]
   reg  idu_io_in_0_bits_r_crossBoundaryFault; // @[src/main/scala/utils/Pipeline.scala 30:28]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  valid_p; // @[src/main/scala/utils/Pipeline.scala 24:24]
   wire  valid_t = valid ^ valid_p; // @[src/main/scala/utils/Pipeline.scala 24:24]
   wire  toggle_354_clock;
@@ -5996,8 +5996,8 @@ module ISU(
   wire  _T_3 = io_in_0_valid & ~io_out_valid; // @[src/main/scala/nutcore/backend/seq/ISU.scala 97:40]
   wire  _T_6 = io_out_valid & ~_isuFireSetMask_T; // @[src/main/scala/nutcore/backend/seq/ISU.scala 98:38]
   wire  _T_7 = io_out_ready & io_out_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [31:0] busy_p; // @[src/main/scala/nutcore/RF.scala 37:21]
   wire [31:0] busy_t = busy ^ busy_p; // @[src/main/scala/nutcore/RF.scala 37:21]
   wire  toggle_504_clock;
@@ -15595,8 +15595,8 @@ module ALU(
   wire  _T_112 = _io_redirect_valid_T_1 & _T_22; // @[src/main/scala/nutcore/backend/fu/ALU.scala 191:33]
   wire  _T_114 = right & _T_23; // @[src/main/scala/nutcore/backend/fu/ALU.scala 192:33]
   wire  _T_116 = _io_redirect_valid_T_1 & _T_23; // @[src/main/scala/nutcore/backend/fu/ALU.scala 193:33]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  hasIllegalJumpAddr_p; // @[src/main/scala/nutcore/backend/fu/ALU.scala 138:35]
   wire  hasIllegalJumpAddr_t = hasIllegalJumpAddr ^ hasIllegalJumpAddr_p; // @[src/main/scala/nutcore/backend/fu/ALU.scala 138:35]
   wire  toggle_2584_clock;
@@ -16735,8 +16735,8 @@ module LSExecUnit(
   wire  _T_42 = io__dmem_req_valid & io__dmem_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   reg  r_1; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  _GEN_12 = _T_42 | r_1; // @[src/main/scala/utils/StopWatch.scala 24:20 30:{20,24}]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [63:0] io_vaddr_r_p; // @[src/main/scala/utils/Hold.scala 23:65]
   wire [63:0] io_vaddr_r_t = io_vaddr_r ^ io_vaddr_r_p; // @[src/main/scala/utils/Hold.scala 23:65]
   wire  toggle_2740_clock;
@@ -17989,8 +17989,8 @@ module UnpipelinedLSU(
   wire  setLrVal = lrReq & ~hasException; // @[src/main/scala/nutcore/backend/fu/UnpipelinedLSU.scala 319:21]
   wire [63:0] setLrAddr = vmEnable ? {{32'd0}, lr_paddr} : io__in_bits_src1; // @[src/main/scala/nutcore/backend/fu/UnpipelinedLSU.scala 320:19]
   wire  scInflight = state == 3'h4; // @[src/main/scala/nutcore/backend/fu/UnpipelinedLSU.scala 143:23]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [63:0] io_vaddr_r_p; // @[src/main/scala/utils/Hold.scala 23:65]
   wire [63:0] io_vaddr_r_t = io_vaddr_r ^ io_vaddr_r_p; // @[src/main/scala/utils/Hold.scala 23:65]
   wire  toggle_2936_clock;
@@ -19139,8 +19139,8 @@ module Multiplier(
   reg  io_out_valid_REG_3; // @[src/main/scala/nutcore/backend/fu/MDU.scala 57:44]
   reg  busy; // @[src/main/scala/nutcore/backend/fu/MDU.scala 62:21]
   wire  _GEN_0 = io_in_valid & ~busy | busy; // @[src/main/scala/nutcore/backend/fu/MDU.scala 62:21 63:{31,38}]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [64:0] mulRes_REG_p; // @[src/main/scala/nutcore/backend/fu/MDU.scala 56:43]
   wire [64:0] mulRes_REG_t = mulRes_REG ^ mulRes_REG_p; // @[src/main/scala/nutcore/backend/fu/MDU.scala 56:43]
   wire  toggle_3132_clock;
@@ -21829,8 +21829,8 @@ module Divider(
   wire [63:0] _resR_T_1 = 64'h0 - r; // @[src/main/scala/nutcore/backend/fu/MDU.scala 125:28]
   wire [63:0] resR = aSignReg ? _resR_T_1 : r; // @[src/main/scala/nutcore/backend/fu/MDU.scala 125:17]
   wire [6:0] _GEN_23 = reset ? 7'h0 : _GEN_16; // @[src/main/scala/chisel3/util/Counter.scala 61:{40,40}]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] state_p; // @[src/main/scala/nutcore/backend/fu/MDU.scala 77:22]
   wire [2:0] state_t = state ^ state_p; // @[src/main/scala/nutcore/backend/fu/MDU.scala 77:22]
   wire  toggle_3657_clock;
@@ -23231,8 +23231,8 @@ module MDU(
   reg  isDivReg_REG; // @[src/main/scala/nutcore/backend/fu/MDU.scala 181:50]
   wire  isDivReg = _isDivReg_T ? isDiv : isDivReg_REG; // @[src/main/scala/nutcore/backend/fu/MDU.scala 181:21]
   wire  _T = mul_io_out_ready & mul_io_out_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  isDivReg_REG_p; // @[src/main/scala/nutcore/backend/fu/MDU.scala 181:50]
   wire  isDivReg_REG_t = isDivReg_REG ^ isDivReg_REG_p; // @[src/main/scala/nutcore/backend/fu/MDU.scala 181:50]
   wire  toggle_3926_clock;
@@ -24429,8 +24429,8 @@ module CSR(
   wire [63:0] _perfCnts_2_T_7 = perfCnts_2 + 64'h2; // @[src/main/scala/nutcore/backend/fu/CSR.scala 994:86]
   wire [3:0] _T_198 = raiseIntr & io_instrValid ? intrNO : 4'h0; // @[src/main/scala/nutcore/backend/fu/CSR.scala 1087:43]
   wire [3:0] _T_200 = raiseException & io_instrValid ? exceptionNO : 4'h0; // @[src/main/scala/nutcore/backend/fu/CSR.scala 1088:43]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] priviledgeMode_p; // @[src/main/scala/nutcore/backend/fu/CSR.scala 262:31]
   wire [1:0] priviledgeMode_t = priviledgeMode ^ priviledgeMode_p; // @[src/main/scala/nutcore/backend/fu/CSR.scala 262:31]
   wire  toggle_3927_clock;
@@ -32887,8 +32887,8 @@ module Backend_inorder(
   reg [63:0] wbu_io_in_bits_r_commits_2; // @[src/main/scala/utils/Pipeline.scala 30:28]
   reg [63:0] wbu_io_in_bits_r_commits_3; // @[src/main/scala/utils/Pipeline.scala 30:28]
   reg  wbu_io_in_bits_r_isExit; // @[src/main/scala/utils/Pipeline.scala 30:28]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  valid_p; // @[src/main/scala/utils/Pipeline.scala 24:24]
   wire  valid_t = valid ^ valid_p; // @[src/main/scala/utils/Pipeline.scala 24:24]
   wire  toggle_5404_clock;
@@ -37341,8 +37341,8 @@ module LockingArbiter(
   wire  _T_2 = ~io_in_0_valid; // @[src/main/scala/chisel3/util/Arbiter.scala 45:78]
   wire  _io_in_0_ready_T_1 = locked ? ~lockIdx : 1'h1; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
   wire  _io_in_1_ready_T_1 = locked ? lockIdx : _T_2; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] lockCount_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire [2:0] lockCount_value_t = lockCount_value ^ lockCount_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire  toggle_6181_clock;
@@ -37535,8 +37535,8 @@ module SimpleBusCrossbarNto1(
   wire  _T_25 = io_out_resp_ready & io_out_resp_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _T_26 = io_out_resp_bits_cmd == 4'h6; // @[src/main/scala/bus/simplebus/SimpleBus.scala 91:26]
   wire [1:0] _GEN_9 = _T_25 ? 2'h0 : state; // @[src/main/scala/bus/simplebus/Crossbar.scala 122:{50,58} 92:22]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 92:22]
   wire [1:0] state_t = state ^ state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 92:22]
   wire  toggle_6185_clock;
@@ -37790,8 +37790,8 @@ module LockingArbiter_1(
   wire  _io_in_0_ready_T_1 = locked ? lockIdx == 2'h0 : 1'h1; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
   wire  _io_in_1_ready_T_1 = locked ? lockIdx == 2'h1 : _T_4; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
   wire  _io_in_2_ready_T_1 = locked ? lockIdx == 2'h2 : _T_5; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] lockCount_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire [2:0] lockCount_value_t = lockCount_value ^ lockCount_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire  toggle_6188_clock;
@@ -38009,8 +38009,8 @@ module SimpleBusCrossbarNto1_1(
   wire  _T_25 = io_out_resp_ready & io_out_resp_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _T_26 = io_out_resp_bits_cmd == 4'h6; // @[src/main/scala/bus/simplebus/SimpleBus.scala 91:26]
   wire [1:0] _GEN_13 = _T_25 ? 2'h0 : state; // @[src/main/scala/bus/simplebus/Crossbar.scala 122:{50,58} 92:22]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 92:22]
   wire [1:0] state_t = state ^ state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 92:22]
   wire  toggle_6193_clock;
@@ -38552,8 +38552,8 @@ module EmbeddedTLBExec(
   wire  _hasException_T_1 = io_pf_laf | io_pf_saf; // @[src/main/scala/nutcore/Bundle.scala 135:24]
   wire  hasException = _hasException_T | _hasException_T_1; // @[src/main/scala/nutcore/Bundle.scala 136:35]
   wire  _io_out_valid_T_5 = ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 496:78]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [63:0] victimWaymask_lfsr_p; // @[src/main/scala/utils/LFSR64.scala 25:23]
   wire [63:0] victimWaymask_lfsr_t = victimWaymask_lfsr ^ victimWaymask_lfsr_p; // @[src/main/scala/utils/LFSR64.scala 25:23]
   wire  toggle_6197_clock;
@@ -40813,8 +40813,8 @@ module EmbeddedTLBMD(
   reg  resetState; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 56:27]
   wire  _GEN_1 = resetState ? 1'h0 : resetState; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 58:22 56:27 58:35]
   wire [3:0] waymask = resetState ? 4'hf : io_write_waymask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 67:20]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  resetState_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 56:27]
   wire  resetState_t = resetState ^ resetState_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 56:27]
   wire  toggle_6583_clock;
@@ -41095,8 +41095,8 @@ module EmbeddedTLB(
   wire  _GEN_20 = ~vmEnable | io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 144:19 145:26 170:23]
   wire  _GEN_21 = ~vmEnable ? io_in_req_valid & reqIsLegalInstr : tlbExec_io_out_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 144:19 156:24 170:23]
   reg [86:0] userBits; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 205:31]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [144:0] r_0_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 96:29]
   wire [144:0] r_0_t = r_0 ^ r_0_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 96:29]
   wire  toggle_6584_clock;
@@ -44893,8 +44893,8 @@ module PTERequestFilter(
   wire  isLegal = |(io_in_req_bits_addr >= 32'h80000000); // @[src/main/scala/nutcore/NutCore.scala 70:67]
   wire  _hasInflight_T = io_in_req_ready & io_in_req_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [7:0] _io_in_resp_bits_rdata_T = {3'h7,io_u,4'hf}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 570:33]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  hasInflight_t = hasInflight ^ hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  toggle_7419_clock;
@@ -45065,8 +45065,8 @@ module Cache_fake(
   reg [63:0] mmiordata; // @[src/main/scala/nutcore/mem/Cache.scala 603:28]
   reg [63:0] memrdata; // @[src/main/scala/nutcore/mem/Cache.scala 605:27]
   reg [86:0] memuser; // @[src/main/scala/nutcore/mem/Cache.scala 611:26]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] state_p; // @[src/main/scala/nutcore/mem/Cache.scala 558:22]
   wire [2:0] state_t = state ^ state_p; // @[src/main/scala/nutcore/mem/Cache.scala 558:22]
   wire  toggle_7420_clock;
@@ -46737,8 +46737,8 @@ module EmbeddedTLBExec_1(
   wire  hasException = _hasException_T_2 | loadPF | storePF | loadAF | storeAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 494:72]
   wire  _io_out_valid_T_5 = ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 496:78]
   wire  scIsSuccess = _T_59 | lr_0 & lr_addr == _GEN_71 | ~(hit | state == 3'h4); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 477:60]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [63:0] victimWaymask_lfsr_p; // @[src/main/scala/utils/LFSR64.scala 25:23]
   wire [63:0] victimWaymask_lfsr_t = victimWaymask_lfsr ^ victimWaymask_lfsr_p; // @[src/main/scala/utils/LFSR64.scala 25:23]
   wire  toggle_7673_clock;
@@ -49146,8 +49146,8 @@ module EmbeddedTLBMD_1(
   wire  resetFinish = resetState & wrap_wrap; // @[src/main/scala/chisel3/util/Counter.scala 118:{16,23} 117:24]
   wire  _GEN_2 = resetFinish ? 1'h0 : resetState; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 58:22 56:27 58:35]
   wire [3:0] waymask = resetState ? 4'hf : io_write_waymask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 67:20]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  resetState_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 56:27]
   wire  resetState_t = resetState ^ resetState_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 56:27]
   wire  toggle_8065_clock;
@@ -49537,8 +49537,8 @@ module EmbeddedTLB_1(
   wire  tlbFinish = tlbExec_io_out_valid & ~alreadyOutFinish | _tlbFinish_T_4 | ~scIsSuccess_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 180:95]
   wire  _T_12 = io_csrMMU_loadPF | io_csrMMU_storePF; // @[src/main/scala/nutcore/Bundle.scala 134:23]
   wire  _T_13 = io_csrMMU_laf | io_csrMMU_saf; // @[src/main/scala/nutcore/Bundle.scala 135:24]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [144:0] r_0_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 96:29]
   wire [144:0] r_0_t = r_0 ^ r_0_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 96:29]
   wire  toggle_8070_clock;
@@ -53444,8 +53444,8 @@ module PTERequestFilter_1(
   wire  isLegal = |(io_in_req_bits_addr >= 32'h80000000); // @[src/main/scala/nutcore/NutCore.scala 70:67]
   wire  _hasInflight_T = io_in_req_ready & io_in_req_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire [7:0] _io_in_resp_bits_rdata_T = {3'h7,io_u,4'hf}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 570:33]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  hasInflight_t = hasInflight ^ hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  toggle_8882_clock;
@@ -53641,8 +53641,8 @@ module Cache_fake_1(
   reg [3:0] mmiocmd; // @[src/main/scala/nutcore/mem/Cache.scala 604:26]
   reg [63:0] memrdata; // @[src/main/scala/nutcore/mem/Cache.scala 605:27]
   reg [3:0] memcmd; // @[src/main/scala/nutcore/mem/Cache.scala 606:25]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] state_p; // @[src/main/scala/nutcore/mem/Cache.scala 558:22]
   wire [2:0] state_t = state ^ state_p; // @[src/main/scala/nutcore/mem/Cache.scala 558:22]
   wire  toggle_8883_clock;
@@ -56119,8 +56119,8 @@ module NutCore(
   wire [1:0] dequeueSize = {{1'd0}, _dequeueSize_T}; // @[src/main/scala/utils/PipelineVector.scala 64:42]
   wire  dequeueFire = dequeueSize > 2'h0; // @[src/main/scala/utils/PipelineVector.scala 65:35]
   wire [1:0] _ringBufferTail_T_1 = ringBufferTail + dequeueSize; // @[src/main/scala/utils/PipelineVector.scala 67:42]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [63:0] dataBuffer_0_cf_instr_p; // @[src/main/scala/utils/PipelineVector.scala 29:29]
   wire [63:0] dataBuffer_0_cf_instr_t = dataBuffer_0_cf_instr ^ dataBuffer_0_cf_instr_p; // @[src/main/scala/utils/PipelineVector.scala 29:29]
   wire  toggle_9135_clock;
@@ -64228,8 +64228,8 @@ module CoherenceManager(
   wire [63:0] _GEN_42 = 3'h1 == state ? io_out_mem_resp_bits_rdata : _GEN_30; // @[src/main/scala/system/Coherence.scala 72:14 74:18]
   wire [31:0] _GEN_43 = 3'h1 == state ? io_in_req_bits_addr : _GEN_32; // @[src/main/scala/system/Coherence.scala 74:18 59:23]
   wire  _GEN_48 = 3'h1 == state ? _io_out_mem_req_valid_T_1 : _GEN_37; // @[src/main/scala/system/Coherence.scala 74:18]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] state_p; // @[src/main/scala/system/Coherence.scala 45:22]
   wire [2:0] state_t = state ^ state_p; // @[src/main/scala/system/Coherence.scala 45:22]
   wire  toggle_10135_clock;
@@ -64531,8 +64531,8 @@ module LockingArbiter_2(
   wire  _T_2 = ~io_in_0_valid; // @[src/main/scala/chisel3/util/Arbiter.scala 45:78]
   wire  _io_in_0_ready_T_1 = locked ? ~lockIdx : 1'h1; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
   wire  _io_in_1_ready_T_1 = locked ? lockIdx : _T_2; // @[src/main/scala/chisel3/util/Arbiter.scala 71:22]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [2:0] lockCount_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire [2:0] lockCount_value_t = lockCount_value ^ lockCount_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire  toggle_10170_clock;
@@ -64731,8 +64731,8 @@ module SimpleBusCrossbarNto1_2(
   wire  _T_25 = io_out_resp_ready & io_out_resp_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   wire  _T_26 = io_out_resp_bits_cmd == 4'h6; // @[src/main/scala/bus/simplebus/SimpleBus.scala 91:26]
   wire [1:0] _GEN_9 = _T_25 ? 2'h0 : state; // @[src/main/scala/bus/simplebus/Crossbar.scala 122:{50,58} 92:22]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 92:22]
   wire [1:0] state_t = state ^ state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 92:22]
   wire  toggle_10174_clock;
@@ -65031,8 +65031,8 @@ module SimpleBus2AXI4Converter(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10177_clock;
@@ -65282,8 +65282,8 @@ module SimpleBusCrossbar1toN(
   wire [3:0] _io_in_resp_bits_T_6 = outSelRespVec_1 ? 4'h6 : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [3:0] _io_in_resp_bits_T_7 = outSelRespVec_2 ? io_out_2_resp_bits_cmd : 4'h0; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [3:0] _io_in_resp_bits_T_8 = _io_in_resp_bits_T_5 | _io_in_resp_bits_T_6; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 32:22]
   wire [1:0] state_t = state ^ state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 32:22]
   wire  toggle_10180_clock;
@@ -65643,8 +65643,8 @@ module AXI4CLINT(
   wire [63:0] _mtimecmp_T_3 = _msip_T | _mtimecmp_T_2; // @[src/main/scala/utils/BitUtils.scala 34:26]
   reg  io_extra_mtip_REG; // @[src/main/scala/device/AXI4CLINT.scala 66:31]
   reg  io_extra_msip_REG; // @[src/main/scala/device/AXI4CLINT.scala 67:31]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10185_clock;
@@ -67478,8 +67478,8 @@ module SimpleBus2AXI4Converter_1(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10528_clock;
@@ -67747,8 +67747,8 @@ module AXI4PLIC(
   wire [31:0] _priority_0_T_3 = _enable_0_0_T | _priority_0_T_2; // @[src/main/scala/utils/BitUtils.scala 34:26]
   wire [31:0] _threshold_0_T_2 = threshold_0 & _enable_0_0_T_1; // @[src/main/scala/utils/BitUtils.scala 34:37]
   wire [31:0] _threshold_0_T_3 = _enable_0_0_T | _threshold_0_T_2; // @[src/main/scala/utils/BitUtils.scala 34:26]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10531_clock;
@@ -68475,8 +68475,8 @@ module SimpleBus2AXI4Converter_2(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10632_clock;
@@ -69595,8 +69595,8 @@ module AXI4RAM(
   wire [31:0] rdata_lo_2 = {_rdata_T_28_0[31:24],_rdata_T_28_0[23:16],_rdata_T_28_0[15:8],_rdata_T_28_0[7:0]}; // @[src/main/scala/device/AXI4RAM.scala 48:32]
   wire [31:0] rdata_hi_2 = {_rdata_T_28_0[63:56],_rdata_T_28_0[55:48],_rdata_T_28_0[47:40],_rdata_T_28_0[39:32]}; // @[src/main/scala/device/AXI4RAM.scala 48:32]
   wire [31:0] _GEN_38 = reset ? 32'h0 : _GEN_7; // @[src/main/scala/chisel3/util/Counter.scala 61:{40,40}]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [7:0] c_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire [7:0] c_value_t = c_value ^ c_value_p; // @[src/main/scala/chisel3/util/Counter.scala 61:40]
   wire  toggle_10635_clock;
@@ -71049,8 +71049,8 @@ module SimpleBusCrossbar1toN_1(
   wire [3:0] _io_in_resp_bits_T_14 = _io_in_resp_bits_T_9 | _io_in_resp_bits_T_10; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [3:0] _io_in_resp_bits_T_15 = _io_in_resp_bits_T_14 | _io_in_resp_bits_T_11; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [3:0] _io_in_resp_bits_T_16 = _io_in_resp_bits_T_15 | _io_in_resp_bits_T_12; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [1:0] state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 32:22]
   wire [1:0] state_t = state ^ state_p; // @[src/main/scala/bus/simplebus/Crossbar.scala 32:22]
   wire  toggle_10811_clock;
@@ -71448,8 +71448,8 @@ module AXI4UART(
   wire [31:0] _stat_T_3 = _txfifo_T | _stat_T_2; // @[src/main/scala/utils/BitUtils.scala 34:26]
   wire [31:0] _ctrl_T_2 = ctrl & _txfifo_T_1; // @[src/main/scala/utils/BitUtils.scala 34:37]
   wire [31:0] _ctrl_T_3 = _txfifo_T | _ctrl_T_2; // @[src/main/scala/utils/BitUtils.scala 34:26]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10818_clock;
@@ -72186,8 +72186,8 @@ module VGACtrl(
   wire  _io_in_r_bits_data_T_3 = _io_in_r_bits_data_T_1 & _w_busy_T; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _GEN_13 = {{31'd0}, _io_in_r_bits_data_T_3}; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
   wire [31:0] _io_in_r_bits_data_T_4 = _io_in_r_bits_data_T_2 | _GEN_13; // @[src/main/scala/chisel3/util/Mux.scala 30:73]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10919_clock;
@@ -72552,8 +72552,8 @@ module AXI4RAM_1(
     rdata_mem_5_rdata_MPORT_1_data,rdata_mem_4_rdata_MPORT_1_data,rdata_mem_3_rdata_MPORT_1_data,
     rdata_mem_2_rdata_MPORT_1_data,rdata_mem_1_rdata_MPORT_1_data,rdata_mem_0_rdata_MPORT_1_data}; // @[src/main/scala/device/AXI4RAM.scala 55:18]
   reg [63:0] rdata; // @[src/main/scala/device/AXI4RAM.scala 55:14]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10924_clock;
@@ -73323,8 +73323,8 @@ module AXI4VGA(
   wire  _data_T = fb_io_in_r_ready & fb_io_in_r_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
   reg [63:0] data_r; // @[src/main/scala/utils/Hold.scala 23:65]
   wire [63:0] _GEN_14 = _data_T ? fb_io_in_r_bits_data : data_r; // @[src/main/scala/utils/Hold.scala 23:{65,65,65}]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  io_in_fb_r_valid_r_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  io_in_fb_r_valid_r_t = io_in_fb_r_valid_r ^ io_in_fb_r_valid_r_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_10993_clock;
@@ -74206,8 +74206,8 @@ module AXI4Flash(
   wire [63:0] rdata = {{39'd0}, _rdata_T_7}; // @[src/main/scala/device/AXI4Flash.scala 37:19 src/main/scala/utils/RegMap.scala 30:11]
   reg [63:0] io_in_r_bits_data_REG; // @[src/main/scala/device/AXI4Flash.scala 41:38]
   reg [63:0] io_in_r_bits_data_r; // @[src/main/scala/device/AXI4Flash.scala 41:30]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11114_clock;
@@ -75148,8 +75148,8 @@ module AXI4DummySD(
   wire [63:0] rdata = {{32'd0}, _rdata_T_31}; // @[src/main/scala/device/AXI4DummySD.scala 139:19 src/main/scala/utils/RegMap.scala 30:11]
   reg [63:0] io_in_r_bits_data_REG; // @[src/main/scala/device/AXI4DummySD.scala 144:44]
   reg [63:0] io_in_r_bits_data_r; // @[src/main/scala/device/AXI4DummySD.scala 144:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  r_busy_t = r_busy ^ r_busy_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11247_clock;
@@ -77403,8 +77403,8 @@ module SimpleBus2AXI4Converter_3(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11668_clock;
@@ -77626,8 +77626,8 @@ module SimpleBus2AXI4Converter_4(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11671_clock;
@@ -77846,8 +77846,8 @@ module SimpleBus2AXI4Converter_5(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11674_clock;
@@ -78064,8 +78064,8 @@ module SimpleBus2AXI4Converter_6(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11677_clock;
@@ -78287,8 +78287,8 @@ module SimpleBus2AXI4Converter_7(
   wire  _io_out_ar_valid_T_4 = ~io_in_req_bits_cmd[0] & ~io_in_req_bits_cmd[3]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 73:26]
   wire  _io_out_aw_valid_T_1 = io_in_req_valid & io_in_req_bits_cmd[0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 103:29]
   wire  _io_out_w_valid_T_2 = ~wAck; // @[src/main/scala/bus/simplebus/ToAXI4.scala 194:36]
-  reg  entoggle;
-  reg  entoggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg  awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  awAck_t = awAck ^ awAck_p; // @[src/main/scala/utils/StopWatch.scala 24:20]
   wire  toggle_11680_clock;
@@ -79259,8 +79259,8 @@ assume property(reset == 1'b0);
   reg [63:0] difftest_timer; // @[difftest/src/main/scala/Difftest.scala 501:24]
   wire [63:0] _difftest_timer_T_1 = difftest_timer + 64'h1; // @[difftest/src/main/scala/Difftest.scala 502:20]
   wire  difftest_log_enable = difftest_timer >= difftest_logCtrl_begin & difftest_timer < difftest_logCtrl_end; // @[difftest/src/main/scala/Difftest.scala 650:26]
-  reg  enToggle;
-  reg  enToggle_past;
+  reg  enToggle = 1'h1;
+  reg  enToggle_past = 1'h1;
   reg [63:0] difftest_timer_p; // @[difftest/src/main/scala/Difftest.scala 501:24]
   wire [63:0] difftest_timer_t = difftest_timer ^ difftest_timer_p; // @[difftest/src/main/scala/Difftest.scala 501:24]
   wire  toggle_11683_clock;

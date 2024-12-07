@@ -1,6 +1,8 @@
 import json
 import re
 
+from tools import log_message
+
 def find_registers(hierarchy, path="SimTop"):
     """Recursively find all registers with their paths in the hierarchy."""
     reg_paths = {}
@@ -77,7 +79,7 @@ def connect_json_vcd(hierarchy_regs_json_path, vcd_parser_json, updated_register
 
     # Output unmatched registers
     if unmatched_registers:
-        print(f"\n[Warn] {len(unmatched_registers)} registers not found in VCD:")
+        log_message(f"[Warn] {len(unmatched_registers)} registers not found in VCD:")
         # return 1
     return 0
     # print("\nUnmatched Registers:")

@@ -3,6 +3,8 @@ from pathlib import Path
 import re
 import shutil
 
+from tools import log_message
+
 def load_json(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)
@@ -34,7 +36,7 @@ def update_sv_files(target_dir, init_values):
     for module_name, init_statements in init_values.items():
         sv_file_path = target_dir / f"{module_name}.sv"
         if not sv_file_path.exists():
-            print(f"Warning: {sv_file_path} does not exist.")
+            log_message(f"Warning: {sv_file_path} does not exist.")
             continue
 
         with open(sv_file_path, 'r') as sv_file:
@@ -42,7 +44,7 @@ def update_sv_files(target_dir, init_values):
 
         endmodule_match = content.find('endmodule')
         if endmodule_match == -1:
-            print(f"Warning: No 'endmodule' found in {sv_file_path}.")
+            log_message(f"Warning: No 'endmodule' found in {sv_file_path}.")
             continue
 
         initial_block = "initial begin\n" + "\n".join(init_statements) + "\nend\n"
@@ -64,7 +66,7 @@ def merge_sv_files(target_dir, merged_file_name):
             merged_file.write(f"// {sv_file.name}\n")
             merged_file.write(content + "\n\n")
 
-    print(f"All .v and .sv files have been merged into {merged_file_path}")
+    log_message(f"All .v and .sv files have been merged into {merged_file_path}")
 
 def create_init_files(source_dir, target_dir, json_file_path, merged_file_name):
     source_dir_path = Path(source_dir)

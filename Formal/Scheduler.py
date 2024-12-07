@@ -36,7 +36,7 @@ class FuzzArgs:
     output_file = ""
 
     def make_fuzzer(self):
-        make_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && make clean"
+        make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
         if self.run_snapshot:
             # make src
             make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
@@ -64,7 +64,7 @@ class FuzzArgs:
                 dst_file.writelines(src_lines)
 
             # make fuzzer
-            make_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh"
+            make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT"
             make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
             make_command += f" >> {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
@@ -81,7 +81,7 @@ class FuzzArgs:
 
 
     def generate_fuzz_command(self):
-        fuzz_command = f"cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && {NOOP_HOME}/build/fuzzer"
+        fuzz_command = f"cd {NOOP_HOME} && source env.sh && build/fuzzer"
 
         if self.fuzzing:
             fuzz_command += " -f"

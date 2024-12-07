@@ -15,7 +15,7 @@ NOOP_HOME = os.getenv("NOOP_HOME")
 class FuzzArgs:
     fuzzing = True
     cover_type = "toggle"
-    max_runs = 2000
+    max_runs = 0
     corpus_input = ""
     
     continue_on_errors = False

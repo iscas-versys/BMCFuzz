@@ -81,15 +81,15 @@ class CSRTransitionSelect:
         
         self.update_transition_map(self.id2transition[best_id][0], self.id2transition[best_id][1])
 
-        new_transition = []
-        for _, csr_id in self.total_transitions:
-            csr_score = self.calculate_score(self.id2transition[csr_id][0], self.id2transition[csr_id][1])
-            if csr_score == 0:
-                self.delete_snapshot(csr_id)
-                self.delete_waveform(csr_id)
-                continue
-            new_transition.append((csr_score, csr_id))
-        self.total_transitions = new_transition
+        # new_transition = []
+        # for _, csr_id in self.total_transitions:
+        #     csr_score = self.calculate_score(self.id2transition[csr_id][0], self.id2transition[csr_id][1])
+        #     if csr_score == 0:
+        #         self.delete_waveform(csr_id)
+        #         continue
+        #     new_transition.append((csr_score, csr_id))
+        # self.total_transitions = new_transition
+        self.total_transitions.remove((best_score, best_id))
 
         log_message(f"Best ID: {best_id}, Score: {best_score}")
         log_message(f"Transition: {self.id2transition[best_id]}")

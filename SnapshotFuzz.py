@@ -158,6 +158,7 @@ class SnapshotFuzz:
         # init fuzz args
         fuzz_args = FuzzArgs()
         fuzz_args.cover_type = self.cover_type
+        fuzz_args.max_runs = 2000
         fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
 
         fuzz_args.continue_on_errors = True

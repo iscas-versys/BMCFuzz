@@ -193,7 +193,7 @@ def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
                 for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
                     lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
         new_lines = lines
-        log_message(f"reg_cnt: {reg_cnt}\nmuti_reg_cnt: {muti_reg_cnt}")
+        log_message(f"reg_cnt: {reg_cnt}\tmuti_reg_cnt: {muti_reg_cnt}")
     
     # 将修改后的内容写入新的RLT文件
     with open(rtl_file, 'w') as new_file:

@@ -246,10 +246,10 @@ def run_on_special_wave(args):
     fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
-    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'rtl_src', 'reset_toggle.vcd'))
+    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '0.vcd'))
 
-    # test switch_mode_toU cycle: 211
-    # fuzz.run_loop_with_special_wave(1, os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'), os.path.join(fuzz.set_init_values_dir, 'csr_snapshot', '1'), 211)
+    # run hybrid loop
+    fuzz.run_hybrid_loop()
 
 def test(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))

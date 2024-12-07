@@ -97,8 +97,6 @@ class FuzzArgs:
             fuzz_command += " --insert-nop"
         if self.save_errors:
             fuzz_command += " --save-errors"
-        if self.run_snapshot:
-            fuzz_command += " --run-snapshot"
         
         if self.formal_cover_rate > 0:
             fuzz_command += f" --formal-cover-rate {self.formal_cover_rate}"
@@ -107,6 +105,9 @@ class FuzzArgs:
         fuzz_command += f" -I {self.max_instr}"
         fuzz_command += f" -C {self.max_cycle}"
         fuzz_command += f" -b {self.begin_trace}"
+
+        if self.run_snapshot:
+            fuzz_command += " --run-snapshot"
 
         if self.no_diff:
             fuzz_command += " --no-diff"
@@ -135,6 +136,8 @@ class Scheduler:
     cover_type = "toggle"
 
     def init(self, run_snapshot=False, cover_type="toggle"):
+        if run_snapshot:
+            clear_logs()
         log_message("Scheduler init")
 
         self.run_snapshot = run_snapshot

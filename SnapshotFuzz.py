@@ -1,6 +1,6 @@
 import os
-import csv
 import sys
+import time
 import shutil
 import argparse
 import subprocess
@@ -222,6 +222,7 @@ class SnapshotFuzz:
 
             # generate init file
             self.generate_init_file(wave_path)
+            self.csr_transition_selector.delete_waveform(best_snapshot_id)
 
             # run hybrid loop
             self.run_hybrid_loop()
@@ -233,6 +234,10 @@ def run(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     clear_logs(current_dir)
     log_init(current_dir)
+
+    log_message("Sleep 10 seconds for background running")
+    time.sleep(10)
+    log_message("Start Running")
 
     fuzz = SnapshotFuzz()
     fuzz.init(cover_type=args.cover_type)

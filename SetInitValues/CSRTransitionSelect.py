@@ -17,7 +17,8 @@ class CSRTransitionSelect:
     }
 
     transition_id = 0
-    total_transitions = []
+    transition_scores = []
+    total_transitions = set()
 
     selected_reset = False
 
@@ -54,11 +55,17 @@ class CSRTransitionSelect:
                     csv_reader = list(csv.DictReader(file))
                     past = csv_reader[0]
                     now = csv_reader[1]
+                    transition_str = str(past) + str(now)
+                    if transition_str in self.total_transitions:
+                        log_message(f"Transition already exists: {past}, {now}")
+                        continue
+                    self.total_transitions.add(transition_str)
                     score = self.calculate_score(past, now)
                     if score == 0:
+                        log_message(f"Transition score is 0: {past}, {now}")
                         continue
                     self.transition_id += 1
-                    self.total_transitions.append((score, self.transition_id))
+                    self.transition_scores.append((score, self.transition_id))
                     self.generate_waveform_file(wave_file, self.transition_id)
                     self.id2transition[self.transition_id] = (past, now)
                     log_message(f"Transition ID: {self.transition_id}, Score: {score}")
@@ -67,29 +74,29 @@ class CSRTransitionSelect:
     def select_highest_score_snapshot(self):
         if not self.selected_reset:
             self.selected_reset = True
+            log_message(f"Selecting reset snapshot.")
             return 0
         
-        if len(self.total_transitions) == 0:
+        if len(self.transition_scores) == 0:
             return -1
         
         best_score = -1
         best_id = -1
-        for csr_score, csr_id in self.total_transitions:
+        for csr_score, csr_id in self.transition_scores:
             if csr_score > best_score:
                 best_score = csr_score
                 best_id = csr_id
         
         self.update_transition_map(self.id2transition[best_id][0], self.id2transition[best_id][1])
+        self.transition_scores.remove((best_score, best_id))
 
-        # new_transition = []
-        # for _, csr_id in self.total_transitions:
-        #     csr_score = self.calculate_score(self.id2transition[csr_id][0], self.id2transition[csr_id][1])
-        #     if csr_score == 0:
-        #         self.delete_waveform(csr_id)
-        #         continue
-        #     new_transition.append((csr_score, csr_id))
-        # self.total_transitions = new_transition
-        self.total_transitions.remove((best_score, best_id))
+        new_transition = []
+        for _, csr_id in self.transition_scores:
+            csr_score = self.calculate_score(self.id2transition[csr_id][0], self.id2transition[csr_id][1])
+            log_message(f"Transition ID: {csr_id}, Score: {csr_score}")
+            log_message(f"Transition: {self.id2transition[csr_id]}")
+            new_transition.append((csr_score, csr_id))
+        self.transition_scores = new_transition
 
         log_message(f"Best ID: {best_id}, Score: {best_score}")
         log_message(f"Transition: {self.id2transition[best_id]}")
@@ -131,7 +138,9 @@ class CSRTransitionSelect:
     def delete_waveform(self, waveform_id):
         set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"
         wave_file = set_init_dir + f"/csr_wave/{waveform_id}.vcd"
+        wave_json = set_init_dir + f"/csr_wave/{waveform_id}.json"
         os.remove(wave_file)
+        os.remove(wave_json)
     
     def generate_waveform_file(self, src_file, waveform_id):
         set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"

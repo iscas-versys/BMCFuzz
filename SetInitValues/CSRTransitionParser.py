@@ -17,7 +17,7 @@ def generate_csr_transition_criteria(transition_map, past, now):
     
     criteria = [
         # C1: Privilege mode changed
-        ('C_1', (past_c1, now_c1), 6),
+        ('C_1', (past_c1, now_c1), 3),
         # C2: Virtual memory enabled
         ('C_2', (past_c2, now_c2), 5),
         # C3: Single function changed (TSR, TW, TVM)
@@ -98,7 +98,7 @@ def get_satp_hi(satp):
     return satp_bin[:4]
 
 if __name__ == "__main__":
-    Transition = ({'privilegeMode': '3', 'mstatus': ' a00001800', 'satp': ' 0', 'medeleg': ' 0'}, {'privilegeMode': '3', 'mstatus': ' a00141800', 'satp': ' 0', 'medeleg': ' 0'})
+    Transition = ({'privilegeMode': '3', 'mstatus': 'a00001800', 'satp': ' 0', 'medeleg': ' 0'}, {'privilegeMode': '3', 'mstatus': 'a00141800', 'satp': ' 0', 'medeleg': ' 0'})
     transition_map = {
         'C_1': {},
         'C_2': {},
@@ -109,6 +109,9 @@ if __name__ == "__main__":
     }
     past = Transition[0]
     now = Transition[1]
+
+    print(str(past))
+    print(str(now))
     
     criteria = generate_csr_transition_criteria(transition_map, past, now)
 

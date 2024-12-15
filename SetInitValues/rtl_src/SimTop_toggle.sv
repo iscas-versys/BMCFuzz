@@ -79823,7 +79823,7 @@ module array_0_ext(
 
   reg reg_R0_ren;
   reg [2:0] reg_R0_addr;
-  reg [79:0] ram [7:0];
+  reg [79:0] ram [0:7];
   always @(posedge R0_clk)
     reg_R0_ren <= R0_en;
   always @(posedge R0_clk)

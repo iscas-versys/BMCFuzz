@@ -15,7 +15,7 @@ from SetInitValues.split_sv_mudules import split_sv_modules
 from SetInitValues.generate_hierarchy import hierarchy_yaml_parser
 from SetInitValues.json_add_initval import add_regs
 from SetInitValues.vcd_parser import vcd_to_json
-from SetInitValues.connect_reginit_vcd_parser import connect_json_vcd
+from SetInitValues.connect_reginit_vcd_parser import connect_json_vcd, update_other_rtl
 from SetInitValues.new_init_folder import create_init_files
 
 from SetInitValues.CSRTransitionSelect import CSRTransitionSelect
@@ -136,6 +136,8 @@ class SnapshotFuzz:
 
         # set regs init values
         updated_registers_json = os.path.join(self.set_init_values_dir, 'updated_registers.json')
+        if os.path.exists(updated_registers_json):
+            os.remove(updated_registers_json)
         result = connect_json_vcd(self.module_with_regs_json, wave_json_path, updated_registers_json)
         if result != 0:
             log_message(f"Set regs init values failed with return code: {result}")
@@ -144,8 +146,17 @@ class SnapshotFuzz:
 
         # create init files
         init_file_path = os.path.join(self.set_init_values_dir, 'SimTop_init.sv')
+        init_dir_path = self.split_sv_modules_dir + '_init'
+        if os.path.exists(init_dir_path):
+            shutil.rmtree(init_dir_path)
         create_init_files(self.split_sv_modules_dir, self.split_sv_modules_dir + '_init', updated_registers_json, init_file_path)
         log_message(f"Create init files executed successfully.")
+
+        # update other rtl files
+        src_rtl_dir = os.path.join(self.set_init_values_dir, 'rtl_src')
+        dst_rtl_dir = os.path.join(self.set_init_values_dir)
+        update_other_rtl(src_rtl_dir, dst_rtl_dir, wave_json_path)
+        log_message(f"Update other rtl files executed successfully.")
 
         log_message("End Run On Wave")
 
@@ -232,7 +243,9 @@ class SnapshotFuzz:
     
 def run(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
+    formal_dir = os.path.join(current_dir, 'Formal')
     clear_logs(current_dir)
+    clear_logs(formal_dir)
     log_init(current_dir)
 
     log_message("Sleep 10 seconds for background running")
@@ -252,7 +265,7 @@ def run_on_special_wave(args):
     fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
-    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '0.vcd'))
+    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', 'test.vcd'))
 
     # run hybrid loop
     fuzz.run_hybrid_loop()
@@ -276,7 +289,14 @@ if __name__ == "__main__":
 
     parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
 
+    parser.add_argument("--delete-yaml", "-d", action='store_true', help="Delete yaml")
+
     args = parser.parse_args()
+
+    if args.delete_yaml:
+        yaml_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'SetInitValues', 'SimTop.yaml')
+        if os.path.exists(yaml_path):
+            os.remove(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'SetInitValues', 'SimTop.yaml'))
     
     if args.fuzz:
         run(args)

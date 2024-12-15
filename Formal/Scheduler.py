@@ -46,7 +46,8 @@ class FuzzArgs:
             return_code = run_command(make_command, shell=True)
             log_message(f"Make src return code: {return_code}")
 
-            # replace src
+            # replace SimTop.sv
+            log_message(f"Replace SimTop.sv")
             src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "SimTop_init.sv")
             dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "SimTop.sv")
 
@@ -62,6 +63,21 @@ class FuzzArgs:
             
             with open(dst_rtl, mode='w', encoding='utf-8') as dst_file:
                 dst_file.writelines(src_lines)
+            
+            # replace MemRWHelper_formal.v
+            log_message(f"Replace MemRWHelper.v")
+            src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "MemRWHelper_difftest.v")
+            dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "MemRWHelper.v")
+
+            if os.path.exists(dst_rtl):
+                os.remove(dst_rtl)
+            shutil.copy(src_rtl, dst_rtl)
+
+            # delete array_0_ext.v
+            log_message(f"Delete array_0_ext.v")
+            dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "array_0_ext.v")
+            if os.path.exists(dst_rtl):
+                os.remove(dst_rtl)
 
             # make fuzzer
             make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT"
@@ -136,8 +152,6 @@ class Scheduler:
     cover_type = "toggle"
 
     def init(self, run_snapshot=False, cover_type="toggle"):
-        if run_snapshot:
-            clear_logs()
         log_message("Scheduler init")
 
         self.run_snapshot = run_snapshot
@@ -260,13 +274,12 @@ class Scheduler:
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
 
-        fuzz_command = fuzz_args.generate_fuzz_command()
-
         # make fuzzer and clean fuzz run dir
         fuzz_args.make_fuzzer()
         self.clean_fuzz_run()
 
         # run fuzz
+        fuzz_command = fuzz_args.generate_fuzz_command()
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
     
@@ -376,7 +389,10 @@ def test_fuzz(args=None):
     log_message(f"cover type:{cover_type}")
 
     scheduler = Scheduler()
-    scheduler.run_fuzz(0.01)
+    # scheduler.init(run_snapshot, cover_type)
+    
+    scheduler.coverage.formal_cover_rate = 0.5
+    scheduler.run_snapshot_fuzz()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -384,11 +400,14 @@ if __name__ == "__main__":
     parser.add_argument('--run_snapshot', '-r', action='store_true')
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
     parser.add_argument('--test_formal', '-t', action='store_true')
+    parser.add_argument('--test_fuzz', '-f', action='store_true')
 
     args = parser.parse_args()
 
     if args.test_formal:
         test_formal(args)
+    elif args.test_fuzz:
+        test_fuzz(args)
     else:
         run(args)
     # generate_empty_cover_points_file()

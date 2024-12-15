@@ -63,10 +63,15 @@ def generate_rtl_files(run_snapshot=False, cover_type="toggle"):
     with os.scandir(rtl_src_dir) as entries:
         for entry in entries:
             if entry.name.endswith(".v") or entry.name.endswith(".sv"):
-                if run_snapshot and entry.name == "SimTop.sv":
-                    init_file_path = os.path.join(rtl_init_dir, "SimTop_init.sv")
-                    shutil.copy(init_file_path, rtl_dst_dir)
-                    continue
+                if run_snapshot:
+                    if entry.name == "SimTop.sv":
+                        init_file_path = os.path.join(rtl_init_dir, "SimTop_init.sv")
+                        shutil.copy(init_file_path, rtl_dst_dir)
+                        continue
+                    if entry.name == "MemRWHelper.v":
+                        init_file_path = os.path.join(rtl_init_dir, "MemRWHelper_formal.v")
+                        shutil.copy(init_file_path, rtl_dst_dir)
+                        continue
                 shutil.copy(entry.path, rtl_dst_dir)
     
     # 解析并修改RTL文件

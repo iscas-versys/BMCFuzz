@@ -1,9 +1,9 @@
 
 /*verilator tracing_off*/
-module GEN_w74_toggle(
+module GEN_w80_toggle(
   input clock,
   input reset,
-  input [74 - 1: 0] valid
+  input [80 - 1: 0] valid
 );
   parameter COVER_TOTAL = 11747;
   parameter COVER_INDEX;
@@ -234,6 +234,24 @@ module GEN_w74_toggle(
       end
       if (valid[73]) begin
         v_cover_toggle(COVER_INDEX + 73);
+      end
+      if (valid[74]) begin
+        v_cover_toggle(COVER_INDEX + 74);
+      end
+      if (valid[75]) begin
+        v_cover_toggle(COVER_INDEX + 75);
+      end
+      if (valid[76]) begin
+        v_cover_toggle(COVER_INDEX + 76);
+      end
+      if (valid[77]) begin
+        v_cover_toggle(COVER_INDEX + 77);
+      end
+      if (valid[78]) begin
+        v_cover_toggle(COVER_INDEX + 78);
+      end
+      if (valid[79]) begin
+        v_cover_toggle(COVER_INDEX + 79);
       end
     end
   end

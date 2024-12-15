@@ -23,6 +23,7 @@ Formal/logs/*.log
 Formal/logs/fuzz/*.log
 
 Formal/__pycache__
+SetInitValues/*.v
 SetInitValues/*.sv
 SetInitValues/SimTop_Init/*.sv
 SetInitValues/SimTop_split/*.sv

@@ -1,5 +1,6 @@
 import json
 import re
+import os
 
 from tools import log_message
 
@@ -85,6 +86,40 @@ def connect_json_vcd(hierarchy_regs_json_path, vcd_parser_json, updated_register
     # print("\nUnmatched Registers:")
     # for reg in unmatched_registers:
     #     print(reg)
+
+def update_other_rtl(src_rtl_dir, dst_rtl_dir, wave_json_path):
+    wave_data = json.load(open(wave_json_path))
+    for signal in wave_data:
+        if signal['name'] == 'TOP.SimTop.mem.rdata_mem.helper_0.r_data[63:0]':
+            init_value = signal['value']
+
+    src_path = os.path.join(src_rtl_dir, "MemRWHelper_difftest.v")
+    dst_path = os.path.join(dst_rtl_dir, "MemRWHelper_difftest.v")
+    with open(src_path, 'r') as f:
+        lines = f.readlines()
+        w_lines = []
+        for line in lines:
+            if re.search(r"r_data = 64'h0;", line):
+                w_lines.append(f"    r_data = {init_value};\n")
+            else:
+                w_lines.append(line)
+    with open(dst_path, 'w') as f:
+        f.writelines(w_lines)
+    log_message(f"Update MemRWHelper_difftest.v executed successfully.")
+
+    src_path = os.path.join(src_rtl_dir, "MemRWHelper_formal.v")
+    dst_path = os.path.join(dst_rtl_dir, "MemRWHelper_formal.v")
+    with open(src_path, 'r') as f:
+        lines = f.readlines()
+        w_lines = []
+        for line in lines:
+            if re.search(r"r_data = 64'h0;", line):
+                w_lines.append(f"    r_data = {init_value};\n")
+            else:
+                w_lines.append(line)
+    with open(dst_path, 'w') as f:
+        f.writelines(w_lines)
+    log_message(f"Update MemRWHelper_formal.v executed successfully.")
 
 def main():
     hierarchy_emu_new = "./hierarchy_emu_new.json"

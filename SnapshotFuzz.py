@@ -211,10 +211,12 @@ class SnapshotFuzz:
 
             # update coverage
             self.scheduler.update_coverage()
+
+            self.scheduler.output_uncovered_points(loop_count)
         
         # display stats
         self.scheduler.display_coverage()
-        self.scheduler.display_uncovered_points()
+        self.scheduler.output_uncovered_points(loop_count)
 
         # restart init
         self.scheduler.restart_init()

@@ -203,9 +203,11 @@ class Scheduler:
 
             # 获取fuzz结果并更新Coverage、PointSelector
             self.update_coverage()
+
+            self.output_uncovered_points(loop_count)
         
         self.display_coverage()
-        self.display_uncovered_points()
+        self.output_uncovered_points(loop_count)
 
     def run_formal(self, test_formal=False):
         if self.run_snapshot:
@@ -289,15 +291,21 @@ class Scheduler:
     def display_coverage(self):
         self.coverage.display_coverage()
 
-    def display_uncovered_points(self):
-        uncovered_points = self.coverage.get_uncovered_points()
-        log_message(f"Uncovered points: {len(uncovered_points)}")
-        for point in uncovered_points:
-            module = self.point2module[point]
-            point_name = self.points_name[point]
-            module_name = self.module_name[module]
-            log_message(f"{point}: {module_name}.{point_name}")
-        log_message("Uncovered points end")
+    def output_uncovered_points(self, loop_cnt=0, output_file=""):
+        if output_file == "":
+            output_file = os.path.join(NOOP_HOME, "ccover", "Formal", "logs")
+            output_file = os.path.join(output_file, f"uncovered_points_{datetime.now().strftime('%Y-%m-%d_%H%M')}_{loop_cnt}.log")
+        
+        log_message(f"Output uncovered points to {output_file}")
+        with open(output_file, mode='w', encoding='utf-8') as file:
+            uncovered_points = self.coverage.get_uncovered_points()
+            file.write(f"Uncovered points: {len(uncovered_points)}\n")
+            for point in uncovered_points:
+                module = self.point2module[point]
+                point_name = self.points_name[point]
+                module_name = self.module_name[module]
+                file.write(f"{module_name}.{point_name}\n")
+            file.write("\n")
     
     def update_coverage(self):
         cover_points_path = os.getenv("COVER_POINTS_OUT") + "/cover_points.csv"

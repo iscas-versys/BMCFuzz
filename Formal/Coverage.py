@@ -43,6 +43,13 @@ class Coverage:
     def get_coverage(self):
         return self.covered_num / len(self.cover_points)
     
+    def get_uncovered_points(self):
+        uncovered_points = []
+        for index, cover in enumerate(self.cover_points):
+            if not cover:
+                uncovered_points.append(index)
+        return uncovered_points
+    
     def display_coverage(self):
         log_message(f"Covered: {self.covered_num}/{len(self.cover_points)}")
         log_message(f"Coverage: {self.get_coverage()*100:.2f}%")

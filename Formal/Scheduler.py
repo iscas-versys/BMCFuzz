@@ -203,6 +203,9 @@ class Scheduler:
 
             # 获取fuzz结果并更新Coverage、PointSelector
             self.update_coverage()
+        
+        self.display_coverage()
+        self.display_uncovered_points()
 
     def run_formal(self, test_formal=False):
         if self.run_snapshot:
@@ -285,6 +288,16 @@ class Scheduler:
     
     def display_coverage(self):
         self.coverage.display_coverage()
+
+    def display_uncovered_points(self):
+        uncovered_points = self.coverage.get_uncovered_points()
+        log_message(f"Uncovered points: {len(uncovered_points)}")
+        for point in uncovered_points:
+            module = self.point2module[point]
+            point_name = self.points_name[point]
+            module_name = self.module_name[module]
+            log_message(f"{point}: {module_name}.{point_name}")
+        log_message("Uncovered points end")
     
     def update_coverage(self):
         cover_points_path = os.getenv("COVER_POINTS_OUT") + "/cover_points.csv"

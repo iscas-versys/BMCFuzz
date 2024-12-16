@@ -212,6 +212,10 @@ class SnapshotFuzz:
             # update coverage
             self.scheduler.update_coverage()
         
+        # display stats
+        self.scheduler.display_coverage()
+        self.scheduler.display_uncovered_points()
+
         # restart init
         self.scheduler.restart_init()
     

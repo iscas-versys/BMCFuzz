@@ -119,7 +119,7 @@ def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
         lines = file.readlines()
     os.remove(rtl_file)
     
-    cover_points = []
+    cover_points = [None] * len(covername2id)
     current_module = None
 
     # 正则表达式匹配模块声明和cover语句
@@ -154,7 +154,7 @@ def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
                 cover_id = len(cover_points)
             new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
             new_lines.append(new_cover_line)
-            cover_points.append((current_module, signal_name))
+            cover_points[cover_id] = (current_module, signal_name)
         else:
             # 如果不是 cover 语句，直接将原内容加入到新文件
             new_lines.append(line)

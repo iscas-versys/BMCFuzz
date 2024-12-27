@@ -97,10 +97,6 @@ fn clone_to_run_sim(workload: &String) -> i32 {
     let fuzz_id = unsafe { NUM_RUNS };
     sim_args.push("--fuzz-id".to_string());
     sim_args.push(fuzz_id.to_string());
-    sim_args.push("--dump-csr-change".to_string());
-    sim_args.push("--dump-wave-full".to_string());
-    sim_args.push("--wave-path".to_string());
-    sim_args.push(format!("{}/tmp/fuzz_run/{}/run_wave.vcd", env::var("NOOP_HOME").unwrap(), fuzz_id));
 
     let ret = Command::new(fuzzer)
         .args(sim_args)
@@ -171,6 +167,7 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     }
     fs::create_dir_all(&fuzz_run_dir).unwrap();
     fs::create_dir_all(fuzz_run_dir.clone()+"/csr_wave").unwrap();
+    fs::create_dir_all(fuzz_run_dir.clone()+"/csr_snapshot").unwrap();
     fs::create_dir_all(fuzz_run_dir.clone()+"/csr_transition").unwrap();
     store_testcase(&new_input, &fuzz_run_dir, Some("fuzz_testcase".to_string()));
     let ret = clone_to_run_sim(&format!("{}/fuzz_testcase", fuzz_run_dir));

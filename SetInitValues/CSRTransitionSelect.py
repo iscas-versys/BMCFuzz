@@ -31,6 +31,10 @@ class CSRTransitionSelect:
         if os.path.exists(csr_wave_dir):
             shutil.rmtree(csr_wave_dir)
         os.makedirs(csr_wave_dir)
+        csr_snapshot_dir = set_init_dir + "/csr_snapshot"
+        if os.path.exists(csr_snapshot_dir):
+            shutil.rmtree(csr_snapshot_dir)
+        os.makedirs(csr_snapshot_dir)
         log_message(f"CSR Wave directory initialized.")
 
         # init reset wave file
@@ -45,11 +49,13 @@ class CSRTransitionSelect:
             dirpath = fuzz_run_dir + "/" + fuzz_id
             csr_transition_dir = dirpath + "/csr_transition"
             csr_waveform_dir = dirpath + "/csr_wave"
+            csr_snapshot_dir = dirpath + "/csr_snapshot"
             cycle_pattern = re.compile(r"csr_wave_(\d+)_(\d+).vcd")
             for wave_file in os.listdir(csr_waveform_dir):
                 file_basename = os.path.basename(wave_file)
                 case_id, case_cycle = cycle_pattern.match(file_basename).groups()
                 transition_file = csr_transition_dir + "/csr_transition_" + case_id + ".csv"
+                snapshot_file = csr_snapshot_dir + "/csr_snapshot_" + case_id;
                 wave_file = csr_waveform_dir + "/" + wave_file
                 with open(transition_file, mode="r", newline="", encoding="utf-8") as file:
                     csv_reader = list(csv.DictReader(file))
@@ -66,7 +72,8 @@ class CSRTransitionSelect:
                         continue
                     self.transition_id += 1
                     self.transition_scores.append((score, self.transition_id))
-                    self.generate_waveform_file(wave_file, self.transition_id)
+                    self.copy_waveform_file(wave_file, self.transition_id)
+                    self.copy_snapshot_file(snapshot_file, self.transition_id)
                     self.id2transition[self.transition_id] = (past, now)
                     log_message(f"Transition ID: {self.transition_id}, Score: {score}")
                     log_message(f"Transition: {self.id2transition[self.transition_id]}")
@@ -142,9 +149,19 @@ class CSRTransitionSelect:
         os.remove(wave_file)
         os.remove(wave_json)
     
-    def generate_waveform_file(self, src_file, waveform_id):
+    def delete_snapshot(self, snapshot_id):
+        set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"
+        snapshot_file = set_init_dir + f"/csr_snapshot/{snapshot_id}"
+        os.remove(snapshot_file)
+    
+    def copy_waveform_file(self, src_file, waveform_id):
         set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"
         dst_file = set_init_dir + f"/csr_wave/{waveform_id}.vcd"
+        shutil.copyfile(src_file, dst_file)
+    
+    def copy_snapshot_file(self, src_file, snapshot_id):
+        set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"
+        dst_file = set_init_dir + f"/csr_snapshot/{snapshot_id}"
         shutil.copyfile(src_file, dst_file)
     
 if __name__ == "__main__":

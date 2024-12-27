@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 import time
 import argparse
@@ -30,7 +31,14 @@ class FuzzArgs:
     max_cycle = 500
     begin_trace = 0
 
+    dump_csr = False
+
+    dump_wave = False
+    wave_path = f"{NOOP_HOME}/tmp/run_wave.vcd"
+
     no_diff = False
+
+    snapshot_id = 0
     
     make_log_file = ""
     output_file = ""
@@ -39,12 +47,15 @@ class FuzzArgs:
         make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
         if self.run_snapshot:
             # make src
-            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so-debug XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" > {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make src command: {make_command}")
             return_code = run_command(make_command, shell=True)
             log_message(f"Make src return code: {return_code}")
+            if return_code != 0:
+                log_message("Make src failed!")
+                sys.exit(1)
 
             # replace SimTop.sv
             log_message(f"Replace SimTop.sv")
@@ -81,19 +92,25 @@ class FuzzArgs:
 
             # make fuzzer
             make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT"
-            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
+            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so-debug XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" >> {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make fuzzer command: {make_command}")
             return_code = run_command(make_command, shell=True)
             log_message(f"Make fuzzer return code: {return_code}")
+            if return_code != 0:
+                log_message("Make src failed!")
+                sys.exit(1)
         else:
-            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 -j16"
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" > {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make fuzzer command: {make_command}")
             return_code = run_command(make_command, shell=True)
             log_message(f"Make fuzzer return code: {return_code}")
+            if return_code != 0:
+                log_message("Make src failed!")
+                sys.exit(1)
 
 
     def generate_fuzz_command(self):
@@ -120,10 +137,20 @@ class FuzzArgs:
         fuzz_command += " --"
         fuzz_command += f" -I {self.max_instr}"
         fuzz_command += f" -C {self.max_cycle}"
-        fuzz_command += f" -b {self.begin_trace}"
+        # fuzz_command += f" -b {self.begin_trace}"
+
+        if self.dump_csr:
+            fuzz_command += " --dump-csr-change"
+
+        if self.dump_wave:
+            fuzz_command += " --dump-wave-full"
+            fuzz_command += f" --wave-path {self.wave_path}"
 
         if self.run_snapshot:
             fuzz_command += " --run-snapshot"
+            if self.snapshot_id != 0:
+                snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{self.snapshot_id}")
+                fuzz_command += f" --load-snapshot {snapshot_file}"
 
         if self.no_diff:
             fuzz_command += " --no-diff"
@@ -254,7 +281,7 @@ class Scheduler:
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
     
-    def run_snapshot_fuzz(self):
+    def run_snapshot_fuzz(self, snapshot_id):
         # init fuzz log
         fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
         make_log_file = os.path.join(fuzz_log_dir, f"make_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
@@ -274,7 +301,12 @@ class Scheduler:
         fuzz_args.max_instr = 300
         fuzz_args.max_cycle = 1000
 
-        fuzz_args.no_diff = True
+        # fuzz_args.no_diff = True
+
+        fuzz_args.dump_csr = True
+        fuzz_args.dump_wave = True
+
+        fuzz_args.snapshot_id = snapshot_id
 
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
@@ -304,7 +336,7 @@ class Scheduler:
                 module = self.point2module[point]
                 point_name = self.points_name[point]
                 module_name = self.module_name[module]
-                file.write(f"{module_name}.{point_name}\n")
+                file.write(f"{point}:{module_name}.{point_name}\n")
             file.write("\n")
     
     def update_coverage(self):
@@ -412,8 +444,10 @@ def test_fuzz(args=None):
     scheduler = Scheduler()
     # scheduler.init(run_snapshot, cover_type)
     
-    scheduler.coverage.formal_cover_rate = 0.5
-    scheduler.run_snapshot_fuzz()
+    set_max_cover_points(11747)
+    generate_empty_cover_points_file()
+    scheduler.coverage.formal_cover_rate = 2
+    scheduler.run_snapshot_fuzz(1)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

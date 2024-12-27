@@ -173,11 +173,14 @@ class SnapshotFuzz:
         fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
 
         fuzz_args.continue_on_errors = True
-        fuzz_args.insert_nop = True
+        fuzz_args.insert_nop = False
         fuzz_args.save_errors = True
         
         fuzz_args.max_cycle = 10000
         fuzz_args.max_instr = 2000
+
+        fuzz_args.dump_csr = True
+        fuzz_args.dump_wave = True
 
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
@@ -195,7 +198,7 @@ class SnapshotFuzz:
         
         self.csr_transition_selector.update()
     
-    def run_hybrid_loop(self):
+    def run_hybrid_loop(self, snapshot_id):
         loop_count = 0
         while(True):
             loop_count += 1
@@ -207,7 +210,7 @@ class SnapshotFuzz:
                 break
                 
             # run snapshot fuzz
-            self.scheduler.run_snapshot_fuzz()
+            self.scheduler.run_snapshot_fuzz(snapshot_id)
 
             # update coverage
             self.scheduler.update_coverage()
@@ -239,10 +242,11 @@ class SnapshotFuzz:
 
             # generate init file
             self.generate_init_file(wave_path)
-            self.csr_transition_selector.delete_waveform(best_snapshot_id)
+            # self.csr_transition_selector.delete_waveform(best_snapshot_id)
+            # self.csr_transition_selector.delete_snapshot(best_snapshot_id)
 
             # run hybrid loop
-            self.run_hybrid_loop()
+            self.run_hybrid_loop(best_snapshot_id)
         
         log_message("End Snapshot Loop")
         self.scheduler.display_coverage()
@@ -271,10 +275,10 @@ def run_on_special_wave(args):
     fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
-    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', 'test.vcd'))
+    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'))
 
     # run hybrid loop
-    fuzz.run_hybrid_loop()
+    fuzz.run_hybrid_loop(1)
 
 def test(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))

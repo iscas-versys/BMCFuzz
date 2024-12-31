@@ -47,7 +47,7 @@ class FuzzArgs:
         make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
         if self.run_snapshot:
             # make src
-            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so-debug XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" > {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make src command: {make_command}")
@@ -92,7 +92,7 @@ class FuzzArgs:
 
             # make fuzzer
             make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT"
-            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so-debug XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
+            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" >> {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make fuzzer command: {make_command}")

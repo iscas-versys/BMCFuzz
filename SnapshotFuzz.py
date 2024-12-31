@@ -215,6 +215,8 @@ class SnapshotFuzz:
             # update coverage
             self.scheduler.update_coverage()
 
+            self.csr_transition_selector.update()
+
             self.scheduler.output_uncovered_points(loop_count)
         
         # display stats
@@ -268,7 +270,9 @@ def run(args):
 
 def run_on_special_wave(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
+    formal_dir = os.path.join(current_dir, 'Formal')
     clear_logs(current_dir)
+    clear_logs(formal_dir)
     log_init(current_dir)
 
     fuzz = SnapshotFuzz()

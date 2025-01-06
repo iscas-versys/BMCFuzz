@@ -133,7 +133,7 @@ pub(crate) fn sim_run_multiple(workloads: &Vec<String>, auto_exit: bool) -> i32 
 
 pub static mut USE_RANDOM_INPUT: bool = false;
 pub static mut CONTINUE_ON_ERRORS: bool = false;
-pub static mut SAVE_ERRORS: bool = true;
+pub static mut SAVE_ERRORS: bool = false;
 pub static mut NUM_RUNS: u64 = 0;
 pub static mut MAX_RUNS: u64 = u64::MAX;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
@@ -177,14 +177,15 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // io::stdout().flush().unwrap();
 
     // save the target testcase into disk
-    let do_save = unsafe { SAVE_ERRORS && ret != 0 };
-    if do_save {
+    if ret != 0 {
         println!("<<<<<< Bug triggered >>>>>>");
-        println!("<<<<<< Save the testcase >>>>>>");
-        let timestamp = Local::now().format("%Y-%m-%d-%H-%M-%S").to_string();
-        let testcase_name = format!("{}_{}", timestamp, fuzz_id);
-        println!("Testcase name: {}", testcase_name);
-        store_testcase(&new_input, &"errors".to_string(), Some(testcase_name));
+        if unsafe { SAVE_ERRORS } {
+            println!("<<<<<< Save the testcase >>>>>>");
+            let timestamp = Local::now().format("%Y-%m-%d-%H-%M-%S").to_string();
+            let testcase_name = format!("{}_{}", timestamp, fuzz_id);
+            println!("Testcase name: {}", testcase_name);
+            store_testcase(&new_input, &"errors".to_string(), Some(testcase_name));
+        }
     }
 
     // panic if return code is non-zero (this is for fuzzers to catch crashes)

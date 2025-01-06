@@ -173,7 +173,7 @@ class SnapshotFuzz:
         fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
 
         fuzz_args.continue_on_errors = True
-        fuzz_args.insert_nop = False
+        fuzz_args.insert_nop = True
         fuzz_args.save_errors = True
         
         fuzz_args.max_cycle = 10000

@@ -11,6 +11,12 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net):
     # 提取最后一个时间值对
     last_time_value = netinfo['tv'][-1]
     last_value = last_time_value[1]
+
+    # 修改cycleCnt[63:0]和instrCnt[63:0]的值
+    if name == "cycleCnt[63:0]" or name == "instrCnt[63:0]":
+        print("name: ", name)
+        print(f"last_value: {last_value}")
+        last_value = 0
     
     # 构造自定义格式的字典
     custom_format = {

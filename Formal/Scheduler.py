@@ -299,7 +299,7 @@ class Scheduler:
         fuzz_args.formal_cover_rate = self.coverage.get_formal_cover_rate()
 
         fuzz_args.max_instr = 300
-        fuzz_args.max_cycle = 1000
+        fuzz_args.max_cycle = 3000
 
         # fuzz_args.no_diff = True
 

@@ -20,7 +20,8 @@ class CSRTransitionSelect:
     transition_scores = []
     total_transitions = set()
 
-    selected_reset = False
+    # skip reset
+    selected_reset = True
 
     id2transition = {}
 

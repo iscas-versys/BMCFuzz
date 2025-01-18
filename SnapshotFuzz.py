@@ -161,10 +161,14 @@ class SnapshotFuzz:
         log_message("End Run On Wave")
 
     def fuzz_init(self):
+        # run on reset wave
+        reset_wave_file = os.path.join(self.csr_wave_dir, '0.vcd')
+        self.generate_init_file(reset_wave_file)
+        
         # init fuzz log
         fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'logs')
-        make_log_file = os.path.join(fuzz_log_dir, f'make_{datetime.now().strftime("%Y-%m-%d_%H%M")}.log')
-        fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+        make_log_file = os.path.join(fuzz_log_dir, f'make_fuzzer.log')
+        fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_init.log")
 
         # init fuzz args
         fuzz_args = FuzzArgs()
@@ -175,6 +179,7 @@ class SnapshotFuzz:
         fuzz_args.continue_on_errors = True
         # fuzz_args.insert_nop = True
         # fuzz_args.save_errors = True
+        fuzz_args.run_snapshot = True # use reset snapshot
         
         fuzz_args.max_cycle = 10000
         fuzz_args.max_instr = 2000

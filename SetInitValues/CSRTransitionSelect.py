@@ -48,6 +48,8 @@ class CSRTransitionSelect:
         fuzz_run_dir = os.getenv("NOOP_HOME") + "/tmp/fuzz_run"
 
         for fuzz_id in os.listdir(fuzz_run_dir):
+            if not os.path.isdir(fuzz_run_dir + "/" + fuzz_id):
+                continue
             dirpath = fuzz_run_dir + "/" + fuzz_id
             csr_transition_dir = dirpath + "/csr_transition"
             csr_waveform_dir = dirpath + "/csr_wave"

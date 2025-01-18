@@ -25,6 +25,7 @@ def run_command(command, shell=False):
         return None
 
 def execute_cover_tasks(cover_points):
+    # return ([], 0)
     # 获取环境变量
     env_path = str(os.getenv("OSS_CAD_SUITE_HOME"))
     output_dir = str(os.getenv("COVER_POINTS_OUT"))
@@ -40,7 +41,7 @@ def execute_cover_tasks(cover_points):
     # os.chdir(output_dir)
     cover_cases = []
     strat_time = time.time()
-    max_workers = min(200, os.cpu_count())
+    max_workers = min(120, os.cpu_count())
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(execute_cover_task, env_path, cover, output_dir): cover for cover in cover_points}
         with tqdm(total=len(futures), desc="Processing covers") as pbar:

@@ -161,14 +161,15 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
         }
     };
     let fuzz_id = unsafe { NUM_RUNS };
-    let fuzz_run_dir = format!("{}/tmp/fuzz_run/{}", env::var("NOOP_HOME").unwrap(), fuzz_id);
-    if fs::read_dir(&fuzz_run_dir).is_ok() {
-        fs::remove_dir_all(&fuzz_run_dir).unwrap();
+    let fuzz_run_dir = format!("{}/tmp/fuzz_run", env::var("NOOP_HOME").unwrap());
+    let fuzz_run_id_dir = format!("{}/{}", fuzz_run_dir, fuzz_id);
+    if fs::read_dir(&fuzz_run_id_dir).is_ok() {
+        fs::remove_dir_all(&fuzz_run_id_dir).unwrap();
     }
-    fs::create_dir_all(&fuzz_run_dir).unwrap();
-    fs::create_dir_all(fuzz_run_dir.clone()+"/csr_wave").unwrap();
-    fs::create_dir_all(fuzz_run_dir.clone()+"/csr_snapshot").unwrap();
-    fs::create_dir_all(fuzz_run_dir.clone()+"/csr_transition").unwrap();
+    fs::create_dir_all(&fuzz_run_id_dir).unwrap();
+    fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_wave").unwrap();
+    fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_snapshot").unwrap();
+    fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_transition").unwrap();
     store_testcase(&new_input, &fuzz_run_dir, Some("fuzz_testcase".to_string()));
     let ret = clone_to_run_sim(&format!("{}/fuzz_testcase", fuzz_run_dir));
 

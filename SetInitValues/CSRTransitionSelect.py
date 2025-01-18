@@ -20,8 +20,7 @@ class CSRTransitionSelect:
     transition_scores = []
     total_transitions = set()
 
-    # skip reset
-    selected_reset = True
+    selected_reset = False
 
     id2transition = {}
 
@@ -40,8 +39,10 @@ class CSRTransitionSelect:
 
         # init reset wave file
         reset_wave_file = set_init_dir + f"/rtl_src/reset_{cover_type}.vcd"
+        reset_snapshot_file = set_init_dir + f"/rtl_src/reset_snapshot"
         shutil.copyfile(reset_wave_file, csr_wave_dir + "/0.vcd")
-        log_message(f"Reset wave file copied.")
+        shutil.copyfile(reset_snapshot_file, csr_snapshot_dir + "/0")
+        log_message(f"Reset wave file and snapshot copied.")
 
     def update(self):
         fuzz_run_dir = os.getenv("NOOP_HOME") + "/tmp/fuzz_run"
@@ -80,11 +81,6 @@ class CSRTransitionSelect:
                     log_message(f"Transition: {self.id2transition[self.transition_id]}")
     
     def select_highest_score_snapshot(self):
-        if not self.selected_reset:
-            self.selected_reset = True
-            log_message(f"Selecting reset snapshot.")
-            return 0
-        
         if len(self.transition_scores) == 0:
             return -1
         
@@ -94,6 +90,11 @@ class CSRTransitionSelect:
             if csr_score > best_score:
                 best_score = csr_score
                 best_id = csr_id
+
+        if not self.selected_reset and best_score <= 32:
+            self.selected_reset = True
+            log_message(f"Selecting reset snapshot.")
+            return 0
         
         self.update_transition_map(self.id2transition[best_id][0], self.id2transition[best_id][1])
         self.transition_scores.remove((best_score, best_id))

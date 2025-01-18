@@ -279,10 +279,10 @@ def run_on_special_wave(args):
     fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
-    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', '1.vcd'))
+    fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', str(args.wave_id)+'.vcd'))
 
     # run hybrid loop
-    fuzz.run_hybrid_loop(1)
+    # fuzz.run_hybrid_loop(1)
 
 def test(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -304,6 +304,8 @@ if __name__ == "__main__":
     parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
 
     parser.add_argument("--delete-yaml", "-d", action='store_true', help="Delete yaml")
+
+    parser.add_argument("--wave-id", "-w", type=int, default=0, help="Wave id")
 
     args = parser.parse_args()
 

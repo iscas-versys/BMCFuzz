@@ -148,9 +148,8 @@ class FuzzArgs:
 
         if self.run_snapshot:
             fuzz_command += " --run-snapshot"
-            if self.snapshot_id != 0:
-                snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{self.snapshot_id}")
-                fuzz_command += f" --load-snapshot {snapshot_file}"
+            snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{self.snapshot_id}")
+            fuzz_command += f" --load-snapshot {snapshot_file}"
 
         if self.no_diff:
             fuzz_command += " --no-diff"
@@ -284,7 +283,7 @@ class Scheduler:
     def run_snapshot_fuzz(self, snapshot_id):
         # init fuzz log
         fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
-        make_log_file = os.path.join(fuzz_log_dir, f"make_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+        make_log_file = os.path.join(fuzz_log_dir, f"make_fuzzer.log")
         fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
 
         # set fuzz args

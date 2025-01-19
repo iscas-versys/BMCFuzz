@@ -9,6 +9,9 @@ module SDHelper (
   input ren,
   output reg [31:0] data
 );
+initial begin
+    data = 32'h0;
+end
 
   `ifndef SYNTHESIS
   always @(negedge clk) begin

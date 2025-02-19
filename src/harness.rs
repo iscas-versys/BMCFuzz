@@ -308,6 +308,10 @@ pub(crate) fn set_corpus_num(corpus_dir: String) {
 pub(crate) fn set_cover_points() {
     // read the accumulated coverage points from the file
     let cover_file_path = env::var("COVER_POINTS_OUT").unwrap()+"/cover_points.csv";
+    if fs::metadata(&cover_file_path).is_err() {
+        println!("No cover points file found");
+        return;
+    }
     let mut rdr = Reader::from_path(cover_file_path).unwrap();
     let len = unsafe { get_cover_number() as usize };
     let mut accumulated_points = vec![0; len];

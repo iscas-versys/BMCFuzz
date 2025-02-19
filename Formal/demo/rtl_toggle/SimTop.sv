@@ -38435,73 +38435,73 @@ module EmbeddedTLBExec(
   wire  missflag_a = _missflag_T[6]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 350:44]
   wire  missflag_d = _missflag_T[7]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 350:44]
   wire  _T_12 = io_mem_resp_ready & io_mem_resp_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire  _T_15 = level == 2'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:58]
-  wire  _T_16 = level == 2'h2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:73]
-  wire  _T_21 = ~missflag_r & missflag_w; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:44]
-  wire [8:0] _raddr_T_3 = _T_15 ? vpn_vpn1 : vpn_vpn0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 372:50]
+  wire  _T_15 = level == 2'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:58]
+  wire  _T_16 = level == 2'h2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:73]
+  wire  _T_21 = ~missflag_r & missflag_w; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:44]
+  wire [8:0] _raddr_T_3 = _T_15 ? vpn_vpn1 : vpn_vpn0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 369:50]
   wire [55:0] _raddr_T_5 = {memRdata_ppn,_raddr_T_3,3'h0}; // @[src/main/scala/nutcore/mem/TLB.scala 89:8]
-  wire  is_reserved = memRdata_reserved != 10'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 373:49]
-  wire [2:0] _GEN_22 = is_reserved ? 3'h4 : 3'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 371:19 374:32 375:21]
-  wire  _GEN_23 = is_reserved | missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 374:32 377:25]
-  wire [2:0] _GEN_24 = ~missflag_v | ~missflag_r & missflag_w ? 3'h4 : _GEN_22; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:60 360:43]
-  wire  _GEN_25 = ~missflag_v | ~missflag_r & missflag_w | _GEN_23; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:60 361:45]
-  wire [55:0] _GEN_26 = ~missflag_v | ~missflag_r & missflag_w ? raddr : _raddr_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 359:60 372:19]
-  wire [17:0] pg_mask = _T_16 ? 18'h1ff : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 387:28]
-  wire [43:0] _GEN_121 = {{26'd0}, pg_mask}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:54]
-  wire [43:0] _misaligned_T_1 = memRdata_ppn & _GEN_121; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:54]
-  wire  misaligned = level[1] & |_misaligned_T_1 | is_reserved; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:76]
-  wire  permCheck = missflag_v & ~(_hitCheck_T & ~missflag_u) & ~(_hitCheck_T_5 & missflag_u); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 389:87]
-  wire  permAD = ~missflag_a; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 391:24]
-  wire  permExec = permCheck & ~_T_21 & ~permAD & ~misaligned & missflag_x; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 392:75]
+  wire  is_reserved = memRdata_reserved != 10'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 370:49]
+  wire [2:0] _GEN_22 = is_reserved ? 3'h4 : 3'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 368:19 371:32 372:21]
+  wire  _GEN_23 = is_reserved | missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 371:32 374:25]
+  wire [2:0] _GEN_24 = ~missflag_v | ~missflag_r & missflag_w ? 3'h4 : _GEN_22; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:60 357:43]
+  wire  _GEN_25 = ~missflag_v | ~missflag_r & missflag_w | _GEN_23; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:60 358:45]
+  wire [55:0] _GEN_26 = ~missflag_v | ~missflag_r & missflag_w ? raddr : _raddr_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 356:60 369:19]
+  wire [17:0] pg_mask = _T_16 ? 18'h1ff : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 384:28]
+  wire [43:0] _GEN_121 = {{26'd0}, pg_mask}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 385:54]
+  wire [43:0] _misaligned_T_1 = memRdata_ppn & _GEN_121; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 385:54]
+  wire  misaligned = level[1] & |_misaligned_T_1 | is_reserved; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 385:76]
+  wire  permCheck = missflag_v & ~(_hitCheck_T & ~missflag_u) & ~(_hitCheck_T_5 & missflag_u); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:87]
+  wire  permAD = ~missflag_a; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:24]
+  wire  permExec = permCheck & ~_T_21 & ~permAD & ~misaligned & missflag_x; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 389:75]
   wire [7:0] _missRefillFlag_T_2 = {missflag_d,missflag_a,missflag_g,missflag_u,missflag_x,missflag_w,missflag_r,
-    missflag_v}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 396:79]
-  wire [7:0] _missRefillFlag_T_3 = 8'h40 | _missRefillFlag_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 396:68]
-  wire [63:0] _memRespStore_T = io_mem_resp_bits_rdata | 64'h40; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 397:50]
-  wire  _GEN_27 = ~permExec | missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 399:{30,40}]
-  wire  _GEN_29 = ~permExec ? 1'h0 : 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 399:30 304:32 402:30]
-  wire [17:0] _missMask_T_2 = _T_16 ? 18'h3fe00 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 415:59]
-  wire [17:0] _missMask_T_3 = _T_15 ? 18'h0 : _missMask_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 415:26]
-  wire [7:0] _GEN_30 = level != 2'h0 ? _missRefillFlag_T_3 : 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 396:26 305:32]
-  wire [63:0] _GEN_31 = level != 2'h0 ? _memRespStore_T : memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 397:24 301:25]
-  wire  _GEN_32 = level != 2'h0 ? _GEN_27 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 386:36]
-  wire [2:0] _GEN_33 = level != 2'h0 ? 3'h4 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 386:36]
-  wire  _GEN_34 = level != 2'h0 & _GEN_29; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 386:36]
-  wire [17:0] _GEN_35 = level != 2'h0 ? _missMask_T_3 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 415:20 302:26]
-  wire [17:0] _GEN_43 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 18'h3ffff : _GEN_35; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 358:82]
-  wire [17:0] _GEN_51 = isFlush ? 18'h3ffff : _GEN_43; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:24 302:26]
-  wire [17:0] _GEN_60 = _T_12 ? _GEN_51 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 354:33]
+    missflag_v}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 393:79]
+  wire [7:0] _missRefillFlag_T_3 = 8'h40 | _missRefillFlag_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 393:68]
+  wire [63:0] _memRespStore_T = io_mem_resp_bits_rdata | 64'h40; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 394:50]
+  wire  _GEN_27 = ~permExec | missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 396:{30,40}]
+  wire  _GEN_29 = ~permExec ? 1'h0 : 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 396:30 304:32 399:30]
+  wire [17:0] _missMask_T_2 = _T_16 ? 18'h3fe00 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 412:59]
+  wire [17:0] _missMask_T_3 = _T_15 ? 18'h0 : _missMask_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 412:26]
+  wire [7:0] _GEN_30 = level != 2'h0 ? _missRefillFlag_T_3 : 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 393:26 305:32]
+  wire [63:0] _GEN_31 = level != 2'h0 ? _memRespStore_T : memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 394:24 301:25]
+  wire  _GEN_32 = level != 2'h0 ? _GEN_27 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 383:36]
+  wire [2:0] _GEN_33 = level != 2'h0 ? 3'h4 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 383:36]
+  wire  _GEN_34 = level != 2'h0 & _GEN_29; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 383:36]
+  wire [17:0] _GEN_35 = level != 2'h0 ? _missMask_T_3 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 412:20 302:26]
+  wire [17:0] _GEN_43 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 18'h3ffff : _GEN_35; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 355:82]
+  wire [17:0] _GEN_51 = isFlush ? 18'h3ffff : _GEN_43; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 352:24 302:26]
+  wire [17:0] _GEN_60 = _T_12 ? _GEN_51 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 351:33]
   wire [17:0] _GEN_87 = 3'h2 == state ? _GEN_60 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 302:26]
   wire [17:0] _GEN_100 = 3'h1 == state ? 18'h3ffff : _GEN_87; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 302:26]
   wire [17:0] missMask = 3'h0 == state ? 18'h3ffff : _GEN_100; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 302:26]
-  wire [17:0] _GEN_36 = level != 2'h0 ? missMask : missMaskStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 416:25 303:26]
-  wire [2:0] _GEN_37 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_24 : _GEN_33; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:82]
-  wire  _GEN_38 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_25 : _GEN_32; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:82]
-  wire [55:0] _GEN_39 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_26 : raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 358:82]
-  wire [7:0] _GEN_40 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 8'h0 : _GEN_30; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32 358:82]
-  wire [63:0] _GEN_41 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? memRespStore : _GEN_31; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 301:25 358:82]
-  wire  _GEN_42 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 1'h0 : _GEN_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 358:82]
-  wire [17:0] _GEN_44 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? missMaskStore : _GEN_36; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 303:26 358:82]
-  wire [2:0] _GEN_45 = isFlush ? 3'h0 : _GEN_37; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:24 356:17]
-  wire  _GEN_46 = isFlush ? missIPF : _GEN_38; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 355:24]
-  wire [55:0] _GEN_47 = isFlush ? raddr : _GEN_39; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 355:24]
-  wire [7:0] _GEN_48 = isFlush ? 8'h0 : _GEN_40; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:24 305:32]
-  wire [63:0] _GEN_49 = isFlush ? memRespStore : _GEN_41; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:24 301:25]
-  wire  _GEN_50 = isFlush ? 1'h0 : _GEN_42; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:24 304:32]
-  wire [17:0] _GEN_52 = isFlush ? missMaskStore : _GEN_44; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:24 303:26]
-  wire [1:0] _level_T_1 = level - 2'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 418:24]
-  wire [2:0] _GEN_53 = _T_12 ? _GEN_45 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 354:33]
-  wire  _GEN_54 = _T_12 ? _GEN_20 : _GEN_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
-  wire  _GEN_55 = _T_12 ? _GEN_46 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 354:33]
-  wire  _GEN_59 = _T_12 & _GEN_50; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 354:33]
-  wire [1:0] _GEN_62 = _T_12 ? _level_T_1 : level; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33 418:15 299:22]
-  wire [2:0] _GEN_63 = _T_10 ? 3'h4 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 426:{38,46}]
-  wire [2:0] _GEN_64 = isFlush ? 3'h0 : _GEN_63; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 423:22 424:15]
-  wire [2:0] _GEN_65 = io_isFinish | io_flush | alreadyOutFire ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 430:13 298:22]
-  wire  _GEN_66 = io_isFinish | io_flush | alreadyOutFire ? 1'h0 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 431:15 318:24]
-  wire  _GEN_67 = io_isFinish | io_flush | alreadyOutFire ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 432:17 319:26]
-  wire  _GEN_68 = io_isFinish | io_flush | alreadyOutFire ? 1'h0 : _GEN_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 433:22]
-  wire [2:0] _GEN_69 = 3'h5 == state ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 437:13 298:22]
-  wire  _GEN_70 = 3'h5 == state ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 438:17 319:26]
+  wire [17:0] _GEN_36 = level != 2'h0 ? missMask : missMaskStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 413:25 303:26]
+  wire [2:0] _GEN_37 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_24 : _GEN_33; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:82]
+  wire  _GEN_38 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_25 : _GEN_32; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:82]
+  wire [55:0] _GEN_39 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_26 : raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 355:82]
+  wire [7:0] _GEN_40 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 8'h0 : _GEN_30; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32 355:82]
+  wire [63:0] _GEN_41 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? memRespStore : _GEN_31; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 301:25 355:82]
+  wire  _GEN_42 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 1'h0 : _GEN_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 355:82]
+  wire [17:0] _GEN_44 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? missMaskStore : _GEN_36; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 303:26 355:82]
+  wire [2:0] _GEN_45 = isFlush ? 3'h0 : _GEN_37; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 352:24 353:17]
+  wire  _GEN_46 = isFlush ? missIPF : _GEN_38; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 352:24]
+  wire [55:0] _GEN_47 = isFlush ? raddr : _GEN_39; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 352:24]
+  wire [7:0] _GEN_48 = isFlush ? 8'h0 : _GEN_40; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 352:24 305:32]
+  wire [63:0] _GEN_49 = isFlush ? memRespStore : _GEN_41; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 352:24 301:25]
+  wire  _GEN_50 = isFlush ? 1'h0 : _GEN_42; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 352:24 304:32]
+  wire [17:0] _GEN_52 = isFlush ? missMaskStore : _GEN_44; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 352:24 303:26]
+  wire [1:0] _level_T_1 = level - 2'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 415:24]
+  wire [2:0] _GEN_53 = _T_12 ? _GEN_45 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 351:33]
+  wire  _GEN_54 = _T_12 ? _GEN_20 : _GEN_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
+  wire  _GEN_55 = _T_12 ? _GEN_46 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 318:24 351:33]
+  wire  _GEN_59 = _T_12 & _GEN_50; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 351:33]
+  wire [1:0] _GEN_62 = _T_12 ? _level_T_1 : level; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33 415:15 299:22]
+  wire [2:0] _GEN_63 = _T_10 ? 3'h4 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 423:{38,46}]
+  wire [2:0] _GEN_64 = isFlush ? 3'h0 : _GEN_63; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 420:22 421:15]
+  wire [2:0] _GEN_65 = io_isFinish | io_flush | alreadyOutFire ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 427:13 298:22]
+  wire  _GEN_66 = io_isFinish | io_flush | alreadyOutFire ? 1'h0 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 428:15 318:24]
+  wire  _GEN_67 = io_isFinish | io_flush | alreadyOutFire ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 429:17 319:26]
+  wire  _GEN_68 = io_isFinish | io_flush | alreadyOutFire ? 1'h0 : _GEN_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 430:22]
+  wire [2:0] _GEN_69 = 3'h5 == state ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 434:13 298:22]
+  wire  _GEN_70 = 3'h5 == state ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 435:17 319:26]
   wire [2:0] _GEN_71 = 3'h4 == state ? _GEN_65 : _GEN_69; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
   wire  _GEN_72 = 3'h4 == state ? _GEN_66 : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 318:24]
   wire  _GEN_73 = 3'h4 == state ? _GEN_67 : _GEN_70; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
@@ -38513,20 +38513,20 @@ module EmbeddedTLBExec(
   wire  _GEN_79 = 3'h3 == state ? _GEN_2 : _GEN_74; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
   wire  _GEN_99 = 3'h1 == state ? 1'h0 : 3'h2 == state & _GEN_59; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 304:32]
   wire  missMetaRefill = 3'h0 == state ? 1'h0 : _GEN_99; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 304:32]
-  wire  cmd = state == 3'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 443:23]
-  wire  _io_mem_req_valid_T_3 = ~isFlush; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 445:76]
-  wire  _T_34 = missMetaRefill & _io_mem_req_valid_T_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:50]
-  wire  _T_35 = state == 3'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:82]
-  reg  REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
-  reg [3:0] REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
-  reg [26:0] REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
-  reg [15:0] REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
-  reg [17:0] REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
-  reg [7:0] REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
-  reg [43:0] REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
-  reg [55:0] REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+  wire  cmd = state == 3'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 440:23]
+  wire  _io_mem_req_valid_T_3 = ~isFlush; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 442:76]
+  wire  _T_34 = missMetaRefill & _io_mem_req_valid_T_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:50]
+  wire  _T_35 = state == 3'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:82]
+  reg  REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
+  reg [3:0] REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
+  reg [26:0] REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
+  reg [15:0] REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
+  reg [17:0] REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
+  reg [7:0] REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
+  reg [43:0] REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
+  reg [55:0] REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
   wire [168:0] _io_mdWrite_wdata_T = {REG_3,REG_4,REG_5,REG_6,REG_7,REG_8}; // @[src/main/scala/nutcore/mem/TLB.scala 220:22]
-  wire [55:0] mdWriteAddr = {memRdata_ppn,12'h0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 454:24]
+  wire [55:0] mdWriteAddr = {memRdata_ppn,12'h0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:24]
   wire  _mdMayHasAF_T_2 = mdWriteAddr >= 56'h40000000 & mdWriteAddr < 56'h40001000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire  _mdMayHasAF_T_5 = mdWriteAddr >= 56'h80000000 & mdWriteAddr < 56'h100000000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire [1:0] _mdMayHasAF_T_6 = {_mdMayHasAF_T_5,_mdMayHasAF_T_2}; // @[src/main/scala/nutcore/NutCore.scala 70:60]
@@ -38540,8 +38540,8 @@ module EmbeddedTLBExec(
   wire [7:0] _mdMayHasAF_T_33 = {_mdMayHasAF_T_5,_mdMayHasAF_T_29,_mdMayHasAF_T_2,_mdMayHasAF_T_23,_mdMayHasAF_T_20,
     _mdMayHasAF_T_17,_mdMayHasAF_T_14,_mdMayHasAF_T_11}; // @[src/main/scala/nutcore/NutCore.scala 70:60]
   wire  _mdMayHasAF_T_34 = |_mdMayHasAF_T_33; // @[src/main/scala/nutcore/NutCore.scala 70:67]
-  wire  mdMayHasAF = ~_mdMayHasAF_T_7 | ~_mdMayHasAF_T_34 | ~_mdMayHasAF_T_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 455:84]
-  reg  blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+  wire  mdMayHasAF = ~_mdMayHasAF_T_7 | ~_mdMayHasAF_T_34 | ~_mdMayHasAF_T_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:84]
+  reg  blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
   wire [55:0] vaddr_ext = {24'h0,io_in_bits_addr[31:0]}; // @[src/main/scala/utils/BitUtils.scala 49:41]
   wire [55:0] _paddr_T = {hitData_ppn,12'h0}; // @[src/main/scala/nutcore/mem/TLB.scala 127:24]
   wire [55:0] _paddr_T_2 = {26'h3ffffff,hitMeta_mask,12'h0}; // @[src/main/scala/nutcore/mem/TLB.scala 127:49]
@@ -38555,8 +38555,8 @@ module EmbeddedTLBExec(
   wire [55:0] _paddr_T_22 = ~_paddr_T_20; // @[src/main/scala/utils/BitUtils.scala 34:39]
   wire [55:0] _paddr_T_23 = vaddr_ext & _paddr_T_22; // @[src/main/scala/utils/BitUtils.scala 34:37]
   wire [55:0] _paddr_T_24 = _paddr_T_21 | _paddr_T_23; // @[src/main/scala/utils/BitUtils.scala 34:26]
-  wire [55:0] paddr = hit ? _paddr_T_6 : _paddr_T_24; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 464:15]
-  wire  out_req_valid = io_in_valid & (hit | state == 3'h4); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 487:35]
+  wire [55:0] paddr = hit ? _paddr_T_6 : _paddr_T_24; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 461:15]
+  wire  out_req_valid = io_in_valid & (hit | state == 3'h4); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 484:35]
   wire  _instrAF_T_2 = paddr >= 56'h40000000 & paddr < 56'h40001000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire  _instrAF_T_5 = paddr >= 56'h80000000 & paddr < 56'h100000000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire [1:0] _instrAF_T_6 = {_instrAF_T_5,_instrAF_T_2}; // @[src/main/scala/nutcore/NutCore.scala 70:60]
@@ -38564,7 +38564,7 @@ module EmbeddedTLBExec(
   wire  _hasException_T = io_pf_loadPF | io_pf_storePF; // @[src/main/scala/nutcore/Bundle.scala 134:23]
   wire  _hasException_T_1 = io_pf_laf | io_pf_saf; // @[src/main/scala/nutcore/Bundle.scala 135:24]
   wire  hasException = _hasException_T | _hasException_T_1; // @[src/main/scala/nutcore/Bundle.scala 136:35]
-  wire  _io_out_valid_T_5 = ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 499:78]
+  wire  _io_out_valid_T_5 = ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 496:78]
   reg  enToggle = 1'h0;
   reg  enToggle_past = 1'h0;
   reg [63:0] victimWaymask_lfsr_p; // @[src/main/scala/utils/LFSR64.scala 25:23]
@@ -38627,56 +38627,56 @@ module EmbeddedTLBExec(
   wire  toggle_6407_reset;
   wire  toggle_6407_valid;
   reg  toggle_6407_valid_reg;
-  reg  REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
-  wire  REG_t = REG ^ REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+  reg  REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
+  wire  REG_t = REG ^ REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
   wire  toggle_6408_clock;
   wire  toggle_6408_reset;
   wire  toggle_6408_valid;
   reg  toggle_6408_valid_reg;
-  reg [3:0] REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
-  wire [3:0] REG_2_t = REG_2 ^ REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+  reg [3:0] REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
+  wire [3:0] REG_2_t = REG_2 ^ REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
   wire  toggle_6409_clock;
   wire  toggle_6409_reset;
   wire [3:0] toggle_6409_valid;
   reg [3:0] toggle_6409_valid_reg;
-  reg [26:0] REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
-  wire [26:0] REG_3_t = REG_3 ^ REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+  reg [26:0] REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
+  wire [26:0] REG_3_t = REG_3 ^ REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
   wire  toggle_6413_clock;
   wire  toggle_6413_reset;
   wire [26:0] toggle_6413_valid;
   reg [26:0] toggle_6413_valid_reg;
-  reg [15:0] REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
-  wire [15:0] REG_4_t = REG_4 ^ REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+  reg [15:0] REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
+  wire [15:0] REG_4_t = REG_4 ^ REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
   wire  toggle_6440_clock;
   wire  toggle_6440_reset;
   wire [15:0] toggle_6440_valid;
   reg [15:0] toggle_6440_valid_reg;
-  reg [17:0] REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
-  wire [17:0] REG_5_t = REG_5 ^ REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+  reg [17:0] REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
+  wire [17:0] REG_5_t = REG_5 ^ REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
   wire  toggle_6456_clock;
   wire  toggle_6456_reset;
   wire [17:0] toggle_6456_valid;
   reg [17:0] toggle_6456_valid_reg;
-  reg [7:0] REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
-  wire [7:0] REG_6_t = REG_6 ^ REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+  reg [7:0] REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
+  wire [7:0] REG_6_t = REG_6 ^ REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
   wire  toggle_6474_clock;
   wire  toggle_6474_reset;
   wire [7:0] toggle_6474_valid;
   reg [7:0] toggle_6474_valid_reg;
-  reg [43:0] REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
-  wire [43:0] REG_7_t = REG_7 ^ REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+  reg [43:0] REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
+  wire [43:0] REG_7_t = REG_7 ^ REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
   wire  toggle_6482_clock;
   wire  toggle_6482_reset;
   wire [43:0] toggle_6482_valid;
   reg [43:0] toggle_6482_valid_reg;
-  reg [55:0] REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
-  wire [55:0] REG_8_t = REG_8 ^ REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+  reg [55:0] REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
+  wire [55:0] REG_8_t = REG_8 ^ REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
   wire  toggle_6526_clock;
   wire  toggle_6526_reset;
   wire [55:0] toggle_6526_valid;
   reg [55:0] toggle_6526_valid_reg;
-  reg  blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
-  wire  blockRefill_t = blockRefill ^ blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+  reg  blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
+  wire  blockRefill_t = blockRefill ^ blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
   wire  toggle_6582_clock;
   wire  toggle_6582_reset;
   wire  toggle_6582_valid;
@@ -38776,25 +38776,25 @@ module EmbeddedTLBExec(
     .reset(toggle_6582_reset),
     .valid(toggle_6582_valid)
   );
-  assign io_in_ready = io_out_ready & _T_35 & ~miss & io_mdReady & _io_out_valid_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 501:86]
-  assign io_out_valid = out_req_valid & ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 499:75]
-  assign io_out_bits_addr = paddr[31:0]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 486:20]
-  assign io_out_bits_user = io_in_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 485:15]
-  assign io_mdWrite_wen = blockRefill ? 1'h0 : REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 457:22 458:20 src/main/scala/nutcore/mem/TLB.scala 217:14]
+  assign io_in_ready = io_out_ready & _T_35 & ~miss & io_mdReady & _io_out_valid_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 498:86]
+  assign io_out_valid = out_req_valid & ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 496:75]
+  assign io_out_bits_addr = paddr[31:0]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 483:20]
+  assign io_out_bits_user = io_in_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 482:15]
+  assign io_mdWrite_wen = blockRefill ? 1'h0 : REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 454:22 455:20 src/main/scala/nutcore/mem/TLB.scala 217:14]
   assign io_mdWrite_waymask = REG_2; // @[src/main/scala/nutcore/mem/TLB.scala 219:18]
   assign io_mdWrite_wdata = _io_mdWrite_wdata_T[144:0]; // @[src/main/scala/nutcore/mem/TLB.scala 220:16]
-  assign io_mem_req_valid = (state == 3'h1 | cmd) & ~isFlush & ~raddrCancel; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 445:85]
+  assign io_mem_req_valid = (state == 3'h1 | cmd) & ~isFlush & ~raddrCancel; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 442:85]
   assign io_mem_req_bits_addr = raddr[31:0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 64:15]
   assign io_mem_req_bits_cmd = {{3'd0}, cmd}; // @[src/main/scala/bus/simplebus/SimpleBus.scala 65:14]
-  assign io_mem_req_bits_wdata = memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 444:138]
-  assign io_mem_resp_ready = 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:21]
+  assign io_mem_req_bits_wdata = memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 441:138]
+  assign io_mem_resp_ready = 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 443:21]
   assign io_pf_loadPF = 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 284:16]
   assign io_pf_storePF = 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 285:17]
   assign io_pf_laf = 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 287:13]
   assign io_pf_saf = 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 288:13]
-  assign io_ipf = hit ? hitinstrPF : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 503:16]
-  assign io_iaf = out_req_valid & (~_instrAF_T_7 | missPTEAF); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 489:30]
-  assign io_isFinish = _alreadyOutFire_T | hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 505:32]
+  assign io_ipf = hit ? hitinstrPF : missIPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 500:16]
+  assign io_iaf = out_req_valid & (~_instrAF_T_7 | missPTEAF); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 486:30]
+  assign io_isFinish = _alreadyOutFire_T | hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 502:32]
   assign toggle_6197_clock = clock;
   assign toggle_6197_reset = reset;
   assign toggle_6197_valid = victimWaymask_lfsr ^ toggle_6197_valid_reg;
@@ -38891,7 +38891,7 @@ module EmbeddedTLBExec(
     if (!(3'h0 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       if (!(3'h1 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
         if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
             memRespStore <= _GEN_49;
           end
         end
@@ -38900,7 +38900,7 @@ module EmbeddedTLBExec(
     if (!(3'h0 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       if (!(3'h1 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
         if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
             missMaskStore <= _GEN_52;
           end
         end
@@ -38912,7 +38912,7 @@ module EmbeddedTLBExec(
       end
     end else if (!(3'h1 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-        if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+        if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
           raddr <= _GEN_47;
         end
       end
@@ -38973,24 +38973,24 @@ module EmbeddedTLBExec(
         missPTEAF <= _GEN_78;
       end
     end
-    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
-      REG <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
+      REG <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     end else begin
-      REG <= missMetaRefill & _io_mem_req_valid_T_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+      REG <= missMetaRefill & _io_mem_req_valid_T_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     end
     if (hit) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 253:20]
       REG_2 <= hitVec;
     end else begin
       REG_2 <= victimWaymask;
     end
-    REG_3 <= {hitVec_hi,vpn_vpn0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:89]
+    REG_3 <= {hitVec_hi,vpn_vpn0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:89]
     REG_4 <= io_satp[59:44]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 244:30]
     if (3'h0 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG_5 <= 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26]
     end else if (3'h1 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG_5 <= 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26]
     end else if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
         REG_5 <= _GEN_51;
       end else begin
         REG_5 <= 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26]
@@ -39003,7 +39003,7 @@ module EmbeddedTLBExec(
     end else if (3'h1 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG_6 <= 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32]
     end else if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
         REG_6 <= _GEN_48;
       end else begin
         REG_6 <= 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32]
@@ -39012,11 +39012,11 @@ module EmbeddedTLBExec(
       REG_6 <= 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32]
     end
     REG_7 <= io_mem_resp_bits_rdata[53:10]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 306:49]
-    REG_8 <= raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:27]
-    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
-      blockRefill <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+    REG_8 <= raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:27]
+    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
+      blockRefill <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     end else begin
-      blockRefill <= _T_34 & mdMayHasAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+      blockRefill <= _T_34 & mdMayHasAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     end
     enToggle <= 1'h1;
     enToggle_past <= enToggle;
@@ -39040,23 +39040,23 @@ module EmbeddedTLBExec(
     toggle_6406_valid_reg <= missIPF;
     missPTEAF_p <= missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 319:26]
     toggle_6407_valid_reg <= missPTEAF;
-    REG_p <= REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+    REG_p <= REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     toggle_6408_valid_reg <= REG;
-    REG_2_p <= REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+    REG_2_p <= REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     toggle_6409_valid_reg <= REG_2;
-    REG_3_p <= REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+    REG_3_p <= REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     toggle_6413_valid_reg <= REG_3;
-    REG_4_p <= REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+    REG_4_p <= REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     toggle_6440_valid_reg <= REG_4;
-    REG_5_p <= REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+    REG_5_p <= REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     toggle_6456_valid_reg <= REG_5;
-    REG_6_p <= REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+    REG_6_p <= REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     toggle_6474_valid_reg <= REG_6;
-    REG_7_p <= REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+    REG_7_p <= REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     toggle_6482_valid_reg <= REG_7;
-    REG_8_p <= REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+    REG_8_p <= REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     toggle_6526_valid_reg <= REG_8;
-    blockRefill_p <= blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+    blockRefill_p <= blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     toggle_6582_valid_reg <= blockRefill;
   end
 // Register and memory initialization
@@ -40063,703 +40063,703 @@ end // initial
     end
     //
     if (enToggle_past) begin
-      cover(REG_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+      cover(REG_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[44]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[44]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[45]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[45]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[46]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[46]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[47]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[47]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[48]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[48]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[49]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[49]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[50]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[50]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[51]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[51]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[52]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[52]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[53]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[53]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[54]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[54]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[55]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[55]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(blockRefill_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+      cover(blockRefill_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     end
   end
 endmodule
@@ -44887,35 +44887,35 @@ endmodule
 module PTERequestFilter(
   input         clock,
   input         reset,
-  output        io_in_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_in_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [31:0] io_in_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [3:0]  io_in_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [63:0] io_in_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output        io_in_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [63:0] io_in_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_out_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output        io_out_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [31:0] io_out_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [3:0]  io_out_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [63:0] io_out_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_out_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [63:0] io_out_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_u // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
+  output        io_in_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_in_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [31:0] io_in_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [3:0]  io_in_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [63:0] io_in_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output        io_in_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [63:0] io_in_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_out_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output        io_out_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [31:0] io_out_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [3:0]  io_out_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [63:0] io_out_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_out_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [63:0] io_out_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_u // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
   reg [31:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
-  reg  hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+  reg  hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  isLegal = |(io_in_req_bits_addr >= 32'h80000000); // @[src/main/scala/nutcore/NutCore.scala 70:67]
   wire  _hasInflight_T = io_in_req_ready & io_in_req_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire [7:0] _io_in_resp_bits_rdata_T = {3'h7,io_u,4'hf}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 573:33]
+  wire [7:0] _io_in_resp_bits_rdata_T = {3'h7,io_u,4'hf}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 570:33]
   reg  enToggle = 1'h0;
   reg  enToggle_past = 1'h0;
-  reg  hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
-  wire  hasInflight_t = hasInflight ^ hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+  reg  hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
+  wire  hasInflight_t = hasInflight ^ hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  toggle_7419_clock;
   wire  toggle_7419_reset;
   wire  toggle_7419_valid;
@@ -44925,28 +44925,28 @@ module PTERequestFilter(
     .reset(toggle_7419_reset),
     .valid(toggle_7419_valid)
   );
-  assign io_in_req_ready = isLegal ? io_out_req_ready : ~hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 565:25]
-  assign io_in_resp_valid = ~io_out_resp_valid & hasInflight | io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10 569:44 570:22]
+  assign io_in_req_ready = isLegal ? io_out_req_ready : ~hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:25]
+  assign io_in_resp_valid = ~io_out_resp_valid & hasInflight | io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10 566:44 567:22]
   assign io_in_resp_bits_rdata = ~io_out_resp_valid & hasInflight ? {{56'd0}, _io_in_resp_bits_rdata_T} :
-    io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10 569:44 573:27]
-  assign io_out_req_valid = io_in_req_valid & isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 564:39]
-  assign io_out_req_bits_addr = io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10]
-  assign io_out_req_bits_cmd = io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10]
-  assign io_out_req_bits_wdata = io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10]
+    io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10 566:44 570:27]
+  assign io_out_req_valid = io_in_req_valid & isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 561:39]
+  assign io_out_req_bits_addr = io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10]
+  assign io_out_req_bits_cmd = io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10]
+  assign io_out_req_bits_wdata = io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10]
   assign toggle_7419_clock = clock;
   assign toggle_7419_reset = reset;
   assign toggle_7419_valid = hasInflight ^ toggle_7419_valid_reg;
   always @(posedge clock) begin
-    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
-      hasInflight <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
-    end else if (~io_out_resp_valid & hasInflight) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 569:44]
+    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
+      hasInflight <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
+    end else if (~io_out_resp_valid & hasInflight) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 566:44]
       hasInflight <= 1'h0;
     end else begin
-      hasInflight <= _hasInflight_T & ~isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 567:15]
+      hasInflight <= _hasInflight_T & ~isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 564:15]
     end
     enToggle <= 1'h1;
     enToggle_past <= enToggle;
-    hasInflight_p <= hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+    hasInflight_p <= hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
     toggle_7419_valid_reg <= hasInflight;
   end
 // Register and memory initialization
@@ -45001,7 +45001,7 @@ end // initial
   always @(posedge clock) begin
     //
     if (enToggle_past) begin
-      cover(hasInflight_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+      cover(hasInflight_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
     end
   end
 endmodule
@@ -46606,76 +46606,76 @@ module EmbeddedTLBExec_1(
   wire  missflag_a = _missflag_T[6]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 350:44]
   wire  missflag_d = _missflag_T[7]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 350:44]
   wire  _T_12 = io_mem_resp_ready & io_mem_resp_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire  _T_15 = level == 2'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:58]
-  wire  _T_16 = level == 2'h2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:73]
-  wire  _T_21 = ~missflag_r & missflag_w; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:44]
-  wire  _loadPF_T_16 = _loadPF_T_5 & _loadPF_T_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 363:38]
-  wire  _storePF_T_15 = io_in_bits_cmd[0] | ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 364:40]
-  wire [8:0] _raddr_T_3 = _T_15 ? vpn_vpn1 : vpn_vpn0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 372:50]
+  wire  _T_15 = level == 2'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:58]
+  wire  _T_16 = level == 2'h2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:73]
+  wire  _T_21 = ~missflag_r & missflag_w; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:44]
+  wire  _loadPF_T_16 = _loadPF_T_5 & _loadPF_T_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 360:38]
+  wire  _storePF_T_15 = io_in_bits_cmd[0] | ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 361:40]
+  wire [8:0] _raddr_T_3 = _T_15 ? vpn_vpn1 : vpn_vpn0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 369:50]
   wire [55:0] _raddr_T_5 = {memRdata_ppn,_raddr_T_3,3'h0}; // @[src/main/scala/nutcore/mem/TLB.scala 89:8]
-  wire  is_reserved = memRdata_reserved != 10'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 373:49]
-  wire [2:0] _GEN_22 = is_reserved ? 3'h5 : 3'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 371:19 374:32 380:23]
-  wire  _GEN_23 = is_reserved ? _loadPF_T_16 : ~hitLoad & _loadPF_T_5 & hit & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 374:32 381:24]
-  wire  _GEN_24 = is_reserved ? _storePF_T_15 : ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 374:32 382:25]
-  wire [2:0] _GEN_25 = ~missflag_v | ~missflag_r & missflag_w ? 3'h5 : _GEN_22; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:60 360:73]
-  wire  _GEN_26 = ~missflag_v | ~missflag_r & missflag_w ? _loadPF_T_5 & _loadPF_T_8 : _GEN_23; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:60 363:22]
-  wire  _GEN_27 = ~missflag_v | ~missflag_r & missflag_w ? io_in_bits_cmd[0] | ISAMO : _GEN_24; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 359:60 364:23]
-  wire [55:0] _GEN_28 = ~missflag_v | ~missflag_r & missflag_w ? raddr : _raddr_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 359:60 372:19]
-  wire [17:0] pg_mask = _T_16 ? 18'h1ff : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 387:28]
-  wire [43:0] _GEN_60 = {{26'd0}, pg_mask}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:54]
-  wire [43:0] _misaligned_T_1 = memRdata_ppn & _GEN_60; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:54]
-  wire  misaligned = level[1] & |_misaligned_T_1 | is_reserved; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:76]
-  wire  permCheck = missflag_v & ~(_hitCheck_T & ~missflag_u) & ~(_hitCheck_T_5 & missflag_u & _hitCheck_T_7); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 389:87]
-  wire  permAD = ~missflag_a | ~missflag_d & io_in_bits_cmd[0]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 391:36]
-  wire  _permExec_T_5 = permCheck & ~_T_21 & ~permAD & ~misaligned; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 392:60]
-  wire  permLoad = _permExec_T_5 & (missflag_r | io_pf_status_mxr & missflag_x); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 393:75]
-  wire  permStore = _permExec_T_5 & missflag_w; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 394:76]
-  wire [63:0] updateData = {56'h0,io_in_bits_cmd[0],7'h40}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 395:31]
+  wire  is_reserved = memRdata_reserved != 10'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 370:49]
+  wire [2:0] _GEN_22 = is_reserved ? 3'h5 : 3'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 368:19 371:32 377:23]
+  wire  _GEN_23 = is_reserved ? _loadPF_T_16 : ~hitLoad & _loadPF_T_5 & hit & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 371:32 378:24]
+  wire  _GEN_24 = is_reserved ? _storePF_T_15 : ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 371:32 379:25]
+  wire [2:0] _GEN_25 = ~missflag_v | ~missflag_r & missflag_w ? 3'h5 : _GEN_22; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:60 357:73]
+  wire  _GEN_26 = ~missflag_v | ~missflag_r & missflag_w ? _loadPF_T_5 & _loadPF_T_8 : _GEN_23; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:60 360:22]
+  wire  _GEN_27 = ~missflag_v | ~missflag_r & missflag_w ? io_in_bits_cmd[0] | ISAMO : _GEN_24; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 356:60 361:23]
+  wire [55:0] _GEN_28 = ~missflag_v | ~missflag_r & missflag_w ? raddr : _raddr_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 356:60 369:19]
+  wire [17:0] pg_mask = _T_16 ? 18'h1ff : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 384:28]
+  wire [43:0] _GEN_60 = {{26'd0}, pg_mask}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 385:54]
+  wire [43:0] _misaligned_T_1 = memRdata_ppn & _GEN_60; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 385:54]
+  wire  misaligned = level[1] & |_misaligned_T_1 | is_reserved; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 385:76]
+  wire  permCheck = missflag_v & ~(_hitCheck_T & ~missflag_u) & ~(_hitCheck_T_5 & missflag_u & _hitCheck_T_7); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:87]
+  wire  permAD = ~missflag_a | ~missflag_d & io_in_bits_cmd[0]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 388:36]
+  wire  _permExec_T_5 = permCheck & ~_T_21 & ~permAD & ~misaligned; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 389:60]
+  wire  permLoad = _permExec_T_5 & (missflag_r | io_pf_status_mxr & missflag_x); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 390:75]
+  wire  permStore = _permExec_T_5 & missflag_w; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 391:76]
+  wire [63:0] updateData = {56'h0,io_in_bits_cmd[0],7'h40}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 392:31]
   wire [7:0] _missRefillFlag_T_2 = {missflag_d,missflag_a,missflag_g,missflag_u,missflag_x,missflag_w,missflag_r,
-    missflag_v}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 396:79]
-  wire [7:0] _missRefillFlag_T_3 = _hitRefillFlag_T_1 | _missRefillFlag_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 396:68]
-  wire [63:0] _memRespStore_T = io_mem_resp_bits_rdata | updateData; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 397:50]
-  wire [2:0] _GEN_29 = ~permLoad & _loadPF_T_5 | ~permStore & io_in_bits_cmd[0] ? 3'h5 : 3'h4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 406:80 407:21 411:21]
+    missflag_v}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 393:79]
+  wire [7:0] _missRefillFlag_T_3 = _hitRefillFlag_T_1 | _missRefillFlag_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 393:68]
+  wire [63:0] _memRespStore_T = io_mem_resp_bits_rdata | updateData; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 394:50]
+  wire [2:0] _GEN_29 = ~permLoad & _loadPF_T_5 | ~permStore & io_in_bits_cmd[0] ? 3'h5 : 3'h4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 403:80 404:21 408:21]
   wire  _GEN_30 = ~permLoad & _loadPF_T_5 | ~permStore & io_in_bits_cmd[0] ? _loadPF_T_16 : ~hitLoad & _loadPF_T_5 & hit
-     & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 406:80 408:22]
+     & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 403:80 405:22]
   wire  _GEN_31 = ~permLoad & _loadPF_T_5 | ~permStore & io_in_bits_cmd[0] ? _storePF_T_15 : ~hitStore & io_in_bits_cmd[
-    0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 406:80 409:23]
-  wire  _GEN_32 = ~permLoad & _loadPF_T_5 | ~permStore & io_in_bits_cmd[0] ? 1'h0 : 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 406:80 412:30]
-  wire [17:0] _missMask_T_2 = _T_16 ? 18'h3fe00 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 415:59]
-  wire [17:0] _missMask_T_3 = _T_15 ? 18'h0 : _missMask_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 415:26]
-  wire [7:0] _GEN_33 = level != 2'h0 ? _missRefillFlag_T_3 : 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 396:26 305:32]
-  wire [63:0] _GEN_34 = level != 2'h0 ? _memRespStore_T : memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 397:24 301:25]
-  wire [2:0] _GEN_35 = level != 2'h0 ? _GEN_29 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 386:36]
-  wire  _GEN_36 = level != 2'h0 ? _GEN_30 : ~hitLoad & _loadPF_T_5 & hit & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 386:36]
-  wire  _GEN_37 = level != 2'h0 ? _GEN_31 : ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 386:36]
-  wire  _GEN_38 = level != 2'h0 & _GEN_32; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 386:36]
-  wire [17:0] _GEN_39 = level != 2'h0 ? _missMask_T_3 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 415:20 302:26]
-  wire [17:0] _GEN_48 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 18'h3ffff : _GEN_39; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 358:82]
-  wire [17:0] _GEN_67 = _T_12 ? _GEN_48 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 354:33]
+    0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 403:80 406:23]
+  wire  _GEN_32 = ~permLoad & _loadPF_T_5 | ~permStore & io_in_bits_cmd[0] ? 1'h0 : 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 403:80 409:30]
+  wire [17:0] _missMask_T_2 = _T_16 ? 18'h3fe00 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 412:59]
+  wire [17:0] _missMask_T_3 = _T_15 ? 18'h0 : _missMask_T_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 412:26]
+  wire [7:0] _GEN_33 = level != 2'h0 ? _missRefillFlag_T_3 : 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 393:26 305:32]
+  wire [63:0] _GEN_34 = level != 2'h0 ? _memRespStore_T : memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 394:24 301:25]
+  wire [2:0] _GEN_35 = level != 2'h0 ? _GEN_29 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 383:36]
+  wire  _GEN_36 = level != 2'h0 ? _GEN_30 : ~hitLoad & _loadPF_T_5 & hit & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 383:36]
+  wire  _GEN_37 = level != 2'h0 ? _GEN_31 : ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 383:36]
+  wire  _GEN_38 = level != 2'h0 & _GEN_32; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 383:36]
+  wire [17:0] _GEN_39 = level != 2'h0 ? _missMask_T_3 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 412:20 302:26]
+  wire [17:0] _GEN_48 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 18'h3ffff : _GEN_39; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 355:82]
+  wire [17:0] _GEN_67 = _T_12 ? _GEN_48 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26 351:33]
   wire [17:0] _GEN_95 = 3'h2 == state ? _GEN_67 : 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 302:26]
   wire [17:0] _GEN_110 = 3'h1 == state ? 18'h3ffff : _GEN_95; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 302:26]
   wire [17:0] missMask = 3'h0 == state ? 18'h3ffff : _GEN_110; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 302:26]
-  wire [17:0] _GEN_40 = level != 2'h0 ? missMask : missMaskStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 386:36 416:25 303:26]
-  wire [2:0] _GEN_41 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_25 : _GEN_35; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:82]
-  wire  _GEN_42 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_26 : _GEN_36; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:82]
-  wire  _GEN_43 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_27 : _GEN_37; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 358:82]
-  wire [55:0] _GEN_44 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_28 : raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 358:82]
-  wire [7:0] _GEN_45 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 8'h0 : _GEN_33; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32 358:82]
-  wire [63:0] _GEN_46 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? memRespStore : _GEN_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 301:25 358:82]
-  wire  _GEN_47 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 1'h0 : _GEN_38; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 358:82]
-  wire [17:0] _GEN_49 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? missMaskStore : _GEN_40; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 303:26 358:82]
-  wire [1:0] _level_T_1 = level - 2'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 418:24]
-  wire [2:0] _GEN_59 = _T_12 ? _GEN_41 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 354:33]
-  wire  _GEN_61 = _T_12 ? _GEN_42 : ~hitLoad & _loadPF_T_5 & hit & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 354:33]
-  wire  _GEN_62 = _T_12 ? _GEN_43 : ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 354:33]
-  wire  _GEN_66 = _T_12 & _GEN_47; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 354:33]
-  wire [1:0] _GEN_69 = _T_12 ? _level_T_1 : level; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33 418:15 299:22]
-  wire [2:0] _GEN_70 = _T_10 ? 3'h4 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 426:{38,46}]
-  wire [2:0] _GEN_72 = io_isFinish | alreadyOutFire ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 430:13 298:22]
-  wire  _GEN_74 = io_isFinish | alreadyOutFire ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 432:17 319:26]
-  wire  _GEN_75 = io_isFinish | alreadyOutFire ? 1'h0 : _GEN_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 429:71 433:22]
-  wire [2:0] _GEN_76 = 3'h5 == state ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 437:13 298:22]
-  wire  _GEN_77 = 3'h5 == state ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 438:17 319:26]
+  wire [17:0] _GEN_40 = level != 2'h0 ? missMask : missMaskStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 383:36 413:25 303:26]
+  wire [2:0] _GEN_41 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_25 : _GEN_35; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:82]
+  wire  _GEN_42 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_26 : _GEN_36; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:82]
+  wire  _GEN_43 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_27 : _GEN_37; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 355:82]
+  wire [55:0] _GEN_44 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? _GEN_28 : raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 307:18 355:82]
+  wire [7:0] _GEN_45 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 8'h0 : _GEN_33; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32 355:82]
+  wire [63:0] _GEN_46 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? memRespStore : _GEN_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 301:25 355:82]
+  wire  _GEN_47 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? 1'h0 : _GEN_38; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 355:82]
+  wire [17:0] _GEN_49 = ~(missflag_r | missflag_x) & (level == 2'h3 | level == 2'h2) ? missMaskStore : _GEN_40; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 303:26 355:82]
+  wire [1:0] _level_T_1 = level - 2'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 415:24]
+  wire [2:0] _GEN_59 = _T_12 ? _GEN_41 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 351:33]
+  wire  _GEN_61 = _T_12 ? _GEN_42 : ~hitLoad & _loadPF_T_5 & hit & ~ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 351:33]
+  wire  _GEN_62 = _T_12 ? _GEN_43 : ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 351:33]
+  wire  _GEN_66 = _T_12 & _GEN_47; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32 351:33]
+  wire [1:0] _GEN_69 = _T_12 ? _level_T_1 : level; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33 415:15 299:22]
+  wire [2:0] _GEN_70 = _T_10 ? 3'h4 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 298:22 423:{38,46}]
+  wire [2:0] _GEN_72 = io_isFinish | alreadyOutFire ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 427:13 298:22]
+  wire  _GEN_74 = io_isFinish | alreadyOutFire ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 429:17 319:26]
+  wire  _GEN_75 = io_isFinish | alreadyOutFire ? 1'h0 : _GEN_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 426:71 430:22]
+  wire [2:0] _GEN_76 = 3'h5 == state ? 3'h0 : state; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 434:13 298:22]
+  wire  _GEN_77 = 3'h5 == state ? 1'h0 : missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 435:17 319:26]
   wire [2:0] _GEN_78 = 3'h4 == state ? _GEN_72 : _GEN_76; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
   wire  _GEN_80 = 3'h4 == state ? _GEN_74 : _GEN_77; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
   wire  _GEN_81 = 3'h4 == state ? _GEN_75 : _GEN_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
@@ -46690,19 +46690,19 @@ module EmbeddedTLBExec_1(
   wire  loadPF = 3'h0 == state ? ~hitLoad & _loadPF_T_5 & hit & ~ISAMO : _GEN_104; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 292:12 322:18]
   wire  storePF = 3'h0 == state ? ~hitStore & io_in_bits_cmd[0] & hit | _loadPF_T_7 & ISAMO : _GEN_105; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 293:13 322:18]
   wire  missMetaRefill = 3'h0 == state ? 1'h0 : _GEN_109; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18 304:32]
-  wire  cmd = state == 3'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 443:23]
-  wire  _T_45 = state == 3'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:82]
-  reg  REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
-  reg [3:0] REG_1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
-  reg [3:0] REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
-  reg [26:0] REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
-  reg [15:0] REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
-  reg [17:0] REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
-  reg [7:0] REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
-  reg [43:0] REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
-  reg [55:0] REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+  wire  cmd = state == 3'h3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 440:23]
+  wire  _T_45 = state == 3'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:82]
+  reg  REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
+  reg [3:0] REG_1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
+  reg [3:0] REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
+  reg [26:0] REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
+  reg [15:0] REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
+  reg [17:0] REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
+  reg [7:0] REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
+  reg [43:0] REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
+  reg [55:0] REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
   wire [168:0] _io_mdWrite_wdata_T = {REG_3,REG_4,REG_5,REG_6,REG_7,REG_8}; // @[src/main/scala/nutcore/mem/TLB.scala 220:22]
-  wire [55:0] mdWriteAddr = {memRdata_ppn,12'h0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 454:24]
+  wire [55:0] mdWriteAddr = {memRdata_ppn,12'h0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:24]
   wire  _mdMayHasAF_T_2 = mdWriteAddr >= 56'h40000000 & mdWriteAddr < 56'h40001000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire  _mdMayHasAF_T_5 = mdWriteAddr >= 56'h80000000 & mdWriteAddr < 56'h100000000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire [1:0] _mdMayHasAF_T_6 = {_mdMayHasAF_T_5,_mdMayHasAF_T_2}; // @[src/main/scala/nutcore/NutCore.scala 70:60]
@@ -46716,8 +46716,8 @@ module EmbeddedTLBExec_1(
   wire [7:0] _mdMayHasAF_T_33 = {_mdMayHasAF_T_5,_mdMayHasAF_T_29,_mdMayHasAF_T_2,_mdMayHasAF_T_23,_mdMayHasAF_T_20,
     _mdMayHasAF_T_17,_mdMayHasAF_T_14,_mdMayHasAF_T_11}; // @[src/main/scala/nutcore/NutCore.scala 70:60]
   wire  _mdMayHasAF_T_34 = |_mdMayHasAF_T_33; // @[src/main/scala/nutcore/NutCore.scala 70:67]
-  wire  mdMayHasAF = ~_mdMayHasAF_T_7 | ~_mdMayHasAF_T_34 | ~_mdMayHasAF_T_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 455:84]
-  reg  blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+  wire  mdMayHasAF = ~_mdMayHasAF_T_7 | ~_mdMayHasAF_T_34 | ~_mdMayHasAF_T_34; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:84]
+  reg  blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
   wire [55:0] vaddr_ext = {24'h0,io_in_bits_addr[31:0]}; // @[src/main/scala/utils/BitUtils.scala 49:41]
   wire [55:0] _paddr_T = {hitData_ppn,12'h0}; // @[src/main/scala/nutcore/mem/TLB.scala 127:24]
   wire [55:0] _paddr_T_2 = {26'h3ffffff,hitMeta_mask,12'h0}; // @[src/main/scala/nutcore/mem/TLB.scala 127:49]
@@ -46731,11 +46731,11 @@ module EmbeddedTLBExec_1(
   wire [55:0] _paddr_T_22 = ~_paddr_T_20; // @[src/main/scala/utils/BitUtils.scala 34:39]
   wire [55:0] _paddr_T_23 = vaddr_ext & _paddr_T_22; // @[src/main/scala/utils/BitUtils.scala 34:37]
   wire [55:0] _paddr_T_24 = _paddr_T_21 | _paddr_T_23; // @[src/main/scala/utils/BitUtils.scala 34:26]
-  wire  _T_59 = ~scInflight_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 479:12]
-  wire [55:0] paddr = hit ? _paddr_T_6 : _paddr_T_24; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 464:15]
-  wire [63:0] _GEN_71 = {{8'd0}, paddr}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 480:49]
-  wire  _scIsSuccess_T_7 = hit | state == 3'h4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 480:81]
-  wire  out_req_valid = io_in_valid & _scIsSuccess_T_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 487:35]
+  wire  _T_59 = ~scInflight_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 476:12]
+  wire [55:0] paddr = hit ? _paddr_T_6 : _paddr_T_24; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 461:15]
+  wire [63:0] _GEN_71 = {{8'd0}, paddr}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 477:49]
+  wire  _scIsSuccess_T_7 = hit | state == 3'h4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 477:81]
+  wire  out_req_valid = io_in_valid & _scIsSuccess_T_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 484:35]
   wire  _ldReqAF_T_2 = paddr >= 56'h38000000 & paddr < 56'h38010000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire  _ldReqAF_T_5 = paddr >= 56'h3c000000 & paddr < 56'h40000000; // @[src/main/scala/nutcore/NutCore.scala 70:41]
   wire  _ldReqAF_T_8 = paddr >= 56'h40600000 & paddr < 56'h40600010; // @[src/main/scala/nutcore/NutCore.scala 70:41]
@@ -46747,15 +46747,15 @@ module EmbeddedTLBExec_1(
   wire [7:0] _ldReqAF_T_24 = {_ldReqAF_T_23,_ldReqAF_T_20,_ldReqAF_T_17,_ldReqAF_T_14,_ldReqAF_T_11,_ldReqAF_T_8,
     _ldReqAF_T_5,_ldReqAF_T_2}; // @[src/main/scala/nutcore/NutCore.scala 70:60]
   wire  _ldReqAF_T_25 = |_ldReqAF_T_24; // @[src/main/scala/nutcore/NutCore.scala 70:67]
-  wire  ldReqAF = out_req_valid & ~_ldReqAF_T_25; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 492:34]
-  wire  loadAF = (ldReqAF | missPTEAF) & _loadPF_T_5 & _loadPF_T_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 494:54]
-  wire  storeAF = ldReqAF & io_in_bits_cmd[0] | ldReqAF & _loadPF_T_5 & ISAMO | missPTEAF & _storePF_T_15; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 495:79]
+  wire  ldReqAF = out_req_valid & ~_ldReqAF_T_25; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 489:34]
+  wire  loadAF = (ldReqAF | missPTEAF) & _loadPF_T_5 & _loadPF_T_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 491:54]
+  wire  storeAF = ldReqAF & io_in_bits_cmd[0] | ldReqAF & _loadPF_T_5 & ISAMO | missPTEAF & _storePF_T_15; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 492:79]
   wire  _hasException_T = io_pf_loadPF | io_pf_storePF; // @[src/main/scala/nutcore/Bundle.scala 134:23]
   wire  _hasException_T_1 = io_pf_laf | io_pf_saf; // @[src/main/scala/nutcore/Bundle.scala 135:24]
   wire  _hasException_T_2 = _hasException_T | _hasException_T_1; // @[src/main/scala/nutcore/Bundle.scala 136:35]
-  wire  hasException = _hasException_T_2 | loadPF | storePF | loadAF | storeAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 497:72]
-  wire  _io_out_valid_T_5 = ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 499:78]
-  wire  scIsSuccess = _T_59 | lr_0 & lr_addr == _GEN_71 | ~(hit | state == 3'h4); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 480:60]
+  wire  hasException = _hasException_T_2 | loadPF | storePF | loadAF | storeAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 494:72]
+  wire  _io_out_valid_T_5 = ~hasException; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 496:78]
+  wire  scIsSuccess = _T_59 | lr_0 & lr_addr == _GEN_71 | ~(hit | state == 3'h4); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 477:60]
   reg  enToggle = 1'h0;
   reg  enToggle_past = 1'h0;
   reg [63:0] victimWaymask_lfsr_p; // @[src/main/scala/utils/LFSR64.scala 25:23]
@@ -46830,62 +46830,62 @@ module EmbeddedTLBExec_1(
   wire  toggle_7885_reset;
   wire  toggle_7885_valid;
   reg  toggle_7885_valid_reg;
-  reg  REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
-  wire  REG_t = REG ^ REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+  reg  REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
+  wire  REG_t = REG ^ REG_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
   wire  toggle_7886_clock;
   wire  toggle_7886_reset;
   wire  toggle_7886_valid;
   reg  toggle_7886_valid_reg;
-  reg [3:0] REG_1_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
-  wire [3:0] REG_1_t = REG_1 ^ REG_1_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
+  reg [3:0] REG_1_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
+  wire [3:0] REG_1_t = REG_1 ^ REG_1_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
   wire  toggle_7887_clock;
   wire  toggle_7887_reset;
   wire [3:0] toggle_7887_valid;
   reg [3:0] toggle_7887_valid_reg;
-  reg [3:0] REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
-  wire [3:0] REG_2_t = REG_2 ^ REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+  reg [3:0] REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
+  wire [3:0] REG_2_t = REG_2 ^ REG_2_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
   wire  toggle_7891_clock;
   wire  toggle_7891_reset;
   wire [3:0] toggle_7891_valid;
   reg [3:0] toggle_7891_valid_reg;
-  reg [26:0] REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
-  wire [26:0] REG_3_t = REG_3 ^ REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+  reg [26:0] REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
+  wire [26:0] REG_3_t = REG_3 ^ REG_3_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
   wire  toggle_7895_clock;
   wire  toggle_7895_reset;
   wire [26:0] toggle_7895_valid;
   reg [26:0] toggle_7895_valid_reg;
-  reg [15:0] REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
-  wire [15:0] REG_4_t = REG_4 ^ REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+  reg [15:0] REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
+  wire [15:0] REG_4_t = REG_4 ^ REG_4_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
   wire  toggle_7922_clock;
   wire  toggle_7922_reset;
   wire [15:0] toggle_7922_valid;
   reg [15:0] toggle_7922_valid_reg;
-  reg [17:0] REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
-  wire [17:0] REG_5_t = REG_5 ^ REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+  reg [17:0] REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
+  wire [17:0] REG_5_t = REG_5 ^ REG_5_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
   wire  toggle_7938_clock;
   wire  toggle_7938_reset;
   wire [17:0] toggle_7938_valid;
   reg [17:0] toggle_7938_valid_reg;
-  reg [7:0] REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
-  wire [7:0] REG_6_t = REG_6 ^ REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+  reg [7:0] REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
+  wire [7:0] REG_6_t = REG_6 ^ REG_6_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
   wire  toggle_7956_clock;
   wire  toggle_7956_reset;
   wire [7:0] toggle_7956_valid;
   reg [7:0] toggle_7956_valid_reg;
-  reg [43:0] REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
-  wire [43:0] REG_7_t = REG_7 ^ REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+  reg [43:0] REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
+  wire [43:0] REG_7_t = REG_7 ^ REG_7_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
   wire  toggle_7964_clock;
   wire  toggle_7964_reset;
   wire [43:0] toggle_7964_valid;
   reg [43:0] toggle_7964_valid_reg;
-  reg [55:0] REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
-  wire [55:0] REG_8_t = REG_8 ^ REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+  reg [55:0] REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
+  wire [55:0] REG_8_t = REG_8 ^ REG_8_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
   wire  toggle_8008_clock;
   wire  toggle_8008_reset;
   wire [55:0] toggle_8008_valid;
   reg [55:0] toggle_8008_valid_reg;
-  reg  blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
-  wire  blockRefill_t = blockRefill ^ blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+  reg  blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
+  wire  blockRefill_t = blockRefill ^ blockRefill_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
   wire  toggle_8064_clock;
   wire  toggle_8064_reset;
   wire  toggle_8064_valid;
@@ -47000,27 +47000,27 @@ module EmbeddedTLBExec_1(
     .reset(toggle_8064_reset),
     .valid(toggle_8064_valid)
   );
-  assign io_in_ready = io_out_ready & _T_45 & ~miss & io_mdReady & _io_out_valid_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 501:86]
-  assign io_out_valid = out_req_valid & ~hasException & scIsSuccess; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 499:92]
-  assign io_out_bits_addr = paddr[31:0]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 486:20]
-  assign io_out_bits_size = io_in_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 485:15]
-  assign io_out_bits_cmd = io_in_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 485:15]
-  assign io_out_bits_wmask = io_in_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 485:15]
-  assign io_out_bits_wdata = io_in_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 485:15]
-  assign io_mdWrite_wen = blockRefill ? 1'h0 : REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 457:22 458:20 src/main/scala/nutcore/mem/TLB.scala 217:14]
+  assign io_in_ready = io_out_ready & _T_45 & ~miss & io_mdReady & _io_out_valid_T_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 498:86]
+  assign io_out_valid = out_req_valid & ~hasException & scIsSuccess; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 496:92]
+  assign io_out_bits_addr = paddr[31:0]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 483:20]
+  assign io_out_bits_size = io_in_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 482:15]
+  assign io_out_bits_cmd = io_in_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 482:15]
+  assign io_out_bits_wmask = io_in_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 482:15]
+  assign io_out_bits_wdata = io_in_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 482:15]
+  assign io_mdWrite_wen = blockRefill ? 1'h0 : REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 454:22 455:20 src/main/scala/nutcore/mem/TLB.scala 217:14]
   assign io_mdWrite_windex = REG_1; // @[src/main/scala/nutcore/mem/TLB.scala 218:17]
   assign io_mdWrite_waymask = REG_2; // @[src/main/scala/nutcore/mem/TLB.scala 219:18]
   assign io_mdWrite_wdata = _io_mdWrite_wdata_T[144:0]; // @[src/main/scala/nutcore/mem/TLB.scala 220:16]
-  assign io_mem_req_valid = (state == 3'h1 | cmd) & ~raddrCancel; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 445:85]
+  assign io_mem_req_valid = (state == 3'h1 | cmd) & ~raddrCancel; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 442:85]
   assign io_mem_req_bits_addr = raddr[31:0]; // @[src/main/scala/bus/simplebus/SimpleBus.scala 64:15]
   assign io_mem_req_bits_cmd = {{3'd0}, cmd}; // @[src/main/scala/bus/simplebus/SimpleBus.scala 65:14]
-  assign io_mem_req_bits_wdata = memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 444:138]
-  assign io_mem_resp_ready = 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:21]
+  assign io_mem_req_bits_wdata = memRespStore; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 441:138]
+  assign io_mem_resp_ready = 1'h1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 443:21]
   assign io_pf_loadPF = io_pf_loadPF_REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 284:16]
   assign io_pf_storePF = io_pf_storePF_REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 285:17]
   assign io_pf_laf = io_pf_laf_REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 287:13]
   assign io_pf_saf = io_pf_saf_REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 288:13]
-  assign io_isFinish = _alreadyOutFire_T | _hasException_T_2 | ~scIsSuccess; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 505:54]
+  assign io_isFinish = _alreadyOutFire_T | _hasException_T_2 | ~scIsSuccess; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 502:54]
   assign paddr_0 = paddr;
   assign scIsSuccess_0 = scIsSuccess;
   assign toggle_7673_clock = clock;
@@ -47160,7 +47160,7 @@ module EmbeddedTLBExec_1(
     if (!(3'h0 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       if (!(3'h1 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
         if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
             memRespStore <= _GEN_46;
           end
         end
@@ -47169,7 +47169,7 @@ module EmbeddedTLBExec_1(
     if (!(3'h0 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       if (!(3'h1 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
         if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+          if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
             missMaskStore <= _GEN_49;
           end
         end
@@ -47181,7 +47181,7 @@ module EmbeddedTLBExec_1(
       end
     end else if (!(3'h1 == state)) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-        if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+        if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
           raddr <= _GEN_44;
         end
       end
@@ -47212,8 +47212,8 @@ module EmbeddedTLBExec_1(
         missPTEAF <= _GEN_85;
       end
     end
-    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
-      REG <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
+      REG <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     end else if (3'h0 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 304:32]
     end else if (3'h1 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
@@ -47227,14 +47227,14 @@ module EmbeddedTLBExec_1(
     end else begin
       REG_2 <= victimWaymask;
     end
-    REG_3 <= {hitVec_hi,vpn_vpn0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:89]
+    REG_3 <= {hitVec_hi,vpn_vpn0}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:89]
     REG_4 <= io_satp[59:44]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 244:30]
     if (3'h0 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG_5 <= 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26]
     end else if (3'h1 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG_5 <= 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26]
     end else if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
         REG_5 <= _GEN_48;
       end else begin
         REG_5 <= 18'h3ffff; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 302:26]
@@ -47247,7 +47247,7 @@ module EmbeddedTLBExec_1(
     end else if (3'h1 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
       REG_6 <= 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32]
     end else if (3'h2 == state) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 322:18]
-      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 354:33]
+      if (_T_12) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 351:33]
         REG_6 <= _GEN_45;
       end else begin
         REG_6 <= 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32]
@@ -47256,11 +47256,11 @@ module EmbeddedTLBExec_1(
       REG_6 <= 8'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 305:32]
     end
     REG_7 <= io_mem_resp_bits_rdata[53:10]; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 306:49]
-    REG_8 <= raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:27]
-    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
-      blockRefill <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+    REG_8 <= raddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:27]
+    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
+      blockRefill <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     end else begin
-      blockRefill <= missMetaRefill & mdMayHasAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+      blockRefill <= missMetaRefill & mdMayHasAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     end
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND
@@ -47268,8 +47268,8 @@ module EmbeddedTLBExec_1(
     `endif
         if (~reset & ~(~scInflight_0 | ~io_in_valid | io_in_bits_cmd[0])) begin
           $fwrite(32'h80000002,
-            "Assertion failed: SC is inflight but TLB receives a read request\n    at EmbeddedTLB.scala:479 assert(!scInflight || !io.in.valid || req.isWrite(), \"SC is inflight but TLB receives a read request\")\n"
-            ); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 479:11]
+            "Assertion failed: SC is inflight but TLB receives a read request\n    at EmbeddedTLB.scala:476 assert(!scInflight || !io.in.valid || req.isWrite(), \"SC is inflight but TLB receives a read request\")\n"
+            ); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 476:11]
         end
     `ifdef PRINTF_COND
       end
@@ -47301,25 +47301,25 @@ module EmbeddedTLBExec_1(
     toggle_7884_valid_reg <= alreadyOutFire;
     missPTEAF_p <= missPTEAF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 319:26]
     toggle_7885_valid_reg <= missPTEAF;
-    REG_p <= REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+    REG_p <= REG; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     toggle_7886_valid_reg <= REG;
-    REG_1_p <= REG_1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
+    REG_1_p <= REG_1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
     toggle_7887_valid_reg <= REG_1;
-    REG_2_p <= REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+    REG_2_p <= REG_2; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     toggle_7891_valid_reg <= REG_2;
-    REG_3_p <= REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+    REG_3_p <= REG_3; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     toggle_7895_valid_reg <= REG_3;
-    REG_4_p <= REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+    REG_4_p <= REG_4; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     toggle_7922_valid_reg <= REG_4;
-    REG_5_p <= REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+    REG_5_p <= REG_5; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     toggle_7938_valid_reg <= REG_5;
-    REG_6_p <= REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+    REG_6_p <= REG_6; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     toggle_7956_valid_reg <= REG_6;
-    REG_7_p <= REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+    REG_7_p <= REG_7; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     toggle_7964_valid_reg <= REG_7;
-    REG_8_p <= REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+    REG_8_p <= REG_8; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     toggle_8008_valid_reg <= REG_8;
-    blockRefill_p <= blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+    blockRefill_p <= blockRefill; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     toggle_8064_valid_reg <= blockRefill;
   end
 // Register and memory initialization
@@ -47500,7 +47500,7 @@ end // initial
   always @(posedge clock) begin
     //
     if (~reset) begin
-      assert(~scInflight_0 | ~io_in_valid | io_in_bits_cmd[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 479:11]
+      assert(~scInflight_0 | ~io_in_valid | io_in_bits_cmd[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 476:11]
     end
     //
     if (enToggle_past) begin
@@ -48356,747 +48356,747 @@ end // initial
     end
     //
     if (enToggle_past) begin
-      cover(REG_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:33]
+      cover(REG_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 446:33]
     end
     //
     if (enToggle_past) begin
-      cover(REG_1_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
+      cover(REG_1_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
     end
     //
     if (enToggle_past) begin
-      cover(REG_1_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
+      cover(REG_1_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
     end
     //
     if (enToggle_past) begin
-      cover(REG_1_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
+      cover(REG_1_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
     end
     //
     if (enToggle_past) begin
-      cover(REG_1_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:21]
+      cover(REG_1_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:21]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_2_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:60]
+      cover(REG_2_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:60]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_3_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:84]
+      cover(REG_3_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 447:84]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_4_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:19]
+      cover(REG_4_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_5_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 451:72]
+      cover(REG_5_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 448:72]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_6_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:19]
+      cover(REG_6_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:19]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_7_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 452:77]
+      cover(REG_7_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 449:77]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[0]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[1]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[2]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[3]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[4]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[5]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[6]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[7]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[8]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[9]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[10]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[11]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[12]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[13]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[14]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[15]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[16]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[17]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[18]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[19]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[20]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[21]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[22]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[23]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[24]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[25]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[26]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[27]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[28]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[29]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[30]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[31]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[32]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[33]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[34]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[35]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[36]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[37]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[38]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[39]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[40]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[41]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[42]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[43]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[44]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[44]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[45]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[45]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[46]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[46]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[47]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[47]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[48]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[48]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[49]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[49]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[50]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[50]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[51]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[51]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[52]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[52]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[53]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[53]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[54]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[54]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(REG_8_t[55]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:22]
+      cover(REG_8_t[55]); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 450:22]
     end
     //
     if (enToggle_past) begin
-      cover(blockRefill_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 456:28]
+      cover(blockRefill_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 453:28]
     end
   end
 endmodule
 module EmbeddedTLBEmpty_1(
   input         clock,
   input         reset,
-  output        io_in_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input         io_in_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input  [31:0] io_in_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input  [2:0]  io_in_bits_size, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input  [3:0]  io_in_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input  [7:0]  io_in_bits_wmask, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input  [63:0] io_in_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  input         io_out_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  output        io_out_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  output [31:0] io_out_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  output [2:0]  io_out_bits_size, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  output [3:0]  io_out_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  output [7:0]  io_out_bits_wmask, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
-  output [63:0] io_out_bits_wdata // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 534:14]
+  output        io_in_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input         io_in_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input  [31:0] io_in_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input  [2:0]  io_in_bits_size, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input  [3:0]  io_in_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input  [7:0]  io_in_bits_wmask, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input  [63:0] io_in_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  input         io_out_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  output        io_out_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  output [31:0] io_out_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  output [2:0]  io_out_bits_size, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  output [3:0]  io_out_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  output [7:0]  io_out_bits_wmask, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
+  output [63:0] io_out_bits_wdata // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 531:14]
 );
-  assign io_in_ready = io_out_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
-  assign io_out_valid = io_in_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
-  assign io_out_bits_addr = io_in_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
-  assign io_out_bits_size = io_in_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
-  assign io_out_bits_cmd = io_in_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
-  assign io_out_bits_wmask = io_in_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
-  assign io_out_bits_wdata = io_in_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 539:10]
+  assign io_in_ready = io_out_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
+  assign io_out_valid = io_in_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
+  assign io_out_bits_addr = io_in_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
+  assign io_out_bits_size = io_in_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
+  assign io_out_bits_cmd = io_in_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
+  assign io_out_bits_wmask = io_in_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
+  assign io_out_bits_wdata = io_in_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 536:10]
 endmodule
 module EmbeddedTLBMD_1(
   input          clock,
@@ -53438,35 +53438,35 @@ endmodule
 module PTERequestFilter_1(
   input         clock,
   input         reset,
-  output        io_in_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_in_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [31:0] io_in_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [3:0]  io_in_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [63:0] io_in_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output        io_in_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [63:0] io_in_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_out_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output        io_out_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [31:0] io_out_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [3:0]  io_out_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  output [63:0] io_out_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_out_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input  [63:0] io_out_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
-  input         io_u // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 552:14]
+  output        io_in_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_in_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [31:0] io_in_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [3:0]  io_in_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [63:0] io_in_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output        io_in_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [63:0] io_in_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_out_req_ready, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output        io_out_req_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [31:0] io_out_req_bits_addr, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [3:0]  io_out_req_bits_cmd, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  output [63:0] io_out_req_bits_wdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_out_resp_valid, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input  [63:0] io_out_resp_bits_rdata, // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
+  input         io_u // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 549:14]
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
   reg [31:0] _RAND_2;
 `endif // RANDOMIZE_REG_INIT
-  reg  hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+  reg  hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  isLegal = |(io_in_req_bits_addr >= 32'h80000000); // @[src/main/scala/nutcore/NutCore.scala 70:67]
   wire  _hasInflight_T = io_in_req_ready & io_in_req_valid; // @[src/main/scala/chisel3/util/Decoupled.scala 57:35]
-  wire [7:0] _io_in_resp_bits_rdata_T = {3'h7,io_u,4'hf}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 573:33]
+  wire [7:0] _io_in_resp_bits_rdata_T = {3'h7,io_u,4'hf}; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 570:33]
   reg  enToggle = 1'h0;
   reg  enToggle_past = 1'h0;
-  reg  hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
-  wire  hasInflight_t = hasInflight ^ hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+  reg  hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
+  wire  hasInflight_t = hasInflight ^ hasInflight_p; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
   wire  toggle_8882_clock;
   wire  toggle_8882_reset;
   wire  toggle_8882_valid;
@@ -53476,28 +53476,28 @@ module PTERequestFilter_1(
     .reset(toggle_8882_reset),
     .valid(toggle_8882_valid)
   );
-  assign io_in_req_ready = isLegal ? io_out_req_ready : ~hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 565:25]
-  assign io_in_resp_valid = ~io_out_resp_valid & hasInflight | io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10 569:44 570:22]
+  assign io_in_req_ready = isLegal ? io_out_req_ready : ~hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:25]
+  assign io_in_resp_valid = ~io_out_resp_valid & hasInflight | io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10 566:44 567:22]
   assign io_in_resp_bits_rdata = ~io_out_resp_valid & hasInflight ? {{56'd0}, _io_in_resp_bits_rdata_T} :
-    io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10 569:44 573:27]
-  assign io_out_req_valid = io_in_req_valid & isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 564:39]
-  assign io_out_req_bits_addr = io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10]
-  assign io_out_req_bits_cmd = io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10]
-  assign io_out_req_bits_wdata = io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:10]
+    io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10 566:44 570:27]
+  assign io_out_req_valid = io_in_req_valid & isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 561:39]
+  assign io_out_req_bits_addr = io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10]
+  assign io_out_req_bits_cmd = io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10]
+  assign io_out_req_bits_wdata = io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 556:10]
   assign toggle_8882_clock = clock;
   assign toggle_8882_reset = reset;
   assign toggle_8882_valid = hasInflight ^ toggle_8882_valid_reg;
   always @(posedge clock) begin
-    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
-      hasInflight <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
-    end else if (~io_out_resp_valid & hasInflight) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 569:44]
+    if (reset) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
+      hasInflight <= 1'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
+    end else if (~io_out_resp_valid & hasInflight) begin // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 566:44]
       hasInflight <= 1'h0;
     end else begin
-      hasInflight <= _hasInflight_T & ~isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 567:15]
+      hasInflight <= _hasInflight_T & ~isLegal; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 564:15]
     end
     enToggle <= 1'h1;
     enToggle_past <= enToggle;
-    hasInflight_p <= hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+    hasInflight_p <= hasInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
     toggle_8882_valid_reg <= hasInflight;
   end
 // Register and memory initialization
@@ -53552,7 +53552,7 @@ end // initial
   always @(posedge clock) begin
     //
     if (enToggle_past) begin
-      cover(hasInflight_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 562:28]
+      cover(hasInflight_t); // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 559:28]
     end
   end
 endmodule
@@ -55577,54 +55577,54 @@ module NutCore(
   wire  dmemXbar_io_out_resp_valid; // @[src/main/scala/nutcore/NutCore.scala 179:26]
   wire [3:0] dmemXbar_io_out_resp_bits_cmd; // @[src/main/scala/nutcore/NutCore.scala 179:26]
   wire [63:0] dmemXbar_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/NutCore.scala 179:26]
-  wire  itlb_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [38:0] itlb_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [86:0] itlb_io_in_req_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_in_resp_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] itlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [86:0] itlb_io_in_resp_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [31:0] itlb_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [86:0] itlb_io_out_req_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_out_resp_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] itlb_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [86:0] itlb_io_out_resp_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_mem_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [31:0] itlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [3:0] itlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] itlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_mem_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] itlb_io_mem_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_flush; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [1:0] itlb_io_csrMMU_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_ipf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_io_iaf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] itlb_CSRSATP; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  itlb_MOUFlushTLB; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  filter_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [31:0] filter_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [3:0] filter_io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [31:0] filter_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [3:0] filter_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_io_u; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
+  wire  itlb_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [38:0] itlb_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [86:0] itlb_io_in_req_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_in_resp_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] itlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [86:0] itlb_io_in_resp_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [31:0] itlb_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [86:0] itlb_io_out_req_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_out_resp_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] itlb_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [86:0] itlb_io_out_resp_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_mem_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [31:0] itlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [3:0] itlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] itlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_mem_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] itlb_io_mem_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_flush; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [1:0] itlb_io_csrMMU_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_ipf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_io_iaf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] itlb_CSRSATP; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  itlb_MOUFlushTLB; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  filter_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [31:0] filter_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [3:0] filter_io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [31:0] filter_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [3:0] filter_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_io_u; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
   wire  io_imem_cache_clock; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
   wire  io_imem_cache_reset; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
   wire  io_imem_cache_io_in_req_ready; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
@@ -55648,69 +55648,69 @@ module NutCore(
   wire  io_imem_cache_io_mmio_resp_ready; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
   wire  io_imem_cache_io_mmio_resp_valid; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
   wire [63:0] io_imem_cache_io_mmio_resp_bits_rdata; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
-  wire  dtlb_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [38:0] dtlb_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [2:0] dtlb_io_in_req_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [3:0] dtlb_io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [7:0] dtlb_io_in_req_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [31:0] dtlb_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [2:0] dtlb_io_out_req_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [3:0] dtlb_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [7:0] dtlb_io_out_req_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_mem_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [31:0] dtlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [3:0] dtlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_mem_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_io_mem_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [1:0] dtlb_io_csrMMU_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_csrMMU_status_sum; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_csrMMU_status_mxr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_csrMMU_loadPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_csrMMU_storePF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_csrMMU_laf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_io_csrMMU_saf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_lr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_scInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_amoReq; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_lrAddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [55:0] dtlb_paddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire [63:0] dtlb_CSRSATP; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb__T_12_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_scIsSuccess_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_vmEnable_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_MOUFlushTLB; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb_tlbFinish_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  dtlb__T_13_1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
-  wire  filter_1_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [31:0] filter_1_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [3:0] filter_1_io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_1_io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_1_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [31:0] filter_1_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [3:0] filter_1_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_1_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire [63:0] filter_1_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
-  wire  filter_1_io_u; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
+  wire  dtlb_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [38:0] dtlb_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [2:0] dtlb_io_in_req_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [3:0] dtlb_io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [7:0] dtlb_io_in_req_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [31:0] dtlb_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [2:0] dtlb_io_out_req_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [3:0] dtlb_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [7:0] dtlb_io_out_req_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_mem_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [31:0] dtlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [3:0] dtlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_mem_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_io_mem_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [1:0] dtlb_io_csrMMU_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_csrMMU_status_sum; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_csrMMU_status_mxr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_csrMMU_loadPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_csrMMU_storePF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_csrMMU_laf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_io_csrMMU_saf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_lr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_scInflight; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_amoReq; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_lrAddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [55:0] dtlb_paddr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire [63:0] dtlb_CSRSATP; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb__T_12_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_scIsSuccess_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_vmEnable_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_MOUFlushTLB; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb_tlbFinish_0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  dtlb__T_13_1; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
+  wire  filter_1_clock; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_reset; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_in_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [31:0] filter_1_io_in_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [3:0] filter_1_io_in_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_1_io_in_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_1_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_out_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [31:0] filter_1_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [3:0] filter_1_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_1_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_out_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire [63:0] filter_1_io_out_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
+  wire  filter_1_io_u; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
   wire  io_dmem_cache_clock; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
   wire  io_dmem_cache_reset; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
   wire  io_dmem_cache_io_in_req_ready; // @[src/main/scala/nutcore/mem/Cache.scala 674:32]
@@ -56933,7 +56933,7 @@ module NutCore(
     .io_out_resp_bits_cmd(dmemXbar_io_out_resp_bits_cmd),
     .io_out_resp_bits_rdata(dmemXbar_io_out_resp_bits_rdata)
   );
-  EmbeddedTLB itlb ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
+  EmbeddedTLB itlb ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
     .clock(itlb_clock),
     .reset(itlb_reset),
     .io_in_req_ready(itlb_io_in_req_ready),
@@ -56966,7 +56966,7 @@ module NutCore(
     .CSRSATP(itlb_CSRSATP),
     .MOUFlushTLB(itlb_MOUFlushTLB)
   );
-  PTERequestFilter filter ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
+  PTERequestFilter filter ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
     .clock(filter_clock),
     .reset(filter_reset),
     .io_in_req_ready(filter_io_in_req_ready),
@@ -57010,7 +57010,7 @@ module NutCore(
     .io_mmio_resp_valid(io_imem_cache_io_mmio_resp_valid),
     .io_mmio_resp_bits_rdata(io_imem_cache_io_mmio_resp_bits_rdata)
   );
-  EmbeddedTLB_1 dtlb ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 589:13]
+  EmbeddedTLB_1 dtlb ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 586:13]
     .clock(dtlb_clock),
     .reset(dtlb_reset),
     .io_in_req_ready(dtlb_io_in_req_ready),
@@ -57058,7 +57058,7 @@ module NutCore(
     .tlbFinish_0(dtlb_tlbFinish_0),
     ._T_13_1(dtlb__T_13_1)
   );
-  PTERequestFilter_1 filter_1 ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:24]
+  PTERequestFilter_1 filter_1 ( // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 590:24]
     .clock(filter_1_clock),
     .reset(filter_1_reset),
     .io_in_req_ready(filter_1_io_in_req_ready),
@@ -57619,10 +57619,10 @@ module NutCore(
   assign isWFI = frontend_isWFI;
   assign frontend_clock = clock;
   assign frontend_reset = reset;
-  assign frontend_io_imem_req_ready = itlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign frontend_io_imem_resp_valid = itlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign frontend_io_imem_resp_bits_rdata = itlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign frontend_io_imem_resp_bits_user = itlb_io_in_resp_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
+  assign frontend_io_imem_req_ready = itlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign frontend_io_imem_resp_valid = itlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign frontend_io_imem_resp_bits_rdata = itlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign frontend_io_imem_resp_bits_user = itlb_io_in_resp_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
   assign frontend_io_out_0_ready = ringBufferAllowin | ~frontend_io_out_0_valid; // @[src/main/scala/utils/PipelineVector.scala 50:36]
   assign frontend_io_redirect_target = backend_io_redirect_target; // @[src/main/scala/nutcore/NutCore.scala 218:26]
   assign frontend_io_redirect_valid = backend_io_redirect_valid; // @[src/main/scala/nutcore/NutCore.scala 218:26]
@@ -57669,13 +57669,13 @@ module NutCore(
   assign backend_io_in_0_bits_ctrl_isNutCoreTrap = 2'h3 == ringBufferTail ? dataBuffer_3_ctrl_isNutCoreTrap : _GEN_1151; // @[src/main/scala/utils/PipelineVector.scala 55:{15,15}]
   assign backend_io_in_0_bits_data_imm = 2'h3 == ringBufferTail ? dataBuffer_3_data_imm : _GEN_1123; // @[src/main/scala/utils/PipelineVector.scala 55:{15,15}]
   assign backend_io_flush = frontend_io_flushVec[3:2]; // @[src/main/scala/nutcore/NutCore.scala 219:45]
-  assign backend_io_dmem_req_ready = dtlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign backend_io_dmem_resp_valid = dtlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign backend_io_dmem_resp_bits_rdata = dtlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign backend_io_memMMU_dmem_loadPF = dtlb_io_csrMMU_loadPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
-  assign backend_io_memMMU_dmem_storePF = dtlb_io_csrMMU_storePF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
-  assign backend_io_memMMU_dmem_laf = dtlb_io_csrMMU_laf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
-  assign backend_io_memMMU_dmem_saf = dtlb_io_csrMMU_saf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
+  assign backend_io_dmem_req_ready = dtlb_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign backend_io_dmem_resp_valid = dtlb_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign backend_io_dmem_resp_bits_rdata = dtlb_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign backend_io_memMMU_dmem_loadPF = dtlb_io_csrMMU_loadPF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
+  assign backend_io_memMMU_dmem_storePF = dtlb_io_csrMMU_storePF; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
+  assign backend_io_memMMU_dmem_laf = dtlb_io_csrMMU_laf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
+  assign backend_io_memMMU_dmem_saf = dtlb_io_csrMMU_saf; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
   assign backend_io_extra_meip_0 = io_extra_meip_0;
   assign backend_paddr = dtlb_paddr;
   assign backend__T_12 = dtlb__T_12_0;
@@ -57707,45 +57707,45 @@ module NutCore(
   assign dmemXbar_io_in_0_req_bits_cmd = dtlb_io_out_req_bits_cmd; // @[src/main/scala/nutcore/NutCore.scala 206:23]
   assign dmemXbar_io_in_0_req_bits_wmask = dtlb_io_out_req_bits_wmask; // @[src/main/scala/nutcore/NutCore.scala 206:23]
   assign dmemXbar_io_in_0_req_bits_wdata = dtlb_io_out_req_bits_wdata; // @[src/main/scala/nutcore/NutCore.scala 206:23]
-  assign dmemXbar_io_in_1_req_valid = filter_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_1_req_bits_addr = filter_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_1_req_bits_cmd = filter_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_1_req_bits_wdata = filter_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_2_req_valid = filter_1_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_2_req_bits_addr = filter_1_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_2_req_bits_cmd = filter_1_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign dmemXbar_io_in_2_req_bits_wdata = filter_1_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
+  assign dmemXbar_io_in_1_req_valid = filter_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_1_req_bits_addr = filter_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_1_req_bits_cmd = filter_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_1_req_bits_wdata = filter_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_2_req_valid = filter_1_io_out_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_2_req_bits_addr = filter_1_io_out_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_2_req_bits_cmd = filter_1_io_out_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign dmemXbar_io_in_2_req_bits_wdata = filter_1_io_out_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
   assign dmemXbar_io_out_req_ready = io_dmem_cache_io_in_req_ready; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign dmemXbar_io_out_resp_valid = io_dmem_cache_io_in_resp_valid; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign dmemXbar_io_out_resp_bits_cmd = io_dmem_cache_io_in_resp_bits_cmd; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign dmemXbar_io_out_resp_bits_rdata = io_dmem_cache_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign itlb_clock = clock;
   assign itlb_reset = reset;
-  assign itlb_io_in_req_valid = frontend_io_imem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign itlb_io_in_req_bits_addr = frontend_io_imem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign itlb_io_in_req_bits_user = frontend_io_imem_req_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign itlb_io_in_resp_ready = frontend_io_imem_resp_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
+  assign itlb_io_in_req_valid = frontend_io_imem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign itlb_io_in_req_bits_addr = frontend_io_imem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign itlb_io_in_req_bits_user = frontend_io_imem_req_bits_user; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign itlb_io_in_resp_ready = frontend_io_imem_resp_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
   assign itlb_io_out_req_ready = io_imem_cache_io_in_req_ready; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign itlb_io_out_resp_valid = io_imem_cache_io_in_resp_valid; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign itlb_io_out_resp_bits_rdata = io_imem_cache_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
   assign itlb_io_out_resp_bits_user = io_imem_cache_io_in_resp_bits_user; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
-  assign itlb_io_mem_req_ready = filter_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign itlb_io_mem_resp_valid = filter_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign itlb_io_mem_resp_bits_rdata = filter_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
+  assign itlb_io_mem_req_ready = filter_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign itlb_io_mem_resp_valid = filter_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign itlb_io_mem_resp_bits_rdata = filter_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
   assign itlb_io_flush = frontend_io_flushVec[0]; // @[src/main/scala/nutcore/NutCore.scala 184:35]
-  assign itlb_io_csrMMU_priviledgeMode = backend_io_memMMU_imem_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
+  assign itlb_io_csrMMU_priviledgeMode = backend_io_memMMU_imem_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
   assign itlb_CSRSATP = backend_satp;
   assign itlb_MOUFlushTLB = backend_flushTLB;
   assign filter_clock = clock;
   assign filter_reset = reset;
-  assign filter_io_in_req_valid = itlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_io_in_req_bits_addr = itlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_io_in_req_bits_cmd = itlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_io_in_req_bits_wdata = itlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_io_out_req_ready = dmemXbar_io_in_1_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign filter_io_out_resp_valid = dmemXbar_io_in_1_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign filter_io_out_resp_bits_rdata = dmemXbar_io_in_1_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign filter_io_u = backend_io_memMMU_imem_priviledgeMode == 2'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:42]
+  assign filter_io_in_req_valid = itlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_io_in_req_bits_addr = itlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_io_in_req_bits_cmd = itlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_io_in_req_bits_wdata = itlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_io_out_req_ready = dmemXbar_io_in_1_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign filter_io_out_resp_valid = dmemXbar_io_in_1_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign filter_io_out_resp_bits_rdata = dmemXbar_io_in_1_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign filter_io_u = backend_io_memMMU_imem_priviledgeMode == 2'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 591:42]
   assign io_imem_cache_clock = clock;
   assign io_imem_cache_reset = reset;
   assign io_imem_cache_io_in_req_valid = itlb_io_out_req_valid; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]
@@ -57761,21 +57761,21 @@ module NutCore(
   assign io_imem_cache_io_mmio_resp_bits_rdata = mmioXbar_io_in_0_resp_bits_rdata; // @[src/main/scala/nutcore/mem/Cache.scala 677:13]
   assign dtlb_clock = clock;
   assign dtlb_reset = reset;
-  assign dtlb_io_in_req_valid = backend_io_dmem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign dtlb_io_in_req_bits_addr = backend_io_dmem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign dtlb_io_in_req_bits_size = backend_io_dmem_req_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign dtlb_io_in_req_bits_cmd = backend_io_dmem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign dtlb_io_in_req_bits_wmask = backend_io_dmem_req_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
-  assign dtlb_io_in_req_bits_wdata = backend_io_dmem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 595:15]
+  assign dtlb_io_in_req_valid = backend_io_dmem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign dtlb_io_in_req_bits_addr = backend_io_dmem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign dtlb_io_in_req_bits_size = backend_io_dmem_req_bits_size; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign dtlb_io_in_req_bits_cmd = backend_io_dmem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign dtlb_io_in_req_bits_wmask = backend_io_dmem_req_bits_wmask; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
+  assign dtlb_io_in_req_bits_wdata = backend_io_dmem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 592:15]
   assign dtlb_io_out_req_ready = dmemXbar_io_in_0_req_ready; // @[src/main/scala/nutcore/NutCore.scala 206:23]
   assign dtlb_io_out_resp_valid = dmemXbar_io_in_0_resp_valid; // @[src/main/scala/nutcore/NutCore.scala 206:23]
   assign dtlb_io_out_resp_bits_rdata = dmemXbar_io_in_0_resp_bits_rdata; // @[src/main/scala/nutcore/NutCore.scala 206:23]
-  assign dtlb_io_mem_req_ready = filter_1_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign dtlb_io_mem_resp_valid = filter_1_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign dtlb_io_mem_resp_bits_rdata = filter_1_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign dtlb_io_csrMMU_priviledgeMode = backend_io_memMMU_dmem_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
-  assign dtlb_io_csrMMU_status_sum = backend_io_memMMU_dmem_status_sum; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
-  assign dtlb_io_csrMMU_status_mxr = backend_io_memMMU_dmem_status_mxr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 599:19]
+  assign dtlb_io_mem_req_ready = filter_1_io_in_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign dtlb_io_mem_resp_valid = filter_1_io_in_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign dtlb_io_mem_resp_bits_rdata = filter_1_io_in_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign dtlb_io_csrMMU_priviledgeMode = backend_io_memMMU_dmem_priviledgeMode; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
+  assign dtlb_io_csrMMU_status_sum = backend_io_memMMU_dmem_status_sum; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
+  assign dtlb_io_csrMMU_status_mxr = backend_io_memMMU_dmem_status_mxr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:19]
   assign dtlb_lr = backend_lr;
   assign dtlb_scInflight = backend_scInflight;
   assign dtlb_amoReq = backend_amoReq;
@@ -57784,14 +57784,14 @@ module NutCore(
   assign dtlb_MOUFlushTLB = backend_flushTLB;
   assign filter_1_clock = clock;
   assign filter_1_reset = reset;
-  assign filter_1_io_in_req_valid = dtlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_1_io_in_req_bits_addr = dtlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_1_io_in_req_bits_cmd = dtlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_1_io_in_req_bits_wdata = dtlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 596:16]
-  assign filter_1_io_out_req_ready = dmemXbar_io_in_2_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign filter_1_io_out_resp_valid = dmemXbar_io_in_2_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign filter_1_io_out_resp_bits_rdata = dmemXbar_io_in_2_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 597:19]
-  assign filter_1_io_u = backend_io_memMMU_dmem_priviledgeMode == 2'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:42]
+  assign filter_1_io_in_req_valid = dtlb_io_mem_req_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_1_io_in_req_bits_addr = dtlb_io_mem_req_bits_addr; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_1_io_in_req_bits_cmd = dtlb_io_mem_req_bits_cmd; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_1_io_in_req_bits_wdata = dtlb_io_mem_req_bits_wdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 593:16]
+  assign filter_1_io_out_req_ready = dmemXbar_io_in_2_req_ready; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign filter_1_io_out_resp_valid = dmemXbar_io_in_2_resp_valid; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign filter_1_io_out_resp_bits_rdata = dmemXbar_io_in_2_resp_bits_rdata; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 594:19]
+  assign filter_1_io_u = backend_io_memMMU_dmem_priviledgeMode == 2'h0; // @[src/main/scala/nutcore/mem/EmbeddedTLB.scala 591:42]
   assign io_dmem_cache_clock = clock;
   assign io_dmem_cache_reset = reset;
   assign io_dmem_cache_io_in_req_valid = dmemXbar_io_out_req_valid; // @[src/main/scala/nutcore/mem/Cache.scala 676:17]

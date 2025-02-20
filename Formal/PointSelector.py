@@ -1,6 +1,6 @@
 import random
 
-from Pretreat import *
+from Tools import *
 
 class PointSelector:
     MAX_POINT_NUM = 120

@@ -7,7 +7,7 @@ import argparse
 from datetime import datetime
 
 from Coverage import Coverage
-from Pretreat import *
+from Tools import *
 from PointSelector import PointSelector
 from Executor import execute_cover_tasks, run_command
 

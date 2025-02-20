@@ -7,22 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import time
 
-from Pretreat import *
-
-def run_command(command, shell=False):
-    try:
-        process = subprocess.Popen(command, shell=shell, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
-        return_code = process.wait()
-        return return_code
-    except subprocess.CalledProcessError as e:
-        log_message(f"Error occurred: {e.stderr}")
-        return None
-    except subprocess.TimeoutExpired as e:
-        log_message(f"Timeout occurred: {e.stderr}")
-        return None
-    except Exception as e:
-        log_message(f"Exception occurred: {e}")
-        return None
+from Tools import *
 
 def execute_cover_tasks(cover_points):
     # return ([], 0)

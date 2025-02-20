@@ -1,7 +1,7 @@
 import os
 import csv
 
-from Pretreat import *
+from Tools import *
 
 class Coverage:
     covered_num = 0

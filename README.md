@@ -2,6 +2,12 @@
 
 Changed from XFuzz repo, TBD.
 
+## DUTs
+
+* [NutShell](https://github.com/SeddonShen/nutshell-fv)
+* [RocketChip](https://github.com/SeddonShen/rocket-chip)
+* [BOOM](https://github.com/SeddonShen/RocketChipImport)
+
 # xfuzz
 
 This project aims at fuzzing general-purpose hardware designs with software fuzzers.

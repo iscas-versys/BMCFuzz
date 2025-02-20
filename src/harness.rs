@@ -74,15 +74,15 @@ fn sim_run(workload: &String) -> i32 {
     ret
 }
 
-// fn sim_run_from_memory(input: &BytesInput) -> i32 {
-//     // create a workload-in-memory name for the input bytes
-//     let wim_bytes = input.bytes();
-//     let wim_addr = wim_bytes.as_ptr();
-//     let wim_size = wim_bytes.len() as u64;
-//     let wim_name = format!("wim@{wim_addr:p}+0x{wim_size:x}");
-//     // pass the in-memory workload to sim_run
-//     clone_to_run_sim(&wim_name)
-// }
+fn sim_run_from_memory(input: &BytesInput) -> i32 {
+    // create a workload-in-memory name for the input bytes
+    let wim_bytes = input.bytes();
+    let wim_addr = wim_bytes.as_ptr();
+    let wim_size = wim_bytes.len() as u64;
+    let wim_name = format!("wim@{wim_addr:p}+0x{wim_size:x}");
+    // pass the in-memory workload to sim_run
+    sim_run(&wim_name)
+}
 
 fn clone_to_run_sim(workload: &String) -> i32 {
     let fuzzer = format!("{}/build/fuzzer", env::var("NOOP_HOME").unwrap());
@@ -138,6 +138,7 @@ pub static mut NUM_RUNS: u64 = 0;
 pub static mut MAX_RUNS: u64 = u64::MAX;
 pub static mut FORMAL_COVER_RATE: f64 = 0.0;
 pub static mut INSERT_NOP: bool = false;
+pub static mut ONLY_FUZZ: bool = false;
 pub static mut COVER_NAME: Option<String> = None;
 
 pub static mut CORPUS_NUM: u64 = 0;
@@ -160,18 +161,24 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
             new_input = input.clone();
         }
     };
+
+    let ret: i32;
     let fuzz_id = unsafe { NUM_RUNS };
-    let fuzz_run_dir = format!("{}/tmp/fuzz_run", env::var("NOOP_HOME").unwrap());
-    let fuzz_run_id_dir = format!("{}/{}", fuzz_run_dir, fuzz_id);
-    if fs::read_dir(&fuzz_run_id_dir).is_ok() {
-        fs::remove_dir_all(&fuzz_run_id_dir).unwrap();
+    if unsafe{ ONLY_FUZZ } {
+        ret = sim_run_from_memory(&new_input);
+    } else {
+        let fuzz_run_dir = format!("{}/tmp/fuzz_run", env::var("NOOP_HOME").unwrap());
+        let fuzz_run_id_dir = format!("{}/{}", fuzz_run_dir, fuzz_id);
+        if fs::read_dir(&fuzz_run_id_dir).is_ok() {
+            fs::remove_dir_all(&fuzz_run_id_dir).unwrap();
+        }
+        fs::create_dir_all(&fuzz_run_id_dir).unwrap();
+        fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_wave").unwrap();
+        fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_snapshot").unwrap();
+        fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_transition").unwrap();
+        store_testcase(&new_input, &fuzz_run_dir, Some("fuzz_testcase".to_string()));
+        ret = clone_to_run_sim(&format!("{}/fuzz_testcase", fuzz_run_dir));
     }
-    fs::create_dir_all(&fuzz_run_id_dir).unwrap();
-    fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_wave").unwrap();
-    fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_snapshot").unwrap();
-    fs::create_dir_all(fuzz_run_id_dir.clone()+"/csr_transition").unwrap();
-    store_testcase(&new_input, &fuzz_run_dir, Some("fuzz_testcase".to_string()));
-    let ret = clone_to_run_sim(&format!("{}/fuzz_testcase", fuzz_run_dir));
 
     // get coverage
     // cover_display();
@@ -296,6 +303,10 @@ pub(crate) fn set_formal_cover_rate(rate: f64) {
 
 pub(crate) fn set_insert_nop(insert_nop: bool) {
     unsafe { INSERT_NOP = insert_nop };
+}
+
+pub(crate) fn set_only_fuzz(only_fuzz: bool) {
+    unsafe { ONLY_FUZZ = only_fuzz };
 }
 
 pub(crate) fn set_corpus_num(corpus_dir: String) {

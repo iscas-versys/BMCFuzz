@@ -46,6 +46,8 @@ struct Arguments {
     formal_cover_rate: f64,
     #[clap(default_value_t = false, long)]
     insert_nop: bool,
+    #[clap(default_value_t = false, long)]
+    only_fuzz: bool,
 
     // Run options
     #[clap(default_value_t = 1, long)]
@@ -116,6 +118,7 @@ fn main() -> i32 {
         println!("insert nop: {:?}", args.insert_nop);
         harness::set_formal_cover_rate(args.formal_cover_rate);
         harness::set_insert_nop(args.insert_nop);
+        harness::set_only_fuzz(args.only_fuzz);
         harness::set_cover_points();
         if corpus_input.is_some() {
             harness::set_corpus_num(corpus_input.clone().unwrap());

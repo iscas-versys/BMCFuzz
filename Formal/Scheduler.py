@@ -269,14 +269,25 @@ class Scheduler:
         return True
     
     def run_fuzz(self):
-        formal_cover_rate = self.coverage.get_formal_cover_rate()
-        NOOP_HOME = os.getenv("NOOP_HOME")
-        FUZZ_LOG = os.getenv("FUZZ_LOG")
-        fuzz_log_file = os.path.join(FUZZ_LOG, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
-        fuzz_command = f"bash -c 'cd {NOOP_HOME} && source {NOOP_HOME}/env.sh && \
-                        {NOOP_HOME}/build/fuzzer -f --formal-cover-rate {formal_cover_rate} --continue-on-errors \
-                        --corpus-input $CORPUS_DIR -c firrtl.toggle --insert-nop -- -I 100 -C 500 -b 0 \
-                        > {fuzz_log_file} 2>&1'"
+        fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
+        make_log_file = os.path.join(fuzz_log_dir, f"make_fuzzer.log")
+        fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
+
+        fuzz_args = FuzzArgs()
+        fuzz_args.cover_type = self.cover_type
+        fuzz_args.corpus_input = os.getenv("CORPUS_DIR")
+
+        fuzz_args.continue_on_errors = True
+        fuzz_args.insert_nop = True
+        
+        fuzz_args.formal_cover_rate = self.coverage.get_formal_cover_rate()
+
+        fuzz_args.make_log_file = make_log_file
+        fuzz_args.output_file = fuzz_log_file
+
+        self.clean_fuzz_run()
+
+        fuzz_command = fuzz_args.generate_fuzz_command()
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
     
@@ -396,9 +407,7 @@ def test_formal(args=None):
     clear_logs()
     log_init()
 
-    run_snapshot = False
-    if args.run_snapshot:
-        run_snapshot = True
+    run_snapshot = args.run_snapshot
     cover_type = args.cover_type
 
     log_message(f"run snapshot:{run_snapshot}")

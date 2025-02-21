@@ -37,8 +37,8 @@ input  [63:0] w_mask,
   initial $ixc_ctrl("tb_import", "$display");
 `endif // PALLADIUM
 
-// 1536MB memory
-`define RAM_SIZE (1536 * 1024 * 1024)
+// 2GB memory
+`define RAM_SIZE (2 * 1024 * 1024 * 1024)
 reg [63:0] memory [0 : `RAM_SIZE / 8 - 1];
 
 `define MEM_TARGET memory

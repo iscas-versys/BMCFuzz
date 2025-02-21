@@ -21,12 +21,12 @@ from SetInitValues.new_init_folder import create_init_files
 from SetInitValues.CSRTransitionSelect import CSRTransitionSelect
 
 from Formal.Scheduler import Scheduler, FuzzArgs
-from Formal.Pretreat import log_message, clear_logs, log_init
+from Formal.Tools import log_message, clear_logs, log_init
 from Formal.Executor import run_command
 
 NOOP_HOME = os.getenv("NOOP_HOME")
 
-class SnapshotFuzz:
+class BMCFuzz:
     split_sv_modules_dir = None
     module_with_regs_json = None
 
@@ -269,7 +269,7 @@ def run(args):
     time.sleep(10)
     log_message("Start Running")
 
-    fuzz = SnapshotFuzz()
+    fuzz = BMCFuzz()
     fuzz.init(cover_type=args.cover_type)
     fuzz.run()
 
@@ -280,7 +280,7 @@ def run_on_special_wave(args):
     clear_logs(formal_dir)
     log_init(current_dir)
 
-    fuzz = SnapshotFuzz()
+    fuzz = BMCFuzz()
     fuzz.init(cover_type=args.cover_type, special_wave=True)
 
     # generate init file
@@ -294,7 +294,7 @@ def test(args):
     clear_logs(current_dir)
     log_init(current_dir)
 
-    fuzz = SnapshotFuzz()
+    fuzz = BMCFuzz()
     fuzz.init(cover_type=args.cover_type)
     fuzz.fuzz_init()
 

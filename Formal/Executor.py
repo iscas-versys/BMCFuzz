@@ -16,11 +16,12 @@ def execute_cover_tasks(cover_points):
     output_dir = str(os.getenv("COVER_POINTS_OUT"))
 
     # 加载OSS CAD Suite环境
+    log_message(f"try to load env: {env_path}")
     env_command = f"bash -c 'source {env_path} && env'"
     env_vars = run_command(env_command, shell=True)
 
     if env_vars != 0:
-        log_message("环境变量加载失败")
+        log_message(f"env load failed: {env_vars}")
         return 0
 
     # os.chdir(output_dir)
@@ -70,7 +71,7 @@ def execute_cover_task(env_path, cover, output_dir):
     return cover_point
     
 def parse_v_file(cover_no, v_file_path, output_dir):
-    pattern = r"UUT\.mem\.rdata_mem\.helper_0\.memory\[(28'b[01]+)\] = (64'b[01]+);"
+    pattern = r"UUT\.mem\.rdata_mem\.helper_0\.memory\[(29'b[01]+)\] = (64'b[01]+);"
     os.makedirs(output_dir, exist_ok=True)
     output_file_path = os.path.join(output_dir, f"cover_{cover_no}.bin")
 

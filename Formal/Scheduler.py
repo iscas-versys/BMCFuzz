@@ -23,6 +23,7 @@ class FuzzArgs:
     insert_nop = False
     save_errors = False
     run_snapshot = False
+    only_fuzz = False
 
     formal_cover_rate = -1.0
 
@@ -37,6 +38,8 @@ class FuzzArgs:
     wave_path = f"{NOOP_HOME}/tmp/run_wave.vcd"
 
     no_diff = False
+
+    as_footprint = False
 
     snapshot_id = 0
     
@@ -130,6 +133,8 @@ class FuzzArgs:
             fuzz_command += " --insert-nop"
         if self.save_errors:
             fuzz_command += " --save-errors"
+        if self.only_fuzz:
+            fuzz_command += " --only-fuzz"
         
         if self.formal_cover_rate > 0:
             fuzz_command += f" --formal-cover-rate {self.formal_cover_rate}"
@@ -153,6 +158,9 @@ class FuzzArgs:
 
         if self.no_diff:
             fuzz_command += " --no-diff"
+
+        if self.as_footprint:
+            fuzz_command += " --as-footprint"
 
         if self.output_file != "":
             fuzz_command += f" > {self.output_file}"
@@ -235,11 +243,9 @@ class Scheduler:
         self.display_coverage()
         self.output_uncovered_points(loop_count)
 
-    def run_formal(self, test_formal=False):
+    def run_formal(self):
         if self.run_snapshot:
             generate_rtl_files(True, self.cover_type)
-        if test_formal:
-            self.point_selector.MAX_POINT_NUM = len(self.points_name)
         cover_points = self.point_selector.generate_cover_points()
         while(True):
             # 清理并重新生成cover points文件
@@ -262,8 +268,6 @@ class Scheduler:
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
-        if test_formal:
-            self.coverage.update_formal(cover_cases)
         self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
 
         return True
@@ -279,6 +283,7 @@ class Scheduler:
 
         fuzz_args.continue_on_errors = True
         fuzz_args.insert_nop = True
+        fuzz_args.only_fuzz = True
         
         fuzz_args.formal_cover_rate = self.coverage.get_formal_cover_rate()
 
@@ -403,76 +408,15 @@ def run(args=None):
     log_message("Start formal.")
     scheduler.run_loop()
 
-def test_formal(args=None):
-    clear_logs()
-    log_init()
-
-    run_snapshot = args.run_snapshot
-    cover_type = args.cover_type
-
-    log_message(f"run snapshot:{run_snapshot}")
-    log_message(f"cover type:{cover_type}")
-
-    scheduler = Scheduler()
-    scheduler.init(run_snapshot, cover_type)
-    all_points = [i for i in range(len(scheduler.points_name))]
-    # hexbin_dir = os.getenv("COVER_POINTS_OUT") + "/hexbin"
-    # with os.scandir(hexbin_dir) as entries:
-    #     for entry in entries:
-    #         if entry.name.endswith(".bin"):
-    #             cover_id = int(entry.name.split(".")[0].split("_")[1])
-    #             log_message(f"cover_id: {cover_id}")
-    #             if cover_id in all_points:
-    #                 all_points.remove(cover_id)
-
-    log_message(f"all_points_len: {len(all_points)}")
-    log_message("Sleep 10 seconds for background running.")
-    time.sleep(10)
-    log_message("Start formal.")
-    
-    while(True):
-        if not scheduler.run_formal(True):
-            log_message("Exit: no more points to cover.")
-            scheduler.display_coverage()
-            break
-        scheduler.display_coverage()
-
-def test_fuzz(args=None):
-    clear_logs()
-    log_init()
-
-    run_snapshot = False
-    if args.run_snapshot:
-        run_snapshot = True
-    cover_type = args.cover_type
-
-    log_message(f"run snapshot:{run_snapshot}")
-    log_message(f"cover type:{cover_type}")
-
-    scheduler = Scheduler()
-    # scheduler.init(run_snapshot, cover_type)
-    
-    set_max_cover_points(11747)
-    generate_empty_cover_points_file()
-    scheduler.coverage.formal_cover_rate = 2
-    scheduler.run_snapshot_fuzz(1)
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--run_snapshot', '-r', action='store_true')
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
-    parser.add_argument('--test_formal', '-t', action='store_true')
-    parser.add_argument('--test_fuzz', '-f', action='store_true')
 
     args = parser.parse_args()
 
-    if args.test_formal:
-        test_formal(args)
-    elif args.test_fuzz:
-        test_fuzz(args)
-    else:
-        run(args)
+    run(args)
     # generate_empty_cover_points_file()
     # test_fuzz()
     # test_formal(args)

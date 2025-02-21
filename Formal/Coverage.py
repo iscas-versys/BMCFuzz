@@ -52,7 +52,7 @@ class Coverage:
     
     def display_coverage(self):
         log_message(f"Covered: {self.covered_num}/{len(self.cover_points)}")
-        log_message(f"Coverage: {self.get_coverage()*100:.2f}%")
+        log_message(f"Total Coverage: {self.get_coverage()*100:.2f}%")
 
     def generate_cover_file(self):
         # 获取环境变量

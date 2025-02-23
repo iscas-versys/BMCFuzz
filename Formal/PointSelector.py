@@ -59,6 +59,7 @@ class PointSelector:
             # debug
             log_message("Select %d points from module %d(%d)" % (select_num, max_uncovered_module, len(max_uncovered_points)))
             log_message("Selected points: %s" % str(select_points))
+            log_message("Unselected points num: %d" % self.uncovered_points_num)
 
             total_select_num += select_num
             total_select_points += select_points

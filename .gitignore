@@ -42,4 +42,7 @@ SetInitValues/csr_wave/*
 SetInitValues/csr_snapshot/*
 SetInitValues/csr_transition/*
 
+scripts/__pycache__
+scripts/logs
+
 logs/*

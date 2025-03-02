@@ -294,6 +294,8 @@ def generate_sby_files(cover_points):
 
 def set_max_cover_points(max_cover_points):
     global MAX_COVER_POINTS
+    default_rocket_toggle_points = 8940
+    default_nutshell_toggle_points = 11747
     MAX_COVER_POINTS = max_cover_points
 
 # 清理coverTasks文件夹

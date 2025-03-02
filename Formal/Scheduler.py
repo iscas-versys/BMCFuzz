@@ -246,6 +246,8 @@ class Scheduler:
     def run_formal(self):
         if self.run_snapshot:
             generate_rtl_files(True, self.cover_type)
+        if test_formal:
+            self.point_selector.MAX_POINT_NUM = len(self.points_name)
         cover_points = self.point_selector.generate_cover_points()
         while(True):
             # 清理并重新生成cover points文件
@@ -268,6 +270,8 @@ class Scheduler:
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
+        if test_formal:
+            self.coverage.update_formal(cover_cases)
         self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
 
         return True
@@ -382,6 +386,31 @@ class Scheduler:
             shutil.rmtree(fuzz_run_dir)
         os.mkdir(fuzz_run_dir)
 
+def test_formal(args=None):
+    clear_logs()
+    log_init()
+
+    run_snapshot = args.run_snapshot
+    cover_type = args.cover_type
+
+    log_message(f"run snapshot:{run_snapshot}")
+    log_message(f"cover type:{cover_type}")
+
+    scheduler = Scheduler()
+    scheduler.init(run_snapshot, cover_type)
+    all_points = [i for i in range(len(scheduler.points_name))]
+
+    log_message(f"all_points_len: {len(all_points)}")
+    log_message("Sleep 10 seconds for background running.")
+    # time.sleep(10)
+    log_message("Start formal.")
+    
+    while(True):
+        if not scheduler.run_formal(True):
+            log_message("Exit: no more points to cover.")
+            scheduler.display_coverage()
+            break
+        scheduler.display_coverage()
 
 def run(args=None):
     # 初始化log

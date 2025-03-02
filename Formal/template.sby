@@ -1,7 +1,8 @@
 [options]
 mode cover
-depth 30
-timeout 3600
+depth 50
+timeout 7200
+multiclock on
 
 [engines]
 smtbmc

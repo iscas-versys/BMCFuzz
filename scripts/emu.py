@@ -122,6 +122,8 @@ if __name__ == "__main__":
     clear_logs()
     log_init()
 
+    os.makedirs(os.path.join(NOOP_HOME, "tmp"), exist_ok=True)
+
     parser = argparse.ArgumentParser()
 
     # default

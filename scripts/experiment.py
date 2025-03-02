@@ -14,10 +14,12 @@ from runtools import log_init, clear_logs, log_message, reset_terminal
 from runtools import FuzzArgs, NOOP_HOME
 from runtools import kill_process_and_children
 
-def run_and_capture_output(cmd, timeout):
+TIME_OUT = 30 * 60 * 60
+TIME_INTERVAL = 20
+
+def run_and_capture_output(cmd):
     start_time = time.time()
     pre_time = 0
-    time_interval = 20
     log_message(cmd)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1, shell=True)
 
@@ -27,7 +29,7 @@ def run_and_capture_output(cmd, timeout):
         for line in iter(process.stdout.readline, ""):
             elapsed_time = time.time() - start_time
             
-            if "Total Coverage" in line and elapsed_time - pre_time > time_interval:
+            if "Total Coverage" in line and elapsed_time - pre_time > TIME_INTERVAL:
                 pre_time = elapsed_time
                 hours = int(elapsed_time / 3600)
                 minutes = int((elapsed_time % 3600) / 60)
@@ -37,7 +39,7 @@ def run_and_capture_output(cmd, timeout):
                 log_message(cover_message, print_message=False)
                 coverage_lines.append(cover_message)
             
-            if elapsed_time > timeout:
+            if elapsed_time > TIME_OUT:
                 log_message("Process timeout, terminating")
                 kill_process_and_children(process.pid)
                 break
@@ -95,7 +97,7 @@ def do_fuzz(args):
 
     fuzz_cmd = fuzzer.generate_fuzz_command()
 
-    coverage_lines = run_and_capture_output(fuzz_cmd, args.timeout)
+    coverage_lines = run_and_capture_output(fuzz_cmd)
     log_message("Fuzzing done")
 
     log_message("Output coverage")
@@ -115,7 +117,7 @@ def do_bmc(args):
     log_init(name=fuzz_name)
     log_message(f"Running {fuzz_name}")
 
-    coverage_lines = run_and_capture_output(fuzz_cmd, args.timeout)
+    coverage_lines = run_and_capture_output(fuzz_cmd)
     log_message("Fuzzing done")
 
     log_message("Output coverage")
@@ -183,6 +185,8 @@ def prepare_data(data):
     return times, coverages
 
 def generate_graph(args):
+    print("TIME_OUT:", TIME_OUT)
+    print("TIME_INTERVAL:", TIME_INTERVAL)
     experiment_dir = os.path.join(NOOP_HOME, "tmp", "exp")
     xfuzz_data = []
     pathfuzz_data = []
@@ -253,12 +257,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     default_cover_type = "toggle"
-    default_timeout = 30 * 60 * 60
-    # default_timeout = 72 * 60 * 60
-    # default_timeout = 60
+    default_time_out = 30 * 60 * 60
+    # default_time_out = 60
+    default_time_interval = 20
+    # default_time_interval = 2
 
     parser.add_argument("--cover-type", "-c", type=str, default=default_cover_type, help="Coverage type")
-    parser.add_argument("--timeout", "-t", type=int, default=default_timeout, help="Timeout")
+    parser.add_argument("--time-out", "-to", type=int, default=default_time_out, help="Timeout")
+    parser.add_argument("--time-interval", "-ti", type=int, default=default_time_interval, help="Time interval")
     parser.add_argument("--init", "-i", action='store_true', help="Initialize fuzzing")
 
     parser.add_argument("--do-xfuzz", "-dx", action='store_true', help="Do xfuzz")
@@ -270,6 +276,9 @@ if __name__ == "__main__":
     parser.add_argument("--generate-graph", "-g", action='store_true', help="Generate graph")
 
     args = parser.parse_args()
+
+    TIME_OUT = args.time_out
+    TIME_INTERVAL = args.time_interval
 
     if args.init:
         fuzz_init(args)

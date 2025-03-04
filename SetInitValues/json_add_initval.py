@@ -15,9 +15,8 @@ def parse_sv_file(filepath):
         reg_matches = re.findall(r'(\breg\b.*?;)', content, re.DOTALL)
         for reg in reg_matches:
             reg_cnt = reg_cnt + 1
-            reg_info = {}
             # Match register name and initial value
-            reg_name_match = re.search(r'\breg\b\s*(\[\d+:\d+\]\s*)?(\w+)\s*(=\s*(.*?))?;', reg, re.DOTALL)
+            reg_name_match = re.search(r'\breg\b\s*(\[\d+:\d+\]\s*)?([a-zA-Z_][a-zA-Z0-9_$]*)\s*(=\s*(.*?))?;', reg, re.DOTALL)
             if reg_name_match:
                 bit_width = reg_name_match.group(1) if reg_name_match.group(1) else ''
                 reg_name = reg_name_match.group(2)

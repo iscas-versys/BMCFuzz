@@ -24,7 +24,7 @@ class CSRTransitionSelect:
 
     id2transition = {}
 
-    def file_init(self, cover_type="toggle"):
+    def file_init(self, cpu, cover_type):
         # init csr_wave directory
         set_init_dir = os.getenv("NOOP_HOME") + "/ccover/SetInitValues"
         csr_wave_dir = set_init_dir + "/csr_wave"
@@ -38,8 +38,8 @@ class CSRTransitionSelect:
         log_message(f"CSR Wave directory initialized.")
 
         # init reset wave file
-        reset_wave_file = set_init_dir + f"/rtl_src/reset_{cover_type}.vcd"
-        reset_snapshot_file = set_init_dir + f"/rtl_src/reset_snapshot"
+        reset_wave_file = set_init_dir + f"/rtl_src/{cpu}/reset_{cover_type}.vcd"
+        reset_snapshot_file = set_init_dir + f"/rtl_src/{cpu}/reset_snapshot"
         shutil.copyfile(reset_wave_file, csr_wave_dir + "/0.vcd")
         shutil.copyfile(reset_snapshot_file, csr_snapshot_dir + "/0")
         log_message(f"Reset wave file and snapshot copied.")

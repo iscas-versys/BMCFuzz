@@ -82,15 +82,15 @@ def connect_json_vcd(hierarchy_regs_json_path, vcd_parser_json, updated_register
     if unmatched_registers:
         log_message(f"[Warn] {len(unmatched_registers)} registers not found in VCD:")
         # return 1
+        log_message("\nUnmatched Registers:")
+        for reg in unmatched_registers:
+            log_message(reg)
     return 0
-    # print("\nUnmatched Registers:")
-    # for reg in unmatched_registers:
-    #     print(reg)
 
 def update_other_rtl(src_rtl_dir, dst_rtl_dir, wave_json_path):
     wave_data = json.load(open(wave_json_path))
     for signal in wave_data:
-        if signal['name'] == 'TOP.SimTop.mem.rdata_mem.helper_0.r_data[63:0]':
+        if signal['name'].endswith('helper_0.r_data[63:0]'):
             init_value = signal['value']
 
     src_path = os.path.join(src_rtl_dir, "MemRWHelper_difftest.v")

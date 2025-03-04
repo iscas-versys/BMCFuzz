@@ -245,7 +245,7 @@ class Scheduler:
         self.display_coverage()
         self.output_uncovered_points(loop_count)
 
-    def run_formal(self):
+    def run_formal(self, test_formal=False):
         if self.run_snapshot:
             generate_rtl_files(True, self.cpu, self.cover_type)
         if test_formal:
@@ -402,7 +402,7 @@ def test_formal(args=None):
 
     log_message(f"all_points_len: {len(all_points)}")
     log_message("Sleep 10 seconds for background running.")
-    # time.sleep(10)
+    time.sleep(10)
     log_message("Start formal.")
     
     while(True):

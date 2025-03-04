@@ -83,7 +83,7 @@ def kill_process_and_children(pid):
         log_message("No such process")
 
 # 复制、解析并修改RTL文件
-def generate_rtl_files(run_snapshot=False, cover_type="toggle"):
+def generate_rtl_files(run_snapshot, cpu, cover_type):
     # 获取环境变量
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     rtl_init_dir = str(os.getenv("RTL_INIT_DIR"))

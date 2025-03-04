@@ -78,7 +78,7 @@ class FuzzArgs:
             with open(dst_rtl, mode='w', encoding='utf-8') as dst_file:
                 dst_file.writelines(src_lines)
             
-            # replace MemRWHelper_formal.v
+            # replace MemRWHelper.v
             log_message(f"Replace MemRWHelper.v")
             src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "MemRWHelper_difftest.v")
             dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "MemRWHelper.v")
@@ -183,18 +183,20 @@ class Scheduler:
 
     run_snapshot = False
 
+    cpu = ""
     cover_type = "toggle"
 
-    def init(self, run_snapshot=False, cover_type="toggle"):
+    def init(self, cpu, cover_type, run_snapshot=False):
         log_message("Scheduler init")
 
         self.run_snapshot = run_snapshot
+        self.cpu = cpu
         self.cover_type = cover_type
         
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
-        # False for snapshot fuzz init
-        cover_points_name = generate_rtl_files(False, cover_type)
+        # False for BMCFuzz init
+        cover_points_name = generate_rtl_files(False, cpu, cover_type)
 
         point_id = 0
         module_id = 0
@@ -245,7 +247,7 @@ class Scheduler:
 
     def run_formal(self):
         if self.run_snapshot:
-            generate_rtl_files(True, self.cover_type)
+            generate_rtl_files(True, self.cpu, self.cover_type)
         if test_formal:
             self.point_selector.MAX_POINT_NUM = len(self.points_name)
         cover_points = self.point_selector.generate_cover_points()
@@ -390,14 +392,12 @@ def test_formal(args=None):
     clear_logs()
     log_init()
 
-    run_snapshot = args.run_snapshot
-    cover_type = args.cover_type
-
-    log_message(f"run snapshot:{run_snapshot}")
-    log_message(f"cover type:{cover_type}")
+    log_message(f"run snapshot:{args.run_snapshot}")
+    log_message(f"cpu:{args.cpu}")
+    log_message(f"cover type:{args.cover_type}")
 
     scheduler = Scheduler()
-    scheduler.init(run_snapshot, cover_type)
+    scheduler.init(args.cpu, args.cover_type, args.run_snapshot)
     all_points = [i for i in range(len(scheduler.points_name))]
 
     log_message(f"all_points_len: {len(all_points)}")
@@ -417,20 +417,15 @@ def run(args=None):
     clear_logs()
     log_init()
 
-    # argparse
-    run_snapshot = False
-    if args.run_snapshot:
-        run_snapshot = True
-    cover_type = args.cover_type
-
-    log_message(f"run snapshot:{run_snapshot}")
-    log_message(f"cover type:{cover_type}")
+    log_message(f"run snapshot:{args.run_snapshot}")
+    log_message(f"cpu:{args.cpu}")
+    log_message(f"cover type:{args.cover_type}")
     
     # current_dir = os.path.dirname(os.path.realpath(__file__))
     # os.chdir(current_dir)
 
     scheduler = Scheduler()
-    scheduler.init(run_snapshot, cover_type)
+    scheduler.init(args.cpu, args.cover_type, args.run_snapshot)
 
     log_message("Sleep 10 seconds for background running.")
     time.sleep(10)
@@ -441,6 +436,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--run_snapshot', '-r', action='store_true')
+    parser.add_argument('--cpu', '-p', type=str, default="rocket")
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
 
     args = parser.parse_args()

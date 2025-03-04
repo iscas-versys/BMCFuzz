@@ -27,6 +27,8 @@ from Formal.Executor import run_command
 NOOP_HOME = os.getenv("NOOP_HOME")
 
 class BMCFuzz:
+    cpu = None
+    
     split_sv_modules_dir = None
     module_with_regs_json = None
 
@@ -38,9 +40,12 @@ class BMCFuzz:
 
     scheduler = None
 
-    cover_type = "toggle"
+    cover_type = None
     
-    def init(self, cover_type="toggle", special_wave=False):
+    def init(self, cpu, cover_type, special_wave=False):
+        self.cpu = cpu
+        self.cover_type = cover_type
+        
         current_dir = os.path.dirname(os.path.realpath(__file__))
 
         set_init_values_dir = os.path.join(current_dir, 'SetInitValues')
@@ -53,7 +58,7 @@ class BMCFuzz:
         log_message("Start Set Init Values")
         if os.path.exists(set_init_values_dir+'/SimTop.sv'):
             os.remove(set_init_values_dir+'/SimTop.sv')
-        shutil.copyfile(set_init_values_dir+f'/rtl_src/SimTop_{cover_type}.sv', set_init_values_dir+'/SimTop.sv')
+        shutil.copyfile(set_init_values_dir+f'/rtl_src/{cpu}/SimTop_{cover_type}.sv', set_init_values_dir+'/SimTop.sv')
         default_sv_file = os.path.join(set_init_values_dir, 'SimTop.sv')
         default_top_module_name = 'SimTop'
 
@@ -105,13 +110,13 @@ class BMCFuzz:
         log_message("Start CSR Transition Selector Init")
         self.csr_transition_selector = CSRTransitionSelect()
         if not special_wave:
-            self.csr_transition_selector.file_init()
+            self.csr_transition_selector.file_init(cpu, cover_type)
         log_message("End CSR Transition Selector Init")
 
         """ Formal """
         log_message("Start Formal Init")
         self.scheduler = Scheduler()
-        self.scheduler.init(True, cover_type)
+        self.scheduler.init(cpu, cover_type, True)
         log_message("End Formal Init")
 
         """ clean errors&crashes """
@@ -153,7 +158,7 @@ class BMCFuzz:
         log_message(f"Create init files executed successfully.")
 
         # update other rtl files
-        src_rtl_dir = os.path.join(self.set_init_values_dir, 'rtl_src')
+        src_rtl_dir = os.path.join(self.set_init_values_dir, 'rtl_src', self.cpu)
         dst_rtl_dir = os.path.join(self.set_init_values_dir)
         update_other_rtl(src_rtl_dir, dst_rtl_dir, wave_json_path)
         log_message(f"Update other rtl files executed successfully.")
@@ -270,7 +275,7 @@ def run(args):
     log_message("Start Running")
 
     fuzz = BMCFuzz()
-    fuzz.init(cover_type=args.cover_type)
+    fuzz.init(cpu=args.cpu, cover_type=args.cover_type)
     fuzz.run()
 
 def run_on_special_wave(args):
@@ -281,7 +286,7 @@ def run_on_special_wave(args):
     log_init(current_dir)
 
     fuzz = BMCFuzz()
-    fuzz.init(cover_type=args.cover_type, special_wave=True)
+    fuzz.init(cpu=args.cpu, cover_type=args.cover_type, special_wave=True)
 
     # generate init file
     fuzz.generate_init_file(os.path.join(fuzz.set_init_values_dir, 'csr_wave', str(args.wave_id)+'.vcd'))
@@ -295,17 +300,17 @@ def test(args):
     log_init(current_dir)
 
     fuzz = BMCFuzz()
-    fuzz.init(cover_type=args.cover_type)
-    fuzz.fuzz_init()
+    fuzz.init(cpu=args.cpu, cover_type=args.cover_type)
+    # fuzz.fuzz_init()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
-
     parser.add_argument("--fuzz", "-f", action='store_true', help="Run fuzz")
     parser.add_argument("--special-wave", "-s", action='store_true', help="Run on special wave")
     parser.add_argument("--test", "-t", action='store_true', help="Run test")
 
+    parser.add_argument("--cpu", type=str, default="rocket", help="CPU type")
     parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
 
     parser.add_argument("--delete-yaml", "-d", action='store_true', help="Delete yaml")

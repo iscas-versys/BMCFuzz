@@ -27,7 +27,7 @@ def generate_nutshell_rtl(args):
     cover_src = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
 
     formal_dir = os.path.join(NOOP_HOME, "ccover", "Formal", "demo", f"{args.cpu}_{args.cover_type}")
-    init_dir = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "rtl_src")
+    init_dir = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "rtl_src", f"{args.cpu}")
 
     # 替换firrtl-cover.cpp
     formal_cover_dst = os.path.join(formal_dir, "firrtl-cover.cpp")
@@ -36,11 +36,12 @@ def generate_nutshell_rtl(args):
     shutil.copy(cover_src, formal_cover_dst)
     log_message("replace firrtl-cover.cpp")
 
-    # 修改array中的ram [7:0]为ram [0:7]，并复制array_0_ext.v到SimTop.sv最后
-    array_0_ext_src = os.path.join(build_dir, "rtl", "array_0_ext.v")
     src_lines = []
     with open(rtl_src, "r") as f:
         src_lines = f.readlines()
+
+    # 修改array中的ram [7:0]为ram [0:7]，并复制array_0_ext.v到SimTop.sv最后
+    array_0_ext_src = os.path.join(build_dir, "rtl", "array_0_ext.v")
     with open(array_0_ext_src, "r") as f:
         array_lines = f.readlines()
     for i, line in enumerate(array_lines):
@@ -96,7 +97,7 @@ def generate_rocket_rtl(args):
     cover_src = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
 
     formal_dir = os.path.join(NOOP_HOME, "ccover", "Formal", "demo", f"{args.cpu}_{args.cover_type}")
-    init_dir = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "rtl_src")
+    init_dir = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "rtl_src", f"{args.cpu}")
 
     log_message("generate rocket rtl")
 
@@ -113,6 +114,14 @@ def generate_rocket_rtl(args):
 
     formal_lines = src_lines.copy()
 
+    # 修改enToggle和enToggle_past的值
+    for i, line in enumerate(src_lines):
+        elements = line.split()
+        if len(elements) != 0 and elements[0] == "reg":
+            if elements[1] == "enToggle" or elements[1] == "enToggle_past":
+                src_lines[i] = src_lines[i].replace("1\'h0", "1'h1")
+    log_message("change enToggle and enToggle_past value")
+    
     # 插入assume语句限制reset
     assume_line = "assume property(reset == 1'b0);\n"
     formal_assume_line = "initial assume(reset);\n"
@@ -135,6 +144,14 @@ def generate_rocket_rtl(args):
     with open(formal_rtl_dst, "w") as f:
         f.writelines(formal_lines)
     log_message("replace SimTop.sv in Formal")
+
+    # 替换SetInitValues目录下的rtl文件
+    init_rtl_dst = os.path.join(init_dir, "SimTop_"+args.cover_type+".sv")
+    if os.path.exists(init_rtl_dst):
+        os.remove(init_rtl_dst)
+    with open(init_rtl_dst, "w") as f:
+        f.writelines(src_lines)
+    log_message("replace SimTop.sv in SetInitValues")
 
 if __name__ == "__main__":
     os.chdir(NOOP_HOME)

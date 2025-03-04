@@ -262,6 +262,9 @@ if __name__ == "__main__":
     default_time_interval = 20
     # default_time_interval = 2
 
+    default_output_dir = os.path.join(NOOP_HOME, "tmp", "exp")
+    os.makedirs(default_output_dir, exist_ok=True)
+
     parser.add_argument("--cover-type", "-c", type=str, default=default_cover_type, help="Coverage type")
     parser.add_argument("--time-out", "-to", type=int, default=default_time_out, help="Timeout")
     parser.add_argument("--time-interval", "-ti", type=int, default=default_time_interval, help="Time interval")

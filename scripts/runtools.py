@@ -145,7 +145,7 @@ class FuzzArgs:
             with open(dst_rtl, mode='w', encoding='utf-8') as dst_file:
                 dst_file.writelines(src_lines)
             
-            # replace MemRWHelper_formal.v
+            # replace MemRWHelper.v
             log_message(f"Replace MemRWHelper.v")
             src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "MemRWHelper_difftest.v")
             dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "MemRWHelper.v")

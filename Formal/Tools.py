@@ -117,14 +117,14 @@ def generate_rtl_files(run_snapshot, cpu, cover_type):
                 shutil.copy(entry.path, rtl_dst_dir)
     
     # 解析并修改RTL文件
-    cover_points_name = parse_and_modify_rtl_files(run_snapshot, cover_type)
+    cover_points_name = parse_and_modify_rtl_files(run_snapshot, cpu, cover_type)
 
     log_message("Generated RTL files.")
     
     return cover_points_name
 
 # 解析并修改RTL文件
-def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
+def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
     # cover name to cover id
     rtl_dir = str(os.getenv("RTL_SRC_DIR"))
     rtl_dir = rtl_dir+"_"+cover_type
@@ -152,14 +152,35 @@ def parse_and_modify_rtl_files(run_snapshot=False, cover_type="toggle"):
 
     # 获取环境变量
     rtl_dir = str(os.getenv("RTL_DST_DIR"))
+    
     if run_snapshot:
         rtl_file = rtl_dir + "/SimTop_init.sv"
+        # 修改FormalTop模块的reg_reset
+        formal_top_file = rtl_dir + "/FormalTop.sv"
+        with open(formal_top_file, 'r') as file:
+            lines = file.readlines()
+            for index, line in enumerate(lines):
+                if line.startswith("reg reg_reset"):
+                    lines[index] = "reg reg_reset = 1'b0;\n"
+                    break
+        with open(formal_top_file, 'w') as file:
+            file.writelines(lines)
     else:
         rtl_file = rtl_dir + "/SimTop.sv"
 
     with open(rtl_file, 'r') as file:
         lines = file.readlines()
     os.remove(rtl_file)
+
+    # multiclock -> gbl_clk
+    if cpu == "rocket":
+        log_message("change multiclock to gbl_clk")
+        clock_pattern = re.compile(r'\(posedge (\w+)\)')
+        for index, line in enumerate(lines):
+            clock_match = clock_pattern.search(line)
+            if clock_match:
+                log_message(f"clock_match: {clock_match.group(1)}", False)
+                lines[index] = re.sub(clock_pattern, '(posedge gbl_clk)', line)
     
     cover_points = [None] * len(covername2id)
     current_module = None
@@ -280,7 +301,7 @@ def generate_sby_files(cover_points):
         # 使用模板生成 sby 文件内容
         sby_file_content = template_content.format(
             formal_files=formal_files,
-            top_module_name="SimTop",
+            top_module_name="FormalTop",
             cover_label=cover_label,
             verilog_files=verilog_files
         )

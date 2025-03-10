@@ -71,7 +71,7 @@ def execute_cover_task(env_path, cover, output_dir):
     return cover_point
     
 def parse_v_file(cover_no, v_file_path, output_dir):
-    pattern = r"UUT\.mem\.rdata_mem\.helper_0\.memory\[(29'b[01]+)\] = (64'b[01]+);"
+    pattern = r"\.helper_0\.memory\[(29'b[01]+)\] = (64'b[01]+);"
     os.makedirs(output_dir, exist_ok=True)
     output_file_path = os.path.join(output_dir, f"cover_{cover_no}.bin")
 
@@ -118,7 +118,8 @@ if __name__ == "__main__":
     # set_max_cover_points(1990)
     sample_cover_points = [7334]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
-    generate_rtl_files(True)
+    # generate_rtl_files(run_snapshot=False, cpu="rocket", cover_type="toggle")
+    generate_rtl_files(run_snapshot=True, cpu="rocket", cover_type="toggle")
     generate_sby_files(sample_cover_points)
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")

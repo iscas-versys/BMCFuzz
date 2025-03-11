@@ -268,22 +268,20 @@ class Scheduler:
 
             # 执行cover任务
             cover_cases, time_cost = execute_cover_tasks(cover_points)
-
-            # 生成footprints
-            footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
-            snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
-            generate_footprints(cover_cases, footprints_dir, self.cover_type, self.run_snapshot, snapshot_file)
-            
             if len(cover_cases) > 0:
                 log_message(f"发现新case: {cover_cases}")
                 break
             else:
                 log_message("未发现新case,重新选点")
                 cover_points = self.point_selector.generate_cover_points()
-            
             if len(cover_points) == 0:
                 log_message("未发现新case,且无可选点")
                 return False
+
+        # 生成footprints
+        footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
+        snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
+        generate_footprints(cover_cases, footprints_dir, self.cover_type, self.run_snapshot, snapshot_file)
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()

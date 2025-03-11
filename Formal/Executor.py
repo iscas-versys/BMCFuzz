@@ -134,6 +134,7 @@ def generate_footprint(cover_point, output_dir, cover_type, run_snapshot, snapsh
 
     commands = f"{NOOP_HOME}/build/fuzzer"
     commands += f" -c firrtl.{cover_type}"
+    commands += f" --auto-exit"
     commands += f" -- {bin_file_path}"
     commands += f" -I 300"
     commands += f" -C 3000"
@@ -142,12 +143,13 @@ def generate_footprint(cover_point, output_dir, cover_type, run_snapshot, snapsh
         commands += " --run-snapshot"
         commands += f" --load-snapshot {snapshot_file}"
     commands += f" --dump-footprints {footprints_file_path}"
-    commands += f" > {output_dir}/footprints.log 2>&1"
+    commands += f" > dev/null 2>&1"
+    # commands += f" > {output_dir}/footprints.log 2>&1"
 
     ret = run_command(commands, shell=True)
     os.remove(data_file_path)
     os.remove(bin_file_path)
-    os.remove(f"{output_dir}/footprints.log")
+    # os.remove(f"{output_dir}/footprints.log")
     log_message(f"已生成footprints文件: {footprints_file_path}")
 
     return 0

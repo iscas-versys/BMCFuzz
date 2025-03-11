@@ -22,10 +22,13 @@ class Coverage:
             self.cover_points[cover] = 1
 
     def update_fuzz(self, cover_points):
+        new_covered_points = []
         for index, cover in enumerate(cover_points):
             if cover and not self.cover_points[index]:
                 self.covered_num += 1
                 self.cover_points[index] = 1
+                new_covered_points.append(index)
+        return new_covered_points
     
     def update_formal_cover_rate(self, covered_num, time_cost):
         covered_rate = covered_num / time_cost

@@ -145,15 +145,10 @@ def generate_footprints(cover_point, output_dir, cover_type, run_snapshot, snaps
     commands += f" > {output_dir}/footprints.log 2>&1"
 
     ret = run_command(commands, shell=True)
-    if ret == 0:
-        log_message(f"已生成footprints文件: {footprints_file_path}")
-        os.remove(data_file_path)
-        os.remove(bin_file_path)
-        os.remove(f"{output_dir}/footprints.log")
-        log_message(f"已删除临时文件")
-    else:
-        log_message(f"生成footprints文件失败: {ret}")
-    return ret
+    os.remove(data_file_path)
+    os.remove(bin_file_path)
+    os.remove(f"{output_dir}/footprints.log")
+    log_message(f"已生成footprints文件: {footprints_file_path}")
 
 
 if __name__ == "__main__":

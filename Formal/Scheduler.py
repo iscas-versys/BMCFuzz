@@ -179,8 +179,6 @@ class Scheduler:
 
     point_selector = PointSelector()
 
-    pre_fuzz_covered_num = 0
-
     points_name = []
     module_name = []
     point2module = []
@@ -396,13 +394,22 @@ class Scheduler:
                     covered_num += 1
                 cover_points.append(int(row['Covered']))
 
-        self.coverage.update_fuzz(cover_points)
+        new_covered_points = self.coverage.update_fuzz(cover_points)
+        fuzz_covered_num = len(new_covered_points)
         self.point_selector.update(self.coverage.cover_points)
 
-        fuzz_covered_num = covered_num - self.pre_fuzz_covered_num
-        self.pre_fuzz_covered_num = covered_num
-
         log_message(f"Fuzz covered num: {fuzz_covered_num}")
+
+        covered_points_file = os.path.join(NOOP_HOME, "ccover", "Formal", "logs")
+        covered_points_file = os.path.join(covered_points_file, f"covered_points_{datetime.now().strftime('%Y-%m-%d_%H%M')}_.log")
+        with open(covered_points_file, mode='w', encoding='utf-8') as file:
+            file.write(f"Fuzz covered points: {fuzz_covered_num}\n")
+            for point in new_covered_points:
+                module = self.point2module[point]
+                point_name = self.points_name[point]
+                module_name = self.module_name[module]
+                file.write(f"{point}:{module_name}.{point_name}\n")
+            file.write("\n")
 
         # Coverage信息
         self.coverage.display_coverage()

@@ -309,7 +309,25 @@ def test(args):
 
     fuzz = BMCFuzz()
     fuzz.init(cpu=args.cpu, cover_type=args.cover_type)
-    fuzz.fuzz_init()
+
+    # log_message("Test Fuzz Init")
+    # fuzz.fuzz_init()
+
+    log_message("Test Reset Snapshot")
+
+    best_snapshot_id = 0
+    wave_path = os.path.join(fuzz.csr_wave_dir, f'{best_snapshot_id}.vcd')
+    fuzz.generate_init_file(wave_path)
+
+    fuzzer = FuzzArgs()
+    fuzzer.cover_type = fuzz.cover_type
+    fuzzer.run_snapshot = True
+    fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'logs', 'make_fuzzer.log')
+    fuzzer.make_fuzzer()
+    
+    fuzz.scheduler.set_snapshot_id(best_snapshot_id)
+    fuzz.run_hybrid_loop(best_snapshot_id)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -1,6 +1,8 @@
 import os
 import re
 import argparse
+import difflib
+import filecmp
 
 NOOP_HOME = os.getenv("NOOP_HOME")
 
@@ -236,6 +238,49 @@ def cover_point_parser(cover_type):
     print("SVA cover points:", len(sva_covers))
     print("FIR cover points:", len(fir_covers))
 
+def rtl_diff():
+    diff_dir = os.path.join(NOOP_HOME, "tmp", "diff")
+    os.makedirs(diff_dir, exist_ok=True)
+
+    # 定义要比较的目录
+    folder1 = "ccover/Formal/demo/rocket_toggle"
+    folder2 = "build/rtl"
+    diff_output_dir = "tmp/diff"
+
+    # 确保diff输出目录存在
+    os.makedirs(diff_output_dir, exist_ok=True)
+
+    # 获取两个目录中的文件列表
+    files1 = set(os.listdir(folder1))
+    files2 = set(os.listdir(folder2))
+
+    # 找到两个目录中都有的文件
+    common_files = files1 & files2
+
+    def compare_and_save_diff(file1, file2, output_file):
+        with open(file1, 'r', encoding='utf-8') as f1, open(file2, 'r', encoding='utf-8') as f2:
+            lines1 = f1.readlines()
+            lines2 = f2.readlines()
+            
+            diff = list(difflib.unified_diff(lines1, lines2, fromfile=file1, tofile=file2))
+            
+            if diff:
+                with open(output_file, 'w', encoding='utf-8') as out:
+                    out.writelines(diff)
+                print(f"Differences found in {file1} and {file2}, saved to {output_file}")
+
+    # 遍历同名文件并比较
+    for filename in common_files:
+        file1 = os.path.join(folder1, filename)
+        file2 = os.path.join(folder2, filename)
+        diff_file = os.path.join(diff_output_dir, f"{filename}.diff")
+        
+        # 只比较普通文件
+        if os.path.isfile(file1) and os.path.isfile(file2):
+            if not filecmp.cmp(file1, file2, shallow=False):
+                compare_and_save_diff(file1, file2, diff_file)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
@@ -247,4 +292,6 @@ if __name__ == "__main__":
     
     # snapshot_parser(args.snapshot)
 
-    cover_point_parser(args.cover)
+    # cover_point_parser(args.cover)
+
+    rtl_diff()

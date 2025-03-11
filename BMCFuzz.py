@@ -208,7 +208,7 @@ class BMCFuzz:
         
         self.csr_transition_selector.update()
     
-    def run_hybrid_loop(self, snapshot_id):
+    def run_hybrid_loop(self):
         loop_count = 0
         while(True):
             loop_count += 1
@@ -220,7 +220,7 @@ class BMCFuzz:
                 break
                 
             # run snapshot fuzz
-            self.scheduler.run_snapshot_fuzz(snapshot_id)
+            self.scheduler.run_snapshot_fuzz()
 
             # update coverage
             self.scheduler.update_coverage()
@@ -266,7 +266,7 @@ class BMCFuzz:
 
             # run hybrid loop
             self.scheduler.set_snapshot_id(best_snapshot_id)
-            self.run_hybrid_loop(best_snapshot_id)
+            self.run_hybrid_loop()
         
         log_message("End Snapshot Loop")
         self.scheduler.display_coverage()
@@ -326,7 +326,7 @@ def test(args):
     fuzzer.make_fuzzer()
     
     fuzz.scheduler.set_snapshot_id(best_snapshot_id)
-    fuzz.run_hybrid_loop(best_snapshot_id)
+    fuzz.run_hybrid_loop()
 
 
 if __name__ == "__main__":

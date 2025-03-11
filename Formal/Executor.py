@@ -107,7 +107,7 @@ def parse_v_file(cover_no, v_file_path, output_dir):
 
     log_message(f"已解析并保存: {output_file_path}")
 
-def generate_footprints(cover_point, output_dir, cover_type, run_snapshot, snapshot_file):
+def generate_footprint(cover_point, output_dir, cover_type, run_snapshot, snapshot_file):
     data_file_path = os.path.join(output_dir, f"cover_{cover_point}.csv")
     bin_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
     footprints_file_path = os.path.join(output_dir, f"cover_{cover_point}.footprints")
@@ -150,6 +150,25 @@ def generate_footprints(cover_point, output_dir, cover_type, run_snapshot, snaps
     os.remove(f"{output_dir}/footprints.log")
     log_message(f"已生成footprints文件: {footprints_file_path}")
 
+    return 0
+
+def generate_footprints(cover_points, output_dir, cover_type, run_snapshot, snapshot_file):
+    strat_time = time.time()
+    max_workers = min(120, os.cpu_count())
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(generate_footprint, cover, output_dir, cover_type, run_snapshot, snapshot_file): cover for cover in cover_points}
+        with tqdm(total=len(futures), desc="Dump Footprints") as pbar:
+            for future in as_completed(futures):
+                cover = futures[future]
+                log_message(f"当前正在生成footprints: cover_{cover}")
+                try:
+                    pass
+                    # print("result:", future.result())
+                except Exception as e:
+                    log_message(f"cover_{cover} footprints生成失败: {e}")
+                pbar.update(1)
+    end_time = time.time()
+    log_message(f"Dump Footprints任务执行完成, 耗时: {end_time - strat_time:.6f} 秒")
 
 if __name__ == "__main__":
     os.chdir(NOOP_HOME)
@@ -167,8 +186,7 @@ if __name__ == "__main__":
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)
-    for case in cover_cases:
-        footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
-        snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', "0")
-        generate_footprints(case, footprints_dir, "toggle", True, snapshot_file)
+    footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
+    snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', "0")
+    generate_footprints(cover_cases, footprints_dir, "toggle", True, snapshot_file)
     generate_empty_cover_points_file()

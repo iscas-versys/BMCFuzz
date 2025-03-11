@@ -270,10 +270,9 @@ class Scheduler:
             cover_cases, time_cost = execute_cover_tasks(cover_points)
 
             # 生成footprints
-            for case in cover_cases:
-                footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
-                snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
-                generate_footprints(case, footprints_dir, self.cover_type, self.run_snapshot, snapshot_file)
+            footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
+            snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
+            generate_footprints(cover_cases, footprints_dir, self.cover_type, self.run_snapshot, snapshot_file)
             
             if len(cover_cases) > 0:
                 log_message(f"发现新case: {cover_cases}")

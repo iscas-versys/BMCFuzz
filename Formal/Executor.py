@@ -2,12 +2,15 @@ import os
 import re
 import subprocess
 import shutil
+import csv
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import time
 
 from Tools import *
+
+NOOP_HOME = os.getenv("NOOP_HOME")
 
 def execute_cover_tasks(cover_points):
     # return ([], 0)
@@ -42,8 +45,8 @@ def execute_cover_tasks(cover_points):
                     log_message(f"cover_{cover} 任务执行失败: {e}")
                 pbar.update(1)
     end_time = time.time()
-    
     log_message(f"任务执行完成, 耗时: {end_time - strat_time:.6f} 秒, 共发现 {len(cover_cases)} 个case")
+
     return (cover_cases, end_time - strat_time)
 
 def execute_cover_task(env_path, cover, output_dir):
@@ -73,7 +76,7 @@ def execute_cover_task(env_path, cover, output_dir):
 def parse_v_file(cover_no, v_file_path, output_dir):
     pattern = r"\.helper_0\.memory\[(29'b[01]+)\] = (64'b[01]+);"
     os.makedirs(output_dir, exist_ok=True)
-    output_file_path = os.path.join(output_dir, f"cover_{cover_no}.bin")
+    output_file_path = os.path.join(output_dir, f"cover_{cover_no}.csv")
 
     memory_map = {}
 
@@ -94,7 +97,30 @@ def parse_v_file(cover_no, v_file_path, output_dir):
                 upper_32_hex = f"{upper_32:#010x}"
                 log_message(f"Address: {addr_hex}, Data: {lower_32_hex} {upper_32_hex}")
 
-    with open(output_file_path, 'wb') as output_file:
+    with open(output_file_path, 'w', newline='', encoding='utf-8') as output_file:
+        header = ['Address', 'Data']
+        csv_writer = csv.DictWriter(output_file, fieldnames=header)
+        csv_writer.writeheader()
+        for addr in sorted(memory_map.keys()):
+            data_hex = memory_map[addr].hex()
+            csv_writer.writerow({'Address': f"{addr:#010x}", 'Data': data_hex})
+
+    log_message(f"已解析并保存: {output_file_path}")
+
+def generate_footprints(cover_point, output_dir, cover_type, run_snapshot, snapshot_file):
+    data_file_path = os.path.join(output_dir, f"cover_{cover_point}.csv")
+    bin_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
+    footprints_file_path = os.path.join(output_dir, f"cover_{cover_point}.footprints")
+
+    memory_map = {}
+    with open(data_file_path, 'r', newline='', encoding='utf-8') as data_file:
+        csv_reader = csv.DictReader(data_file)
+        for row in csv_reader:
+            addr = int(row['Address'], 16)
+            data = bytes.fromhex(row['Data'])
+            memory_map[addr] = data
+    
+    with open(bin_file_path, 'wb') as output_file:
         current_addr = 0
         for addr in sorted(memory_map.keys()):
             if current_addr < addr:
@@ -104,19 +130,41 @@ def parse_v_file(cover_no, v_file_path, output_dir):
                 current_addr = addr
             output_file.write(memory_map[addr])
             current_addr += 8
+    log_message(f"已解析并保存bin文件")
 
-    log_message(f"已解析并保存: {output_file_path}")
+    commands = f"{NOOP_HOME}/build/fuzzer"
+    commands += f" -c firrtl.{cover_type}"
+    commands += f" -- {bin_file_path}"
+    commands += f" -I 300"
+    commands += f" -C 3000"
+    commands += f" --fuzz-id 0"
+    if run_snapshot:
+        commands += " --run-snapshot"
+        commands += f" --load-snapshot {snapshot_file}"
+    commands += f" --dump-footprints {footprints_file_path}"
+    commands += f" > {output_dir}/footprints.log 2>&1"
+
+    ret = run_command(commands, shell=True)
+    if ret == 0:
+        log_message(f"已生成footprints文件: {footprints_file_path}")
+        os.remove(data_file_path)
+        os.remove(bin_file_path)
+        os.remove(f"{output_dir}/footprints.log")
+        log_message(f"已删除临时文件")
+    else:
+        log_message(f"生成footprints文件失败: {ret}")
+    return ret
+
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    os.chdir(current_dir)
+    os.chdir(NOOP_HOME)
     clear_logs()
     log_init()
-    
     clean_cover_files()
-    set_max_cover_points(11747)
+    # set_max_cover_points(11747)
+    set_max_cover_points(8940)
     # set_max_cover_points(1990)
-    sample_cover_points = [7334]
+    sample_cover_points = [5886, 5889]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
     # generate_rtl_files(run_snapshot=False, cpu="rocket", cover_type="toggle")
     generate_rtl_files(run_snapshot=True, cpu="rocket", cover_type="toggle")
@@ -124,4 +172,8 @@ if __name__ == "__main__":
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)
+    for case in cover_cases:
+        footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
+        snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', "0")
+        generate_footprints(case, footprints_dir, "toggle", True, snapshot_file)
     generate_empty_cover_points_file()

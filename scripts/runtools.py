@@ -106,7 +106,9 @@ class FuzzArgs:
 
     no_diff = False
 
-    as_footprint = False
+    dump_footprints = False
+    footprints_path = ""
+    as_footprints = False
 
     snapshot_id = 0
     
@@ -226,8 +228,10 @@ class FuzzArgs:
         if self.no_diff:
             fuzz_command += " --no-diff"
         
-        if self.as_footprint:
-            fuzz_command += " --as-footprint"
+        if self.dump_footprints:
+            fuzz_command += f" --dump-footprints {self.footprints_path}"
+        if self.as_footprints:
+            fuzz_command += " --as-footprints"
 
         if self.output_file != "":
             fuzz_command += f" > {self.output_file}"

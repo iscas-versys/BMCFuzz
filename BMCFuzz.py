@@ -257,7 +257,15 @@ class BMCFuzz:
             # self.csr_transition_selector.delete_waveform(best_snapshot_id)
             # self.csr_transition_selector.delete_snapshot(best_snapshot_id)
 
+            # make fuzzer
+            fuzzer = FuzzArgs()
+            fuzzer.cover_type = self.cover_type
+            fuzzer.run_snapshot = True
+            fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'logs', 'make_fuzzer.log')
+            fuzzer.make_fuzzer()
+
             # run hybrid loop
+            self.scheduler.set_snapshot_id(best_snapshot_id)
             self.run_hybrid_loop(best_snapshot_id)
         
         log_message("End Snapshot Loop")
@@ -301,7 +309,7 @@ def test(args):
 
     fuzz = BMCFuzz()
     fuzz.init(cpu=args.cpu, cover_type=args.cover_type)
-    # fuzz.fuzz_init()
+    fuzz.fuzz_init()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -9,7 +9,7 @@ from datetime import datetime
 from Coverage import Coverage
 from Tools import *
 from PointSelector import PointSelector
-from Executor import execute_cover_tasks, run_command
+from Executor import execute_cover_tasks, generate_footprints, run_command
 
 NOOP_HOME = os.getenv("NOOP_HOME")
 
@@ -39,7 +39,9 @@ class FuzzArgs:
 
     no_diff = False
 
-    as_footprint = False
+    dump_footprints = False
+    footprints_path = ""
+    as_footprints = False
 
     snapshot_id = 0
     
@@ -159,8 +161,10 @@ class FuzzArgs:
         if self.no_diff:
             fuzz_command += " --no-diff"
 
-        if self.as_footprint:
-            fuzz_command += " --as-footprint"
+        if self.dump_footprints:
+            fuzz_command += f" --dump-footprints {self.footprints_path}"
+        if self.as_footprints:
+            fuzz_command += " --as-footprints"
 
         if self.output_file != "":
             fuzz_command += f" > {self.output_file}"
@@ -182,6 +186,7 @@ class Scheduler:
     point2module = []
 
     run_snapshot = False
+    snapshot_id = 0
 
     cpu = ""
     cover_type = "toggle"
@@ -224,6 +229,13 @@ class Scheduler:
     
     def run_loop(self):
         loop_count = 0
+
+        # make fuzzer
+        fuzzer = FuzzArgs()
+        fuzzer.cover_type = self.cover_type
+        fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'make_fuzzer.log')
+        fuzzer.make_fuzzer()
+        
         while(True):
             loop_count += 1
             log_message(f"Hybrid Loop {loop_count}")
@@ -258,6 +270,12 @@ class Scheduler:
 
             # 执行cover任务
             cover_cases, time_cost = execute_cover_tasks(cover_points)
+
+            # 生成footprints
+            for case in cover_cases:
+                footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
+                snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
+                generate_footprints(case, footprints_dir, self.cover_type, self.run_snapshot, snapshot_file)
             
             if len(cover_cases) > 0:
                 log_message(f"发现新case: {cover_cases}")
@@ -296,13 +314,18 @@ class Scheduler:
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
 
+        fuzz_args.as_footprints = True
+
         self.clean_fuzz_run()
 
         fuzz_command = fuzz_args.generate_fuzz_command()
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
     
-    def run_snapshot_fuzz(self, snapshot_id):
+    def set_snapshot_id(self, snapshot_id):
+        self.snapshot_id = snapshot_id
+    
+    def run_snapshot_fuzz(self):
         # init fuzz log
         fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'logs', 'fuzz')
         make_log_file = os.path.join(fuzz_log_dir, f"make_fuzzer.log")
@@ -327,13 +350,15 @@ class Scheduler:
         fuzz_args.dump_csr = True
         fuzz_args.dump_wave = True
 
-        fuzz_args.snapshot_id = snapshot_id
+        fuzz_args.snapshot_id = self.snapshot_id
+
+        fuzz_args.as_footprints = True
 
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
 
-        # make fuzzer and clean fuzz run dir
-        fuzz_args.make_fuzzer()
+        # clean fuzz run dir
+        # fuzz_args.make_fuzzer()
         self.clean_fuzz_run()
 
         # run fuzz

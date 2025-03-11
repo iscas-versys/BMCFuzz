@@ -9,7 +9,7 @@ from datetime import datetime
 from Coverage import Coverage
 from Tools import *
 from PointSelector import PointSelector
-from Executor import execute_cover_tasks, generate_footprints, run_command
+from Executor import execute_cover_tasks, run_command
 
 NOOP_HOME = os.getenv("NOOP_HOME")
 

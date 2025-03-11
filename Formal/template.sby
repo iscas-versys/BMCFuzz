@@ -1,8 +1,7 @@
 [options]
 mode cover
-depth 30
+depth 60
 timeout 7200
-multiclock off
 
 [engines]
 smtbmc bitwuzla

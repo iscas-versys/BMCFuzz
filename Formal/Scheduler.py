@@ -267,7 +267,8 @@ class Scheduler:
             generate_sby_files(cover_points)
 
             # 执行cover任务
-            cover_cases, time_cost = execute_cover_tasks(cover_points)
+            snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
+            cover_cases, time_cost = execute_cover_tasks(cover_points, self.run_snapshot, snapshot_file)
             if len(cover_cases) > 0:
                 log_message(f"发现新case: {cover_cases}")
                 break
@@ -279,9 +280,6 @@ class Scheduler:
                 return False
 
         # 生成footprints
-        footprints_dir = os.path.join(NOOP_HOME, 'ccover', 'Formal', 'coverTasks', 'hexbin')
-        snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
-        generate_footprints(cover_cases, footprints_dir, self.cover_type, self.run_snapshot, snapshot_file)
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
@@ -367,7 +365,7 @@ class Scheduler:
     def output_uncovered_points(self, loop_cnt=0, output_file=""):
         if output_file == "":
             output_file = os.path.join(NOOP_HOME, "ccover", "Formal", "logs")
-            output_file = os.path.join(output_file, f"uncovered_points_{datetime.now().strftime('%Y-%m-%d_%H%M')}_{loop_cnt}.log")
+            output_file = os.path.join(output_file, f"uncovered_points.log")
         
         log_message(f"Output uncovered points to {output_file}")
         with open(output_file, mode='w', encoding='utf-8') as file:

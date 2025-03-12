@@ -274,7 +274,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
     return cover_points
 
 # 生成 .sby 文件
-def generate_sby_files(cover_points):
+def generate_sby_files(cover_points, cpu):
     # 获取环境变量
     rtl_dir = str(os.getenv("RTL_DST_DIR"))
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
@@ -291,6 +291,16 @@ def generate_sby_files(cover_points):
     formal_files = '\n'.join([f"read -formal {os.path.basename(file)}" for file in rtl_files])
     verilog_files = '\n'.join([file for file in rtl_files])
 
+    if cpu == "nutshell":
+        default_depth = 30
+        default_timeout = 1 * 60 * 60
+    elif cpu == "rocket":
+        default_depth = 60
+        default_timeout = 2 * 60 * 60
+    else:
+        default_depth = 50
+        default_timeout = 1 * 60 * 60
+
     for cover_id in cover_points:
         if cover_id >= MAX_COVER_POINTS:
             log_message(f"cover_id: {cover_id} >= MAX_COVER_POINTS: {MAX_COVER_POINTS}")
@@ -300,6 +310,8 @@ def generate_sby_files(cover_points):
 
         # 使用模板生成 sby 文件内容
         sby_file_content = template_content.format(
+            depth=default_depth,
+            timeout=default_timeout,
             formal_files=formal_files,
             top_module_name="FormalTop",
             cover_label=cover_label,
@@ -315,8 +327,6 @@ def generate_sby_files(cover_points):
 
 def set_max_cover_points(max_cover_points):
     global MAX_COVER_POINTS
-    default_rocket_toggle_points = 8940
-    default_nutshell_toggle_points = 11747
     MAX_COVER_POINTS = max_cover_points
 
 # 清理coverTasks文件夹

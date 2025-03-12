@@ -192,6 +192,8 @@ class BMCFuzz:
         fuzz_args.dump_csr = True
         fuzz_args.dump_wave = True
 
+        fuzz_args.as_footprints = True
+
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
 

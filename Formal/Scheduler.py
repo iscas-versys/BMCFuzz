@@ -264,7 +264,7 @@ class Scheduler:
         while(True):
             # 清理并重新生成cover points文件
             clean_cover_files()
-            generate_sby_files(cover_points)
+            generate_sby_files(cover_points, self.cpu)
 
             # 执行cover任务
             snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")

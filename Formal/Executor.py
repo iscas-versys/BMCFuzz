@@ -149,7 +149,7 @@ if __name__ == "__main__":
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
     # generate_rtl_files(run_snapshot=False, cpu="rocket", cover_type="toggle")
     generate_rtl_files(run_snapshot=True, cpu="rocket", cover_type="toggle")
-    generate_sby_files(sample_cover_points)
+    generate_sby_files(sample_cover_points, cpu="rocket")
     snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', "0")
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points, run_snapshot=True, snapshot_file=snapshot_file)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")

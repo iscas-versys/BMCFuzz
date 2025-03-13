@@ -249,6 +249,7 @@ class BMCFuzz:
             
             # select highest score snapshot
             best_snapshot_id = self.csr_transition_selector.select_highest_score_snapshot()
+            self.csr_transition_selector.output_transition_score()
             wave_path = os.path.join(self.csr_wave_dir, f'{best_snapshot_id}.vcd')
             if best_snapshot_id == -1:
                 log_message(f"Exit: no more csr transitions.")

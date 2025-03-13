@@ -11,6 +11,7 @@ import time
 from Tools import *
 
 NOOP_HOME = os.getenv("NOOP_HOME")
+MAX_WORKERS = 120
 
 def execute_cover_tasks(cover_points, run_snapshot, snapshot_file):
     # return ([], 0)
@@ -30,13 +31,13 @@ def execute_cover_tasks(cover_points, run_snapshot, snapshot_file):
     # os.chdir(output_dir)
     cover_cases = []
     strat_time = time.time()
-    max_workers = min(120, os.cpu_count())
+    max_workers = min(MAX_WORKERS, os.cpu_count())
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(execute_cover_task, env_path, cover, output_dir, run_snapshot, snapshot_file): cover for cover in cover_points}
         with tqdm(total=len(futures), desc="Processing covers") as pbar:
             for future in as_completed(futures):
                 cover = futures[future]
-                log_message(f"当前正在处理: cover_{cover}")
+                log_message(f"cover_{cover}执行完成")
                 try:
                     if future.result() != -1:
                         cover_cases.append(cover)
@@ -54,9 +55,11 @@ def execute_cover_task(env_path, cover, output_dir, run_snapshot, snapshot_file)
     return_code = run_command(sby_command, shell=True)
 
     cover_point = -1
+    cover_dir = os.path.join(output_dir, f"cover_{cover}")
+    parse_log_file(cover, cover_dir)
     if return_code == 0:
         log_message(f"发现case: cover_{cover}")
-        v_file_path = os.path.join(output_dir, f"cover_{cover}", "engine_0", "trace0_tb.v")
+        v_file_path = os.path.join(cover_dir, "engine_0", "trace0_tb.v")
         if os.path.exists(v_file_path):
             log_message(f"开始解析文件: {v_file_path}")
             parse_v_file(cover, v_file_path, f"{output_dir}/hexbin")
@@ -67,13 +70,34 @@ def execute_cover_task(env_path, cover, output_dir, run_snapshot, snapshot_file)
     else:
         log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
     
-    if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
-        os.remove(f"{output_dir}/cover_{cover}.sby")
-    if os.path.exists(f"{output_dir}/cover_{cover}"):
-        shutil.rmtree(f"{output_dir}/cover_{cover}")
+    # if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
+    #     os.remove(f"{output_dir}/cover_{cover}.sby")
+    # if os.path.exists(f"{output_dir}/cover_{cover}"):
+    #     shutil.rmtree(f"{output_dir}/cover_{cover}")
     
     return cover_point
     
+def parse_log_file(cover_no, cover_dir):
+    cover_log_path = os.path.join(cover_dir, "logfile.txt")
+    check_log_pattern = r"Checking cover reachability in step (\d+).."
+    summary_log_pattern = r"summary: Elapsed process time \[H:MM:SS \(secs\)\]: (\d+:\d+:\d+) \((\d+\))"
+    return_log_pattern = r"DONE \((\S+), rc=(\d+)\)"
+    with open(cover_log_path, 'r') as log_file:
+        lines = log_file.readlines()
+        for line in reversed(lines):
+            check_match = re.search(check_log_pattern, line)
+            summary_match = re.search(summary_log_pattern, line)
+            return_match = re.search(return_log_pattern, line)
+            if check_match:
+                cover_step = check_match.group(1)
+                break
+            if summary_match:
+                cover_time = summary_match.group(1)
+            if return_match:
+                cover_return = (return_match.group(1), return_match.group(2))
+        log_message(f"cover:{cover_no}, time:{cover_time}, step:{cover_step}, return:({cover_return[0]}, rc={cover_return[1]})")
+
+
 def parse_v_file(cover_no, v_file_path, output_dir):
     pattern = r"\.helper_0\.memory\[(29'b[01]+)\] = (64'b[01]+);"
     os.makedirs(output_dir, exist_ok=True)
@@ -144,13 +168,13 @@ if __name__ == "__main__":
     # set_max_cover_points(11747)
     set_max_cover_points(8940)
     # set_max_cover_points(1990)
-    sample_cover_points = [5886, 5889]
-    # sample_cover_points = [944, 933]
+    sample_cover_points = [5886]
+    # sample_cover_points = [3281]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
     # generate_rtl_files(run_snapshot=False, cpu="rocket", cover_type="toggle")
     generate_rtl_files(run_snapshot=True, cpu="rocket", cover_type="toggle")
     generate_sby_files(sample_cover_points, cpu="rocket")
-    snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', "0")
+    snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', "12")
     cover_cases, execute_time = execute_cover_tasks(sample_cover_points, run_snapshot=True, snapshot_file=snapshot_file)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)

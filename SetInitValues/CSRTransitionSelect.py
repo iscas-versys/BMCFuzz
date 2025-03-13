@@ -21,6 +21,7 @@ class CSRTransitionSelect:
     total_transitions = set()
 
     selected_reset = False
+    RESET_SCORE = 32
 
     id2transition = {}
 
@@ -93,9 +94,11 @@ class CSRTransitionSelect:
                 best_score = csr_score
                 best_id = csr_id
 
-        if not self.selected_reset and best_score <= 32:
+        if not self.selected_reset and best_score <= self.RESET_SCORE:
             self.selected_reset = True
-            log_message(f"Selecting reset snapshot.")
+            # log_message(f"Selecting reset snapshot.")
+            log_message(f"Best ID: 0, Score: {self.RESET_SCORE}")
+            log_message(f"Transition: reset")
             return 0
         
         self.update_transition_map(self.id2transition[best_id][0], self.id2transition[best_id][1])
@@ -104,8 +107,6 @@ class CSRTransitionSelect:
         new_transition = []
         for _, csr_id in self.transition_scores:
             csr_score = self.calculate_score(self.id2transition[csr_id][0], self.id2transition[csr_id][1])
-            log_message(f"Transition ID: {csr_id}, Score: {csr_score}")
-            log_message(f"Transition: {self.id2transition[csr_id]}")
             new_transition.append((csr_score, csr_id))
         self.transition_scores = new_transition
 
@@ -113,6 +114,15 @@ class CSRTransitionSelect:
         log_message(f"Transition: {self.id2transition[best_id]}")
 
         return best_id
+    
+    def output_transition_score(self):
+        if not self.selected_reset:
+            log_message(f"Transition ID: 0, Score: 32")
+            log_message(f"Transition: reset")
+        
+        for csr_score, csr_id in self.transition_scores:
+            log_message(f"Transition ID: {csr_id}, Score: {csr_score}")
+            log_message(f"Transition: {self.id2transition[csr_id]}")
 
     def calculate_score(self, past, now):
         score = 0

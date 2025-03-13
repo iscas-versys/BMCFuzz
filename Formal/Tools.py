@@ -295,7 +295,7 @@ def generate_sby_files(cover_points, cpu):
         default_depth = 30
         default_timeout = 1 * 60 * 60
     elif cpu == "rocket":
-        default_depth = 60
+        default_depth = 50
         default_timeout = 2 * 60 * 60
     else:
         default_depth = 50

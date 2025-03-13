@@ -70,10 +70,10 @@ def execute_cover_task(env_path, cover, output_dir, run_snapshot, snapshot_file)
     else:
         log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
     
-    # if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
-    #     os.remove(f"{output_dir}/cover_{cover}.sby")
-    # if os.path.exists(f"{output_dir}/cover_{cover}"):
-    #     shutil.rmtree(f"{output_dir}/cover_{cover}")
+    if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
+        os.remove(f"{output_dir}/cover_{cover}.sby")
+    if os.path.exists(f"{output_dir}/cover_{cover}"):
+        shutil.rmtree(f"{output_dir}/cover_{cover}")
     
     return cover_point
     
@@ -168,8 +168,8 @@ if __name__ == "__main__":
     # set_max_cover_points(11747)
     set_max_cover_points(8940)
     # set_max_cover_points(1990)
-    sample_cover_points = [5886]
-    # sample_cover_points = [3281]
+    # sample_cover_points = [5886]
+    sample_cover_points = [3148]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
     # generate_rtl_files(run_snapshot=False, cpu="rocket", cover_type="toggle")
     generate_rtl_files(run_snapshot=True, cpu="rocket", cover_type="toggle")

@@ -179,7 +179,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
         for index, line in enumerate(lines):
             clock_match = clock_pattern.search(line)
             if clock_match:
-                log_message(f"clock_match: {clock_match.group(1)}", False)
+                # log_message(f"clock_match: {clock_match.group(1)}", False)
                 lines[index] = re.sub(clock_pattern, '(posedge gbl_clk)', line)
     
     cover_points = [None] * len(covername2id)
@@ -240,13 +240,13 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
             reg_match = reg_pattern.search(line)
             if reg_match:
                 if "RAND" in reg_match.group(2):
-                    log_message(f"skip RAND reg: {reg_match.group(2)}", False)
+                    # log_message(f"skip RAND reg: {reg_match.group(2)}", False)
                     continue
                 reg_cnt += 1
-                log_message(f"reg_name: {reg_match.group(2)}", False)
+                # log_message(f"reg_name: {reg_match.group(2)}", False)
                 reg_name = reg_match.group(2)
                 if reg_match.group(3):
-                    log_message(f"skip reg with init value: {reg_match.group(2)}, init_value: {reg_match.group(3)}", False)
+                    # log_message(f"skip reg with init value: {reg_match.group(2)}, init_value: {reg_match.group(3)}", False)
                     continue
                 lines.append(f"  initial assume(!{reg_name});\n")
             muti_reg_match = muti_reg_pattern.search(line)
@@ -255,9 +255,9 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
                 reg_name = muti_reg_match.group(2)
                 reg_number = int(muti_reg_match.group(4)) - int(muti_reg_match.group(3)) + 1
                 if reg_number > 16:
-                    log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
+                    # log_message(f"skip muti_reg with reg_number > 16: {reg_name}, reg_number: {reg_number}", False)
                     continue
-                log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
+                # log_message(f"muti_reg_name: {reg_name}, reg_number: {reg_number}", False)
                 for i in range(int(muti_reg_match.group(4)), int(muti_reg_match.group(3)) - 1, -1):
                     lines.append(f"  initial assume(!{reg_name}[{i}]);\n")
         new_lines = lines

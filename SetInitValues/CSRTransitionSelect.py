@@ -68,12 +68,12 @@ class CSRTransitionSelect:
                     now = csv_reader[1]
                     transition_str = str(past) + str(now)
                     if transition_str in self.total_transitions:
-                        log_message(f"Transition already exists: {past}, {now}")
+                        # log_message(f"Transition already exists: {past}, {now}")
                         continue
                     self.total_transitions.add(transition_str)
                     score = self.calculate_score(past, now)
                     if score == 0:
-                        log_message(f"Transition score is 0: {past}, {now}")
+                        # log_message(f"Transition score is 0: {past}, {now}")
                         continue
                     self.transition_id += 1
                     self.transition_scores.append((score, self.transition_id))

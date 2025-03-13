@@ -26,11 +26,11 @@ def build_hierarchy(modules, current_module):
     
     insts = current_module.get('insts')
     if insts is None:
-        log_message(f"Warning: No instances found in module {current_module.get('mod_name', 'Unknown')}", print_message=False)
+        # log_message(f"Warning: No instances found in module {current_module.get('mod_name', 'Unknown')}", print_message=False)
         return hierarchy
 
     for inst in insts:
-        log_message(f"Processing instance {inst['inst_name']} of module {inst['mod_name']}", print_message=False)
+        # log_message(f"Processing instance {inst['inst_name']} of module {inst['mod_name']}", print_message=False)
         child_module = find_module_by_name(modules, inst['mod_name'])
         if child_module:
             child_hierarchy = build_hierarchy(modules, child_module)
@@ -40,7 +40,7 @@ def build_hierarchy(modules, current_module):
                 "children": child_hierarchy.get('insts', [])
             })
         else:
-            log_message(f"Warning: child module {inst['mod_name']} not found", print_message=False)
+            # log_message(f"Warning: child module {inst['mod_name']} not found", print_message=False)
             hierarchy['insts'].append({
                 "inst_name": inst['inst_name'],
                 "mod_name": inst['mod_name'],

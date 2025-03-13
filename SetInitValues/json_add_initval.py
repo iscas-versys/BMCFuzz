@@ -42,7 +42,7 @@ def parse_sv_file(filepath):
                 init_val = 'None'
 
                 if reg_num > 16:
-                    log_message(f"skip multi_reg with reg_num > 16: {reg_name} {reg_num}", print_message=False)
+                    # log_message(f"skip multi_reg with reg_num > 16: {reg_name} {reg_num}", print_message=False)
                     continue
 
                 for i in range(reg_num):

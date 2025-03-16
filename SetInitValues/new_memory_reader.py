@@ -18,6 +18,22 @@ SIGNAL_MATCH_RULES = {
 }
 
 
+def binary_to_hex_with_separator(binary_str, separator='_'):
+    """
+    将二进制字符串转换为十六进制字符串，并在每32位之间添加分隔符。
+
+    :param binary_str: 二进制字符串
+    :param separator: 分隔符（默认为下划线 '_'）
+    :return: 格式化后的十六进制字符串
+    """
+    # 将二进制字符串转换为整数
+    int_value = int(binary_str, 2)
+    # 将整数转换为64位十六进制字符串（16个字符）
+    hex_str = f"{int_value:016X}"
+    # 在每32位之间添加分隔符
+    return f"{hex_str[:8]}{separator}{hex_str[8:]}"
+
+
 def vcd_get_memory_data(vcd_path, output_memory_path, cpu_design='rocket-chip'):
     """
     从 VCD 文件中提取指定处理器设计的访存行为。
@@ -63,10 +79,13 @@ def vcd_get_memory_data(vcd_path, output_memory_path, cpu_design='rocket-chip'):
             addr_value is not None and
             data_value is not None
         ):
+            # 将 addr 和 data 转换为十六进制并添加分隔符
+            addr_hex = binary_to_hex_with_separator(addr_value)
+            data_hex = binary_to_hex_with_separator(data_value)
             memory_access.append({
                 'time': time,
-                'addr': addr_value,
-                'data': data_value
+                'addr': addr_hex,
+                'data': data_hex
             })
 
     # 输出到文件

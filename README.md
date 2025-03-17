@@ -5,8 +5,8 @@ Changed from XFuzz repo, TBD.
 ## DUTs
 
 * [NutShell](https://github.com/SeddonShen/nutshell-fv)
-* [RocketChip](https://github.com/SeddonShen/rocket-chip)
-* [BOOM](https://github.com/SeddonShen/RocketChipImport)
+* [RocketChip](https://github.com/iscas-versys/rocket-chip)
+* [BOOM](https://github.com/iscas-versys/riscv-boom-sim)
 
 # xfuzz
 

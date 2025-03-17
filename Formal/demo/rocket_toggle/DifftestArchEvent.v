@@ -21,7 +21,7 @@ import "DPI-C" function void v_difftest_ArchEvent (
 );
 
 
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     if (enable)
       v_difftest_ArchEvent (io_interrupt, io_exception, io_exceptionPC, io_exceptionInst, io_coreid);
   end

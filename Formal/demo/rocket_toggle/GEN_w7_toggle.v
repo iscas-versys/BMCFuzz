@@ -12,7 +12,7 @@ module GEN_w7_toggle(
   import "DPI-C" function void v_cover_toggle (
     longint cover_index
   );
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     if (!reset) begin
             if (valid[0]) begin
         v_cover_toggle(COVER_INDEX + 0);

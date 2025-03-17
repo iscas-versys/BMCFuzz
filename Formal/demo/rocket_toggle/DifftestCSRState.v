@@ -48,7 +48,7 @@ import "DPI-C" function void v_difftest_CSRState (
 );
 
 
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     if (enable)
       v_difftest_CSRState (io_privilegeMode, io_mstatus, io_sstatus, io_mepc, io_sepc, io_mtval, io_stval, io_mtvec, io_stvec, io_mcause, io_scause, io_satp, io_mip, io_mie, io_mscratch, io_sscratch, io_mideleg, io_medeleg, io_coreid);
   end

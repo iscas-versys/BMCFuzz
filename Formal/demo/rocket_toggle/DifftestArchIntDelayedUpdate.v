@@ -21,7 +21,7 @@ import "DPI-C" function void v_difftest_ArchIntDelayedUpdate (
 );
 
 
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     if (enable)
       v_difftest_ArchIntDelayedUpdate (io_address, io_data, io_nack, io_coreid, io_index);
   end

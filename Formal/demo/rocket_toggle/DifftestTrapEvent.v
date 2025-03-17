@@ -24,7 +24,7 @@ import "DPI-C" function void v_difftest_TrapEvent (
 );
 
 
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     if (enable)
       v_difftest_TrapEvent (io_hasTrap, io_cycleCnt, io_instrCnt, io_hasWFI, io_code, io_pc, io_coreid);
   end

@@ -172,16 +172,6 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
         lines = file.readlines()
     os.remove(rtl_file)
 
-    # multiclock -> gbl_clk
-    if cpu == "rocket":
-        log_message("change multiclock to gbl_clk")
-        clock_pattern = re.compile(r'\(posedge (\w+)\)')
-        for index, line in enumerate(lines):
-            clock_match = clock_pattern.search(line)
-            if clock_match:
-                # log_message(f"clock_match: {clock_match.group(1)}", False)
-                lines[index] = re.sub(clock_pattern, '(posedge gbl_clk)', line)
-    
     cover_points = [None] * len(covername2id)
     current_module = None
 
@@ -190,12 +180,6 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
     cover_pattern = re.compile(r'cover\s*\(\s*([^\)]+)\s*\)')
     sub_toggle_pattern = re.compile(r'(_t)(\[\d+\])?$')
 
-    # initial reset
-    module_end_pattern = re.compile(r'\);')
-    insert_line = "initial assume(reset);\n"
-    # has_inserted = False
-    has_inserted = True
-    
     new_lines = []
     
     for line in lines:
@@ -222,12 +206,6 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
             # 如果不是 cover 语句，直接将原内容加入到新文件
             new_lines.append(line)
         
-        # 插入initial reset
-        module_end_match = module_end_pattern.search(line)
-        if current_module == "SimTop" and module_end_match and not has_inserted:
-            new_lines.append(insert_line)
-            has_inserted = True
-    
     # 为每个reg插入Initial语句
     if not run_snapshot:
         lines = []

@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import shutil
 import subprocess
@@ -60,21 +61,6 @@ def generate_nutshell_rtl(args):
                 src_lines[i] = src_lines[i].replace("1\'h0", "1'h1")
     log_message("change enToggle and enToggle_past value")
     
-    # 插入assume语句限制reset
-    assume_line = "assume property(reset == 1'b0);\n"
-    formal_assume_line = "initial assume(reset);\n"
-    start_module = False
-    for i, line in enumerate(src_lines):
-        elements = line.split()
-        if len(elements) != 0 and elements[0] == "module" and elements[1].startswith("SimTop"):
-            start_module = True
-        if start_module:
-            if len(elements) != 0 and elements[0].startswith(");"):
-                src_lines.insert(i+1, assume_line)
-                formal_lines.insert(i+1, formal_assume_line)
-                break
-    log_message("insert assume line")
-    
     # 替换Formal目录下的rtl文件
     formal_rtl_dst = os.path.join(formal_dir, "SimTop.sv")
     if os.path.exists(formal_rtl_dst):
@@ -111,7 +97,6 @@ def generate_rocket_rtl(args):
     src_lines = []
     with open(rtl_src, "r") as f:
         src_lines = f.readlines()
-
     formal_lines = src_lines.copy()
 
     # 修改enToggle和enToggle_past的值
@@ -122,20 +107,13 @@ def generate_rocket_rtl(args):
                 src_lines[i] = src_lines[i].replace("1\'h0", "1'h1")
     log_message("change enToggle and enToggle_past value")
     
-    # 插入assume语句限制reset
-    assume_line = "assume property(reset == 1'b0);\n"
-    formal_assume_line = "initial assume(reset);\n"
-    start_module = False
-    for i, line in enumerate(src_lines):
-        elements = line.split()
-        if len(elements) != 0 and elements[0] == "module" and elements[1].startswith("SimTop"):
-            start_module = True
-        if start_module:
-            if len(elements) != 0 and elements[0].startswith(");"):
-                src_lines.insert(i+1, assume_line)
-                formal_lines.insert(i+1, formal_assume_line)
-                break
-    log_message("insert assume line")
+    # multi clock -> gbl_clk
+    for i, line in enumerate(formal_lines):
+        clock_pattern = re.compile(r"\(posedge (\w+)\)")
+        clock_match = clock_pattern.search(line)
+        if clock_match:
+            formal_lines[i] = formal_lines[i].replace(clock_match.group(1), "gbl_clk")
+    log_message("change multi clock to gbl_clk")
 
     # 替换Formal目录下的rtl文件
     formal_rtl_dst = os.path.join(formal_dir, "SimTop.sv")
@@ -152,6 +130,15 @@ def generate_rocket_rtl(args):
     with open(init_rtl_dst, "w") as f:
         f.writelines(src_lines)
     log_message("replace SimTop.sv in SetInitValues")
+
+                
+    
+
+    # 生成reset wave和reset snapshot
+    # commands = f"{NOOP_HOME}/build/fuzzer"
+    # commands += f" --auto-exit"
+    # commands += f" --dump-wave-full"
+    # commands += f" --wave-path {os.path.join(formal_dir, 'reset_wave')}"
 
 if __name__ == "__main__":
     os.chdir(NOOP_HOME)

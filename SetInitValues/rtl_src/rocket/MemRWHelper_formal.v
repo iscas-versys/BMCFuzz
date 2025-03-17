@@ -50,7 +50,7 @@ reg [63:0] memory [0 : `RAM_SIZE / 8 - 1];
 
 `endif // DISABLE_DIFFTEST_RAM_DPIC
 
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     
 `ifndef DISABLE_DIFFTEST_RAM_DPIC
 if (r_enable) begin

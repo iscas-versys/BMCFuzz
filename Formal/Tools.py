@@ -172,6 +172,16 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
         lines = file.readlines()
     os.remove(rtl_file)
 
+    # multiclock -> gbl_clk
+    if cpu == "rocket":
+        log_message("change multiclock to gbl_clk")
+        clock_pattern = re.compile(r'\(posedge (\w+)\)')
+        for index, line in enumerate(lines):
+            clock_match = clock_pattern.search(line)
+            if clock_match:
+                # log_message(f"clock_match: {clock_match.group(1)}", False)
+                lines[index] = re.sub(clock_pattern, '(posedge gbl_clk)', line)
+
     cover_points = [None] * len(covername2id)
     current_module = None
 

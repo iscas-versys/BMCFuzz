@@ -284,10 +284,11 @@ def generate_sby_files(cover_points, cpu):
         default_timeout = 1 * 60 * 60
     elif cpu == "rocket":
         default_depth = 50
-        default_timeout = 2 * 60 * 60
+        default_timeout = 2.5 * 60 * 60
     else:
         default_depth = 50
         default_timeout = 1 * 60 * 60
+    default_timeout = int(default_timeout)
 
     for cover_id in cover_points:
         if cover_id >= MAX_COVER_POINTS:

@@ -66,6 +66,8 @@ def run_emu(args):
         # os.makedirs(footprints_path)
         commands += f" --dump-footprints {args.footprints_path}"
     
+    if args.as_footprints:
+        commands += " --as-footprints"
 
     if args.dump_trace:
         commands += f" > {args.output_file}"
@@ -161,6 +163,8 @@ if __name__ == "__main__":
 
     parser.add_argument("--no-dump-wave", action='store_true', help="No dump wave")
     parser.add_argument("--wave-path", type=str, default=default_wave_path, help="Wave file")
+
+    parser.add_argument("--as-footprints", "-af", action='store_true', help="As footprints")
 
     parser.add_argument("--fuzz-id", type=int, default=default_fuzz_id, help="Fuzz id")
     parser.add_argument("--run-snapshot", "-r", action='store_true', help="Run snapshot")

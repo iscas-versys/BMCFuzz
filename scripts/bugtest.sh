@@ -3,6 +3,7 @@
 BUGLIST=$(egrep Testcase.name $1|cut -c 15-) 
 echo "BUG FILE: $1"
 echo "Snapshot: $2"
+cd $NOOP_HOME
 n=0
 ST=0
 if [ $# -eq 3 ]; then
@@ -26,10 +27,10 @@ do
     cp errors/${bug} tmp/bin/test.bin
 
     # test bug    
-    CMDNAME="source env.sh && python3 scripts/emu.py -e -dt -dc -r -s $2"
+    CMDNAME="source env.sh && python3 ccover/scripts/emu.py -e -dt -dc -r -s $2"
     echo $CMDNAME
     # RET=$(eval "${CMDNAME}")
-    RET=$(source env.sh && python3 emu.py -e -dt -dc -r -s $2|grep Return.code|cut -c 14-)
+    RET=$(cd $NOOP_HOME && source env.sh && python3 ccover/scripts/emu.py -e -dt -dc -af -r -s $2|grep Return.code|cut -c 14-)
     echo "return code: $RET"
     if [ $RET -ne 0 ]; then
         echo "Bug $n: $bug failed"

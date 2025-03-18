@@ -313,23 +313,25 @@ def test(args):
     fuzz = BMCFuzz()
     fuzz.init(cpu=args.cpu, cover_type=args.cover_type)
 
-    # log_message("Test Fuzz Init")
-    # fuzz.fuzz_init()
+    if args.test_fuzz:
+        log_message("Test Fuzz Init")
+        fuzz.fuzz_init()
 
-    log_message("Test Reset Snapshot")
+    if args.test_reset:
+        log_message("Test Reset Snapshot")
 
-    best_snapshot_id = 0
-    wave_path = os.path.join(fuzz.csr_wave_dir, f'{best_snapshot_id}.vcd')
-    fuzz.generate_init_file(wave_path)
+        best_snapshot_id = 0
+        wave_path = os.path.join(fuzz.csr_wave_dir, f'{best_snapshot_id}.vcd')
+        fuzz.generate_init_file(wave_path)
 
-    fuzzer = FuzzArgs()
-    fuzzer.cover_type = fuzz.cover_type
-    fuzzer.run_snapshot = True
-    fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'logs', 'make_fuzzer.log')
-    fuzzer.make_fuzzer()
-    
-    fuzz.scheduler.set_snapshot_id(best_snapshot_id)
-    fuzz.run_hybrid_loop()
+        fuzzer = FuzzArgs()
+        fuzzer.cover_type = fuzz.cover_type
+        fuzzer.run_snapshot = True
+        fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'logs', 'make_fuzzer.log')
+        fuzzer.make_fuzzer()
+        
+        fuzz.scheduler.set_snapshot_id(best_snapshot_id)
+        fuzz.run_hybrid_loop()
 
 
 if __name__ == "__main__":
@@ -337,7 +339,9 @@ if __name__ == "__main__":
     
     parser.add_argument("--fuzz", "-f", action='store_true', help="Run fuzz")
     parser.add_argument("--special-wave", "-s", action='store_true', help="Run on special wave")
-    parser.add_argument("--test", "-t", action='store_true', help="Run test")
+
+    parser.add_argument("--test-fuzz", "-tf", action='store_true', help="Run test fuzz")
+    parser.add_argument("--test-reset", "-tr", action='store_true', help="Run test reset snapshot")
 
     parser.add_argument("--cpu", type=str, default="rocket", help="CPU type")
     parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
@@ -357,6 +361,6 @@ if __name__ == "__main__":
         run(args)
     if args.special_wave:
         run_on_special_wave(args)
-    if args.test:
+    if args.test_fuzz or args.test_reset:
         test(args)
 

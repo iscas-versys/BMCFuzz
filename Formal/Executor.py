@@ -80,7 +80,7 @@ def execute_cover_task(env_path, cover, output_dir, run_snapshot, snapshot_file)
 def parse_log_file(cover_no, cover_dir):
     cover_log_path = os.path.join(cover_dir, "logfile.txt")
     check_log_pattern = r"Checking cover reachability in step (\d+).."
-    summary_log_pattern = r"summary: Elapsed process time \[H:MM:SS \(secs\)\]: (\d+:\d+:\d+) \((\d+\))"
+    summary_log_pattern = r"summary: Elapsed clock time \[H:MM:SS \(secs\)\]: (\d+:\d+:\d+) \((\d+\))"
     return_log_pattern = r"DONE \((\S+), rc=(\d+)\)"
     with open(cover_log_path, 'r') as log_file:
         lines = log_file.readlines()

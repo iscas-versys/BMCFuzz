@@ -46,7 +46,7 @@ def execute_cover_tasks(cover_points, run_snapshot, snapshot_file):
                     log_message(f"cover_{cover} 任务执行失败: {e}")
                 pbar.update(1)
     end_time = time.time()
-    log_message(f"任务执行完成, 耗时: {end_time - strat_time:.6f} 秒, 共发现 {len(cover_cases)} 个case")
+    log_message(f"任务执行完成, 耗时: {end_time - strat_time:.2f} 秒, 共发现 {len(cover_cases)} 个case")
 
     return (cover_cases, end_time - strat_time)
 

@@ -21,8 +21,7 @@ from SetInitValues.new_init_folder import create_init_files
 from SetInitValues.CSRTransitionSelect import CSRTransitionSelect
 
 from Formal.Scheduler import Scheduler, FuzzArgs
-from Formal.Tools import log_message, clear_logs, log_init
-from Formal.Executor import run_command
+from Formal.Tools import log_message, clear_logs, log_init, run_command
 
 NOOP_HOME = os.getenv("NOOP_HOME")
 
@@ -167,8 +166,8 @@ class BMCFuzz:
 
     def fuzz_init(self):
         # run on reset wave
-        reset_wave_file = os.path.join(self.csr_wave_dir, '0.vcd')
-        self.generate_init_file(reset_wave_file)
+        # reset_wave_file = os.path.join(self.csr_wave_dir, '0.vcd')
+        # self.generate_init_file(reset_wave_file)
         
         # init fuzz log
         fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'logs')
@@ -178,16 +177,16 @@ class BMCFuzz:
         # init fuzz args
         fuzz_args = FuzzArgs()
         fuzz_args.cover_type = self.cover_type
-        fuzz_args.max_runs = 2000
+        fuzz_args.max_runs = 6000
         fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
 
         fuzz_args.continue_on_errors = True
         # fuzz_args.insert_nop = True
         # fuzz_args.save_errors = True
-        fuzz_args.run_snapshot = True # use reset snapshot
+        # fuzz_args.run_snapshot = True # use reset snapshot
         
         fuzz_args.max_cycle = 10000
-        fuzz_args.max_instr = 2000
+        fuzz_args.max_instr = 10000
 
         fuzz_args.dump_csr = True
         fuzz_args.dump_wave = True
@@ -203,7 +202,9 @@ class BMCFuzz:
         
         # generate fuzz command and run
         fuzz_command = fuzz_args.generate_fuzz_command()
+        fuzz_start_time = time.time()
         return_code = run_command(fuzz_command, shell=True)
+        log_message(f"fuzz init time cost: {time.time() - fuzz_start_time:.2f}s")
         log_message(f"fuzz init return code: {return_code}")
 
         self.scheduler.update_coverage()

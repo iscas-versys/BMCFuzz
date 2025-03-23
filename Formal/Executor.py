@@ -5,6 +5,7 @@ import shutil
 import csv
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from Verilog_VCD.Verilog_VCD import parse_vcd
 from tqdm import tqdm
 import time
 
@@ -26,19 +27,19 @@ class Executor:
     
     SIGNAL_MATCH_RULES = {
         'nutshell': [
-            {'name': 'r_rdata',  'hier': 'TOP.SimTop.mem.rdata_mem.helper_0', 'role': 'data'},
-            {'name': 'r_enable', 'hier': 'TOP.SimTop.mem.rdata_mem.helper_0', 'role': 'enable'},
-            {'name': 'r_index',  'hier': 'TOP.SimTop.mem.rdata_mem.helper_0', 'role': 'addr'}
+            {'name': 'r_data',   'hier': 'FormalTop.dut.mem.rdata_mem.helper_0', 'role': 'data'},
+            {'name': 'r_enable', 'hier': 'FormalTop.dut.mem.rdata_mem.helper_0', 'role': 'enable'},
+            {'name': 'r_index',  'hier': 'FormalTop.dut.mem.rdata_mem.helper_0', 'role': 'addr'}
         ],
         'rocket': [
-            {'name': 'r_rdata',  'hier': 'TOP.SimTop.mem.srams.mem.helper_0', 'role': 'data'},
-            {'name': 'r_enable', 'hier': 'TOP.SimTop.mem.srams.mem.helper_0', 'role': 'enable'},
-            {'name': 'r_index',  'hier': 'TOP.SimTop.mem.srams.mem.helper_0', 'role': 'addr'}
+            {'name': 'r_data',   'hier': 'FormalTop.dut.mem.srams.mem.helper_0', 'role': 'data'},
+            {'name': 'r_enable', 'hier': 'FormalTop.dut.mem.srams.mem.helper_0', 'role': 'enable'},
+            {'name': 'r_index',  'hier': 'FormalTop.dut.mem.srams.mem.helper_0', 'role': 'addr'}
         ],
         'boom': [
-            {'name': 'r_rdata',  'hier': 'TOP.SimTop.mem.srams.mem.helper_0', 'role': 'data'},
-            {'name': 'r_enable', 'hier': 'TOP.SimTop.mem.srams.mem.helper_0', 'role': 'enable'},
-            {'name': 'r_index',  'hier': 'TOP.SimTop.mem.srams.mem.helper_0', 'role': 'addr'}
+            {'name': 'r_data',   'hier': 'FormalTop.dut.mem.srams.mem.helper_0', 'role': 'data'},
+            {'name': 'r_enable', 'hier': 'FormalTop.dut.mem.srams.mem.helper_0', 'role': 'enable'},
+            {'name': 'r_index',  'hier': 'FormalTop.dut.mem.srams.mem.helper_0', 'role': 'addr'}
         ],
     }
 
@@ -97,10 +98,13 @@ class Executor:
         if return_code == 0:
             log_message(f"发现case: cover_{cover}")
             v_file_path = os.path.join(cover_dir, "engine_0", "trace0_tb.v")
+            vcd_file_path = os.path.join(cover_dir, "engine_0", "trace0.vcd")
+            hexbin_dir = os.path.join(self.cover_tasks_dir, "hexbin")
             if os.path.exists(v_file_path):
                 log_message(f"开始解析文件: {v_file_path}")
-                self.parse_v_file(cover, v_file_path, f"{self.cover_tasks_dir}/hexbin")
-                self.generate_footprint(cover, f"{self.cover_tasks_dir}/hexbin")
+                # self.parse_v_file(cover, v_file_path, hexbin_dir)
+                self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
+                self.generate_footprint(cover, hexbin_dir)
                 cover_point = cover
             else:
                 log_message(f".v文件不存在: {v_file_path}")
@@ -134,9 +138,70 @@ class Executor:
                     cover_return = (return_match.group(1), return_match.group(2))
             log_message(f"cover:{cover_no}, time:{cover_time}, step:{cover_step}, return:({cover_return[0]}, rc={cover_return[1]})")
 
-    def parse_vcd(self, vcd_path):
-        pass
+    def data_parser(self, addr, data):
+        addr = int(addr, 2) * 8
 
+        addr_hex = f"{addr:#010x}"
+        lower_32 = int(data[32:], 2)
+        lower_32_hex = f"{lower_32:#010x}"
+        upper_32 = int(data[:32], 2)
+        upper_32_hex = f"{upper_32:#010x}"
+        log_message(f"Address: {addr_hex}, Data: {lower_32_hex} {upper_32_hex}")
+        
+        data = int(data, 2).to_bytes(8, byteorder='little')
+
+        return (addr, data)
+    
+    def bin_file_builder(self, memory_map, output_file_path):
+        with open(output_file_path, 'wb') as output_file:
+            current_addr = 0
+            for addr in sorted(memory_map.keys()):
+                if current_addr < addr:
+                    gap_size = addr - current_addr
+                    log_message(f"Filling gap of {gap_size} bytes from {current_addr:#010x} to {addr:#010x}")
+                    output_file.write(b'\x00' * gap_size)
+                    current_addr = addr
+                output_file.write(memory_map[addr])
+                current_addr += 8
+        log_message(f"已解析并保存bin文件: {output_file_path}")
+
+    def parse_vcd_file(self, cover_no, vcd_file_path, output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+        output_file_path = os.path.join(output_dir, f"cover_{cover_no}.bin")
+        
+        signal_rule = self.SIGNAL_MATCH_RULES[self.cpu]
+        vcd_data = parse_vcd(vcd_file_path)
+
+        memory_map = {}
+
+        signal_values = {'enable': [], 'addr': {}, 'data': {}}
+        for netinfo in vcd_data.values():
+            for signal in signal_rule:
+                if (
+                    netinfo['nets'][0]['name'] == signal['name'] and
+                    netinfo['nets'][0]['hier'] == signal['hier']
+                ):
+                    for time_sig in netinfo['tv']:
+                        clock = time_sig[0]
+                        value = time_sig[1]
+                        if signal['role'] == 'enable':
+                            signal_values[signal['role']].append((int(clock), value))
+                        else:
+                            signal_values[signal['role']][int(clock)] = value
+                        # log_message(f"{signal['role']}: {clock}, {value}")
+        # log_message(f"enable: {signal_values['enable']}")
+        signal_values['enable'] = sorted(signal_values['enable'], key=lambda x: x[0])
+        for index, (clock, value) in enumerate(signal_values['enable']):
+            if value == '1' and index+1 < len(signal_values['enable']):
+                next_clock = signal_values['enable'][index + 1][0]
+                addr = signal_values['addr'].get(clock)
+                data = signal_values['data'].get(next_clock)
+                # log_message(f"enable: {clock}, addr: {addr}, data: {next_clock}, {data}")
+                addr, data = self.data_parser(addr, data)
+                memory_map[addr] = data
+        
+        self.bin_file_builder(memory_map, output_file_path)
+            
     def parse_v_file(self, cover_no, v_file_path, output_dir):
         pattern = r"\.helper_0\.memory\[(29'b[01]+)\] = (64'b[01]+);"
         os.makedirs(output_dir, exist_ok=True)
@@ -150,29 +215,10 @@ class Executor:
                 if match:
                     data_addr = match.group(1).split("'b")[1]
                     data_bin = match.group(2).split("'b")[1]
-                    addr_int = int(data_addr, 2) * 8
-                    data_bytes = int(data_bin, 2).to_bytes(8, byteorder='little')
-                    memory_map[addr_int] = data_bytes
-
-                    addr_hex = f"{addr_int:#010x}"
-                    lower_32 = int(data_bin[32:], 2)
-                    lower_32_hex = f"{lower_32:#010x}"
-                    upper_32 = int(data_bin[:32], 2)
-                    upper_32_hex = f"{upper_32:#010x}"
-                    log_message(f"Address: {addr_hex}, Data: {lower_32_hex} {upper_32_hex}")
-
-        with open(output_file_path, 'wb') as output_file:
-            current_addr = 0
-            for addr in sorted(memory_map.keys()):
-                if current_addr < addr:
-                    gap_size = addr - current_addr
-                    log_message(f"Filling gap of {gap_size} bytes from {current_addr:#010x} to {addr:#010x}")
-                    output_file.write(b'\x00' * gap_size)
-                    current_addr = addr
-                output_file.write(memory_map[addr])
-                current_addr += 8
-
-        log_message(f"已解析并保存bin文件: {output_file_path}")
+                    addr, data = self.data_parser(data_addr, data_bin)
+                    memory_map[addr] = data
+        
+        self.bin_file_builder(memory_map, output_file_path)
 
     def generate_footprint(self, cover_point, output_dir):
         bin_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
@@ -225,4 +271,9 @@ if __name__ == "__main__":
     cover_cases, execute_time = executor.run(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)
+    # v_file_path = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "cover_5886", "engine_0", "trace0_tb.v")
+    # vcd_file_path = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "cover_5886", "engine_0", "trace0.vcd")
+    # output_dir = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "hexbin")
+    # executor.parse_v_file(5886, v_file_path, output_dir)
+    # executor.parse_vcd_file(5886, vcd_file_path, output_dir)
     generate_empty_cover_points_file()

@@ -1,3 +1,6 @@
 [submodule "LibAFL"]
 	path = LibAFL
 	url = https://github.com/AFLplusplus/LibAFL.git
+[submodule "sby"]
+	path = sby
+	url = git@github.com:SeddonShen/sby.git

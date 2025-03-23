@@ -9,7 +9,7 @@ from datetime import datetime
 from Coverage import Coverage
 from Tools import *
 from PointSelector import PointSelector
-from Executor import execute_cover_tasks, run_command
+from Executor import Executor
 
 NOOP_HOME = os.getenv("NOOP_HOME")
 
@@ -179,6 +179,8 @@ class Scheduler:
 
     point_selector = PointSelector()
 
+    executor = Executor()
+
     points_name = []
     module_name = []
     point2module = []
@@ -220,11 +222,18 @@ class Scheduler:
 
         self.point_selector.init(module_id, self.point2module)
 
+        self.executor.init(cpu, run_snapshot)
+
         generate_empty_cover_points_file(point_id)
     
     def restart_init(self):
         self.point_selector.reset_uncovered_points(self.coverage.cover_points)
     
+    def set_snapshot_id(self, snapshot_id):
+        self.snapshot_id = snapshot_id
+        snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{snapshot_id}")
+        self.executor.set_snapshot_id(snapshot_id, snapshot_file)
+
     def run_loop(self):
         loop_count = 0
 
@@ -268,7 +277,7 @@ class Scheduler:
 
             # 执行cover任务
             snapshot_file = os.path.join(NOOP_HOME, 'ccover', 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
-            cover_cases, time_cost = execute_cover_tasks(cover_points, self.run_snapshot, snapshot_file)
+            cover_cases, time_cost = self.executor.run(cover_points)
             if len(cover_cases) > 0:
                 log_message(f"发现新case: {cover_cases}")
                 break
@@ -314,9 +323,6 @@ class Scheduler:
         fuzz_command = fuzz_args.generate_fuzz_command()
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
-    
-    def set_snapshot_id(self, snapshot_id):
-        self.snapshot_id = snapshot_id
     
     def run_snapshot_fuzz(self):
         # init fuzz log

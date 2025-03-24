@@ -9,6 +9,7 @@ import psutil
 from datetime import datetime
 
 NOOP_HOME = os.getenv("NOOP_HOME")
+BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
 
 def reset_terminal():
     try:
@@ -119,7 +120,7 @@ class FuzzArgs:
         make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
         if self.run_snapshot:
             # make src
-            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so BMCFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" > {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make src command: {make_command}")
@@ -131,7 +132,7 @@ class FuzzArgs:
 
             # replace SimTop.sv
             log_message(f"Replace SimTop.sv")
-            src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "SimTop_init.sv")
+            src_rtl = os.path.join(BMCFUZZ_HOME, "SetInitValues", "SimTop_init.sv")
             dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "SimTop.sv")
 
             if os.path.exists(dst_rtl):
@@ -149,7 +150,7 @@ class FuzzArgs:
             
             # replace MemRWHelper.v
             log_message(f"Replace MemRWHelper.v")
-            src_rtl = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "MemRWHelper_difftest.v")
+            src_rtl = os.path.join(BMCFUZZ_HOME, "SetInitValues", "MemRWHelper_difftest.v")
             dst_rtl = os.path.join(NOOP_HOME, "build", "rtl", "MemRWHelper.v")
 
             if os.path.exists(dst_rtl):
@@ -164,7 +165,7 @@ class FuzzArgs:
 
             # make fuzzer
             make_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT"
-            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
+            make_command += f" && make fuzzer REF=$(pwd)/ready-to-run/riscv64-spike-so BMCFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" >> {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make fuzzer command: {make_command}")
@@ -174,7 +175,7 @@ class FuzzArgs:
                 log_message("Make src failed!")
                 sys.exit(1)
         else:
-            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
+            make_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so BMCFUZZ=1 FIRRTL_COVER={self.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16"
             make_command += f" > {self.make_log_file} 2>&1"
             make_command = "bash -c \'" + make_command + "\'"
             log_message(f"Make fuzzer command: {make_command}")
@@ -222,7 +223,7 @@ class FuzzArgs:
 
         if self.run_snapshot:
             fuzz_command += " --run-snapshot"
-            snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{self.snapshot_id}")
+            snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{self.snapshot_id}")
             fuzz_command += f" --load-snapshot {snapshot_file}"
 
         if self.no_diff:

@@ -5,15 +5,14 @@ import shutil
 import subprocess
 import argparse
 
+from runtools import NOOP_HOME, BMCFUZZ_HOME
 from runtools import run_command
 from runtools import log_init, log_message
-
-NOOP_HOME = os.getenv("NOOP_HOME")
 
 def rtl_init(args):
     # 生成build目录
     build_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
-    build_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so XFUZZ=1 FIRRTL_COVER={args.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16 > tmp/make_fuzzer.log 2>&1"
+    build_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so BMCFUZZ=1 FIRRTL_COVER={args.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16 > tmp/make_fuzzer.log 2>&1"
     build_command = "bash -c '" + build_command + "'"
     log_message("command:"+build_command)
     ret = run_command(build_command, shell=True)
@@ -27,8 +26,8 @@ def generate_nutshell_rtl(args):
     rtl_src = os.path.join(build_dir, "rtl", "SimTop.sv")
     cover_src = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
 
-    formal_dir = os.path.join(NOOP_HOME, "ccover", "Formal", "demo", f"{args.cpu}_{args.cover_type}")
-    init_dir = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "rtl_src", f"{args.cpu}")
+    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}_{args.cover_type}")
+    init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
 
     # 替换firrtl-cover.cpp
     formal_cover_dst = os.path.join(formal_dir, "firrtl-cover.cpp")
@@ -82,8 +81,8 @@ def generate_rocket_rtl(args):
     rtl_src = os.path.join(build_dir, "rtl", "SimTop.sv")
     cover_src = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
 
-    formal_dir = os.path.join(NOOP_HOME, "ccover", "Formal", "demo", f"{args.cpu}_{args.cover_type}")
-    init_dir = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "rtl_src", f"{args.cpu}")
+    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}_{args.cover_type}")
+    init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
 
     log_message("generate rocket rtl")
 

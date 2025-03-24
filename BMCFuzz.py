@@ -24,6 +24,7 @@ from Formal.Scheduler import Scheduler, FuzzArgs
 from Formal.Tools import log_message, clear_logs, log_init, run_command
 
 NOOP_HOME = os.getenv("NOOP_HOME")
+BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
 
 class BMCFuzz:
     cpu = None
@@ -170,7 +171,7 @@ class BMCFuzz:
         # self.generate_init_file(reset_wave_file)
         
         # init fuzz log
-        fuzz_log_dir = os.path.join(NOOP_HOME, 'ccover', 'logs')
+        fuzz_log_dir = os.path.join(BMCFUZZ_HOME, 'logs')
         make_log_file = os.path.join(fuzz_log_dir, f'make_fuzzer.log')
         fuzz_log_file = os.path.join(fuzz_log_dir, f"fuzz_init.log")
 
@@ -265,7 +266,7 @@ class BMCFuzz:
             fuzzer = FuzzArgs()
             fuzzer.cover_type = self.cover_type
             fuzzer.run_snapshot = True
-            fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'logs', 'make_fuzzer.log')
+            fuzzer.make_log_file = os.path.join(BMCFUZZ_HOME, 'logs', 'make_fuzzer.log')
             fuzzer.make_fuzzer()
 
             # run hybrid loop
@@ -328,7 +329,7 @@ def test(args):
         fuzzer = FuzzArgs()
         fuzzer.cover_type = fuzz.cover_type
         fuzzer.run_snapshot = True
-        fuzzer.make_log_file = os.path.join(NOOP_HOME, 'ccover', 'logs', 'make_fuzzer.log')
+        fuzzer.make_log_file = os.path.join(BMCFUZZ_HOME, 'logs', 'make_fuzzer.log')
         fuzzer.make_fuzzer()
         
         fuzz.scheduler.set_snapshot_id(best_snapshot_id)

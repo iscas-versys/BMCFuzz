@@ -10,8 +10,9 @@ import numpy as np
 
 from datetime import datetime
 
+from runtools import NOOP_HOME, BMCFUZZ_HOME
 from runtools import log_init, clear_logs, log_message, reset_terminal
-from runtools import FuzzArgs, NOOP_HOME
+from runtools import FuzzArgs
 from runtools import kill_process_and_children
 
 TIME_OUT = 30 * 60 * 60
@@ -74,7 +75,7 @@ def do_fuzz(args):
     log_init(name=fuzz_name)
     log_message(f"Running {fuzz_name}")
     log_message("clearing coverage points")
-    cover_points_file = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "cover_points.csv")
+    cover_points_file = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_points.csv")
     if os.path.exists(cover_points_file):
         os.remove(cover_points_file)
     

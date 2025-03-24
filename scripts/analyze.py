@@ -5,6 +5,7 @@ import difflib
 import filecmp
 
 NOOP_HOME = os.getenv("NOOP_HOME")
+BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
 
 class Snapshot:
     class RegInt:
@@ -109,7 +110,7 @@ class Snapshot:
             self.reg_csr.value["mscratch"], self.reg_csr.value["sscratch"]))
 
 def snapshot_parser(snapshot_id):
-    snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{snapshot_id}")
+    snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
 
     snapshot = Snapshot()
 

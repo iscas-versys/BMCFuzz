@@ -4,8 +4,7 @@ import shutil
 import subprocess
 import argparse
 
-NOOP_HOME = os.getenv("NOOP_HOME")
-
+from runtools import NOOP_HOME, BMCFUZZ_HOME
 from runtools import FuzzArgs
 from runtools import run_command
 from runtools import log_message, clear_logs, log_init, reset_terminal
@@ -24,7 +23,7 @@ def run_emu(args):
         fuzz_args.make_fuzzer()
 
     if args.use_asm_test:
-        asm_test_bin = os.path.join(NOOP_HOME, "ccover", "asms", "test.bin")
+        asm_test_bin = os.path.join(BMCFUZZ_HOME, "asms", "test.bin")
         args.image = asm_test_bin
 
     if args.dump_csr:
@@ -44,7 +43,7 @@ def run_emu(args):
 
     if args.run_snapshot:
         commands += " --run-snapshot"
-        snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{args.snapshot_id}")
+        snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{args.snapshot_id}")
         commands += f" --load-snapshot {snapshot_file}"
 
     if args.no_diff:

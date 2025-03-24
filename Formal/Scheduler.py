@@ -204,7 +204,7 @@ class Scheduler:
         # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
         # False for BMCFuzz init
-        cover_points_name = generate_rtl_files(False, cpu, cover_type)
+        cover_points_name = generate_rtl_files(False, cpu, cover_type, self.solver_mode)
 
         point_id = 0
         module_id = 0
@@ -269,14 +269,14 @@ class Scheduler:
 
     def run_formal(self, test_formal=False):
         if self.run_snapshot:
-            generate_rtl_files(True, self.cpu, self.cover_type)
+            generate_rtl_files(True, self.cpu, self.cover_type, self.solver_mode)
         if test_formal:
             self.point_selector.MAX_POINT_NUM = len(self.points_name)
         cover_points = self.point_selector.generate_cover_points()
         while(True):
             # 清理并重新生成cover points文件
             clean_cover_files()
-            generate_sby_files(cover_points, self.cpu)
+            generate_sby_files(cover_points, self.cpu, self.solver_mode)
 
             # 执行cover任务
             snapshot_file = os.path.join(BMCFUZZ_HOME, 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")

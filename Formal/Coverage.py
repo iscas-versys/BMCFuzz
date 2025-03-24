@@ -74,17 +74,5 @@ class Coverage:
                 csv_writer.writerow({'Index': i, 'Covered': self.cover_points[i]})
 
 if __name__ == "__main__":
-    # generate_empty_cover_points_file()
-    # 初始化Coverage对象
-    coverage = Coverage()
-    
-    # 清理并重新生成cover points文件
-    clean_cover_files()
-    cover_points = generate_rtl_files()
-    coverage.init(cover_points)
-    coverage.generate_cover_file()
-
-    # 生成样例sby文件
-    sample_cover_points = [3933, 4389, 4390, 4392]
-    generate_sby_files(sample_cover_points)
+    pass
     

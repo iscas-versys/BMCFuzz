@@ -1,78 +1,58 @@
-`define DISABLE_DIFFTEST_RAM_DPIC
-`ifdef SYNTHESIS
-  `define DISABLE_DIFFTEST_RAM_DPIC
-`endif
-
-`ifndef DISABLE_DIFFTEST_RAM_DPIC
-import "DPI-C" function longint difftest_ram_read(input longint rIdx);
-`endif // DISABLE_DIFFTEST_RAM_DPIC
-
-
-`ifndef DISABLE_DIFFTEST_RAM_DPIC
-import "DPI-C" function void difftest_ram_write
-(
-  input  longint index,
-  input  longint data,
-  input  longint mask
-);
-`endif // DISABLE_DIFFTEST_RAM_DPIC
-
 module MemRWHelper(
-  
-input             r_enable,
-input      [63:0] r_index,
-output reg [63:0] r_data,
-
-  
-input         w_enable,
-input  [63:0] w_index,
-input  [63:0] w_data,
-input  [63:0] w_mask,
-
-  input clock
+  input             r_enable,
+  input      [63:0] r_index,
+  output reg [63:0] r_data,
+  input             w_enable,
+  input      [63:0] w_index,
+  input      [63:0] w_data,
+  input      [63:0] w_mask,
+  input             clock
 );
-initial begin
+
+  `define RAM_ITEMS (2 * 1024 * 1024 * 1024) / 8 // 2^(28) [27:0] [27:3] [2:0]
+  // reg [63:0] memory [0 : `RAM_SIZE / 8 - 1];
+  `define MAX_LINES 8
+  // 由于是2GiB内存 相当于只考虑r_index % RAM_ITEMS
+  // 直接相联缓存：最多 8 行
+  reg [63:0] cache_data [0:`MAX_LINES]; // 数据
+  reg [24:0] cache_tag  [0:`MAX_LINES]; // 25位
+  reg        cache_valid[0:`MAX_LINES]; // 有效位
+
+  // TODO: change cache tag to suitable for 2GiB memory address
+  (* keep *) rand reg [63:0] rand_value;
+  wire [2:0] h_index_r = r_index[2:0];
+  wire [2:0] h_index_w = w_index[2:0];
+  // 初始化缓存
+  integer i;
+  initial begin
+    for (i = 0; i < `MAX_LINES; i = i + 1) begin
+      cache_data[i] = 64'b0;
+      cache_tag[i]  = 24'b0;
+      cache_valid[i] = 1'b0;
+    end
     r_data = 64'h0;
-end
-  
-`ifdef DISABLE_DIFFTEST_RAM_DPIC
-`ifdef PALLADIUM
-  initial $ixc_ctrl("tb_import", "$display");
-`endif // PALLADIUM
-
-// 2GB memory
-`define RAM_SIZE (2 * 1024 * 1024 * 1024)
-reg [63:0] memory [0 : `RAM_SIZE / 8 - 1];
-
-`define MEM_TARGET memory
-
-
-
-`endif // DISABLE_DIFFTEST_RAM_DPIC
-
-  always @(posedge clock) begin
-    
-`ifndef DISABLE_DIFFTEST_RAM_DPIC
-if (r_enable) begin
-  r_data <= difftest_ram_read(r_index);
-end
-`else
-if (r_enable) begin
-  r_data <= `MEM_TARGET[r_index];
-end
-`endif // DISABLE_DIFFTEST_RAM_DPIC
-
-    
-`ifndef DISABLE_DIFFTEST_RAM_DPIC
-if (w_enable) begin
-  difftest_ram_write(w_index, w_data, w_mask);
-end
-`else
-if (w_enable) begin
-  `MEM_TARGET[w_index] <= (w_data & w_mask) | (`MEM_TARGET[w_index] & ~w_mask);
-end
-`endif // DISABLE_DIFFTEST_RAM_DPIC
-
   end
+
+
+  always @(posedge glb_clk) begin
+    if (r_enable) begin
+      // 检查缓存是否命中
+      if (cache_valid[h_index_r] && cache_tag[h_index_r] == r_index[27:3]) begin
+        r_data <= cache_data[h_index_r]; // 缓存命中，返回缓存数据
+      end else begin
+        r_data <= rand_value; // 缓存未命中，返回随机值
+        // 将随机值存入缓存
+        cache_data[h_index_r] <= rand_value;
+        cache_tag[h_index_r]  <= r_index[27:3];
+        cache_valid[h_index_r] <= 1'b1;
+      end
+    end
+    if (w_enable) begin
+      // 更新缓存
+      cache_data[h_index_w] <= (w_data & w_mask) | (cache_data[h_index_w] & ~w_mask);
+      cache_tag[h_index_w]  <= w_index[27:3];
+      cache_valid[h_index_w] <= 1'b1;
+    end
+  end
+
 endmodule
-     

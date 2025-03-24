@@ -1,16 +1,16 @@
 [options]
-mode cover
+mode {mode}
 depth {depth}
 timeout {timeout}
 
 [engines]
-smtbmc bitwuzla
+{engines}
 
 [script]
 read -formal define.sv
 {formal_files}
 prep -top {top_module_name}
-chformal -remove -cover c:{cover_label} %n
+{scripts}
 
 [files]
 {verilog_files}

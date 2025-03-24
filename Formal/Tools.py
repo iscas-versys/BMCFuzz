@@ -83,7 +83,7 @@ def kill_process_and_children(pid):
         log_message("No such process")
 
 # 复制、解析并修改RTL文件
-def generate_rtl_files(run_snapshot, cpu, cover_type):
+def generate_rtl_files(run_snapshot, cpu, cover_type, mode):
     # 获取环境变量
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     rtl_init_dir = str(os.getenv("RTL_INIT_DIR"))
@@ -117,14 +117,14 @@ def generate_rtl_files(run_snapshot, cpu, cover_type):
                 shutil.copy(entry.path, rtl_dst_dir)
     
     # 解析并修改RTL文件
-    cover_points_name = parse_and_modify_rtl_files(run_snapshot, cpu, cover_type)
+    cover_points_name = parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode)
 
     log_message("Generated RTL files.")
     
     return cover_points_name
 
 # 解析并修改RTL文件
-def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
+def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
     # cover name to cover id
     rtl_dir = str(os.getenv("RTL_SRC_DIR"))
     rtl_dir = rtl_dir+"_"+cover_type
@@ -209,7 +209,10 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
             if cover_id == -1:
                 log_message(f"cover_name: {cover_name} not found in covername2id.")
                 cover_id = len(cover_points)
-            new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
+            if mode == "smt":
+                new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
+            elif mode == "sat":
+                new_cover_line = f"    cov_count_{cover_id}: assume(~{signal_name});\n"
             new_lines.append(new_cover_line)
             cover_points[cover_id] = (current_module, signal_name)
         else:
@@ -262,7 +265,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type):
     return cover_points
 
 # 生成 .sby 文件
-def generate_sby_files(cover_points, cpu):
+def generate_sby_files(cover_points, cpu, mode):
     # 获取环境变量
     rtl_dir = str(os.getenv("RTL_DST_DIR"))
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
@@ -290,6 +293,13 @@ def generate_sby_files(cover_points, cpu):
         default_timeout = 1 * 60 * 60
     default_timeout = int(default_timeout)
 
+    if mode == "smt":
+        sby_mode = "cover"
+        engine = "smtbmc bitwuzla"
+    elif mode == "sat":
+        sby_mode = "bmc"
+        engine = "aiger rIC3"
+
     for cover_id in cover_points:
         if cover_id >= MAX_COVER_POINTS:
             log_message(f"cover_id: {cover_id} >= MAX_COVER_POINTS: {MAX_COVER_POINTS}")
@@ -297,12 +307,21 @@ def generate_sby_files(cover_points, cpu):
 
         cover_label = f"cov_count_{cover_id}"
 
+        if mode == "smt":
+            scripts = f"chformal -remove -cover c:{cover_label} %n\n"
+        elif mode == "sat":
+            scripts = f"chformal -remove -assume c:{cover_label} %n\n"
+            scripts += f"chformal -assume2assert -assume c:{cover_label}\n"
+
         # 使用模板生成 sby 文件内容
         sby_file_content = template_content.format(
+            mode=sby_mode,
             depth=default_depth,
             timeout=default_timeout,
+            engines=engine,
             formal_files=formal_files,
             top_module_name="FormalTop",
+            scripts=scripts,
             cover_label=cover_label,
             verilog_files=verilog_files
         )
@@ -356,11 +375,4 @@ def generate_empty_cover_points_file(cover_num=0):
             csv_writer.writerow({'Index': i, 'Covered': 0})
 
 if __name__ == "__main__":
-    clear_logs()
-    log_init()
-    clean_cover_files()
-    # run_snapshot = False
-    run_snapshot = True
-    cover_points_name = generate_rtl_files(run_snapshot)
-    generate_empty_cover_points_file(len(cover_points_name))
-    # generate_sby_files([3933, 4389, 4390, 4392])
+    pass

@@ -12,11 +12,14 @@ import time
 from Tools import *
 
 NOOP_HOME = os.getenv("NOOP_HOME")
+BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
 
 class Executor:
     run_snapshot = False
     snapshot_id = 0
     snapshot_file = ""
+
+    mode = ""
 
     cpu = ""
 
@@ -43,11 +46,12 @@ class Executor:
         ],
     }
 
-    def init(self, cpu, run_snapshot):
+    def init(self, cpu, run_snapshot, mode):
         self.cpu = cpu
         self.run_snapshot = run_snapshot
         self.env_path = str(os.getenv("OSS_CAD_SUITE_HOME"))
         self.cover_tasks_dir = str(os.getenv("COVER_POINTS_OUT"))
+        self.mode = mode
 
         # 加载OSS CAD Suite环境
         log_message(f"try to load env: {self.env_path}")
@@ -86,16 +90,26 @@ class Executor:
         return (cover_cases, end_time - strat_time)
 
     def execute_cover_task(self, cover):
-        sby_command = f"bash -c 'source {self.env_path} && sby -f {self.cover_tasks_dir}/cover_{cover}.sby'"
+        sby_command = f"source {self.env_path}"
+        sby_path = os.path.join(BMCFUZZ_HOME, "sby", "sbysrc", "sby.py")
+        if self.mode == "smt":
+            sby_command += f" && {sby_path} -f {self.cover_tasks_dir}/cover_{cover}.sby"
+        elif self.mode == "sat":
+            rIC3_path = os.path.join(BMCFUZZ_HOME, "Formal", "bin", "rIC3")
+            sby_command += f" && {sby_path} -f {self.cover_tasks_dir}/cover_{cover}.sby --rIC3 {rIC3_path}"
+        sby_command = f"bash -c '{sby_command}'"
         st_time = time.time()
         return_code = run_command(sby_command, shell=True)
         ed_time = time.time()
-        log_message(f"cover_{cover}:sby执行完成, 耗时: {ed_time - st_time:.2f} 秒")
+        log_message(f"cover_{cover} sby执行完成, 耗时: {ed_time - st_time:.2f} 秒")
 
         cover_point = -1
         cover_dir = os.path.join(self.cover_tasks_dir, f"cover_{cover}")
         self.parse_log_file(cover, cover_dir)
-        if return_code == 0:
+        pass_code = 0
+        if self.mode == "sat":
+            pass_code = 2
+        if return_code == pass_code:
             log_message(f"发现case: cover_{cover}")
             v_file_path = os.path.join(cover_dir, "engine_0", "trace0_tb.v")
             vcd_file_path = os.path.join(cover_dir, "engine_0", "trace0.vcd")
@@ -111,16 +125,19 @@ class Executor:
         else:
             log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
         
-        # if os.path.exists(f"{output_dir}/cover_{cover}.sby"):
-        #     os.remove(f"{output_dir}/cover_{cover}.sby")
-        # if os.path.exists(f"{output_dir}/cover_{cover}"):
-        #     shutil.rmtree(f"{output_dir}/cover_{cover}")
+        if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}.sby"):
+            os.remove(f"{self.cover_tasks_dir}/cover_{cover}.sby")
+        if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}"):
+            shutil.rmtree(f"{self.cover_tasks_dir}/cover_{cover}")
         
         return cover_point
         
     def parse_log_file(self, cover_no, cover_dir):
         cover_log_path = os.path.join(cover_dir, "logfile.txt")
-        check_log_pattern = r"Checking cover reachability in step (\d+).."
+        if self.mode == "smt":
+            check_log_pattern = r"Checking cover reachability in step (\d+).."
+        elif self.mode == "sat":
+            check_log_pattern = r"bmc depth: (\d+)"
         summary_log_pattern = r"summary: Elapsed clock time \[H:MM:SS \(secs\)\]: (\d+:\d+:\d+) \((\d+\))"
         return_log_pattern = r"DONE \((\S+), rc=(\d+)\)"
         with open(cover_log_path, 'r') as log_file:
@@ -260,20 +277,21 @@ if __name__ == "__main__":
     snapshot_id = 0
     cpu = "rocket"
     cover_type = "toggle"
-    snapshot_file = os.path.join(NOOP_HOME, "ccover", "SetInitValues", "csr_snapshot", f"{snapshot_id}")
+    solver_mode = "sat"
+    snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
 
-    generate_rtl_files(run_snapshot, cpu, cover_type)
-    generate_sby_files(sample_cover_points, cpu)
+    generate_rtl_files(run_snapshot, cpu, cover_type, solver_mode)
+    generate_sby_files(sample_cover_points, cpu, solver_mode)
 
     executor = Executor()
-    executor.init("rocket", run_snapshot)
+    executor.init("rocket", run_snapshot, solver_mode)
     executor.set_snapshot_id(snapshot_id, snapshot_file)
     cover_cases, execute_time = executor.run(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)
-    # v_file_path = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "cover_5886", "engine_0", "trace0_tb.v")
-    # vcd_file_path = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "cover_5886", "engine_0", "trace0.vcd")
-    # output_dir = os.path.join(NOOP_HOME, "ccover", "Formal", "coverTasks", "hexbin")
+    # v_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_5886", "engine_0", "trace0_tb.v")
+    # vcd_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_5886", "engine_0", "trace0.vcd")
+    # output_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "hexbin")
     # executor.parse_v_file(5886, v_file_path, output_dir)
     # executor.parse_vcd_file(5886, vcd_file_path, output_dir)
     generate_empty_cover_points_file()

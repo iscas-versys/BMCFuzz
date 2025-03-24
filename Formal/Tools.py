@@ -287,7 +287,7 @@ def generate_sby_files(cover_points, cpu, mode):
         default_timeout = 1 * 60 * 60
     elif cpu == "rocket":
         default_depth = 50
-        default_timeout = 2.5 * 60 * 60
+        default_timeout = 1.5 * 60 * 60
     else:
         default_depth = 50
         default_timeout = 1 * 60 * 60
@@ -311,6 +311,7 @@ def generate_sby_files(cover_points, cpu, mode):
             scripts = f"chformal -remove -cover c:{cover_label} %n\n"
         elif mode == "sat":
             scripts = f"chformal -remove -assume c:{cover_label} %n\n"
+            scripts += f"chformal -remove -assert c:{cover_label} %n\n"
             scripts += f"chformal -assume2assert -assume c:{cover_label}\n"
 
         # 使用模板生成 sby 文件内容

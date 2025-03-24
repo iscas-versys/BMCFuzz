@@ -192,7 +192,7 @@ class Scheduler:
     cpu = ""
     cover_type = "toggle"
 
-    solver_mode = "smt"
+    solver_mode = "sat"
 
     def init(self, cpu, cover_type, run_snapshot=False):
         log_message("Scheduler init")

@@ -212,7 +212,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
             if mode == "smt":
                 new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
             elif mode == "sat":
-                new_cover_line = f"    cov_count_{cover_id}: assume(~{signal_name});\n"
+                new_cover_line = f"    cov_count_{cover_id}: assert(~{signal_name});\n"
             new_lines.append(new_cover_line)
             cover_points[cover_id] = (current_module, signal_name)
         else:
@@ -310,9 +310,7 @@ def generate_sby_files(cover_points, cpu, mode):
         if mode == "smt":
             scripts = f"chformal -remove -cover c:{cover_label} %n\n"
         elif mode == "sat":
-            scripts = f"chformal -remove -assume c:{cover_label} %n\n"
-            scripts += f"chformal -remove -assert c:{cover_label} %n\n"
-            scripts += f"chformal -assume2assert -assume c:{cover_label}\n"
+            scripts = f"chformal -remove -assert c:{cover_label} %n\n"
 
         # 使用模板生成 sby 文件内容
         sby_file_content = template_content.format(

@@ -196,6 +196,10 @@ class Scheduler:
 
     def init(self, cpu, cover_type, run_snapshot=False):
         log_message("Scheduler init")
+        log_message("cpu: " + cpu)
+        log_message("cover_type: " + cover_type)
+        log_message("run_snapshot: " + str(run_snapshot))
+        log_message("solver_mode: " + self.solver_mode)
 
         self.run_snapshot = run_snapshot
         self.cpu = cpu
@@ -344,8 +348,8 @@ class Scheduler:
 
         fuzz_args.formal_cover_rate = self.coverage.get_formal_cover_rate()
 
-        fuzz_args.max_instr = 300
-        fuzz_args.max_cycle = 3000
+        fuzz_args.max_instr = 5000
+        fuzz_args.max_cycle = 5000
 
         # fuzz_args.no_diff = True
 

@@ -134,8 +134,15 @@ def format_time_diff(time_diff):
 
 def analyze_log(args):
     output_lines = []
-    src_file = "bmcfuzz_time.log"
-    dst_file = "bmcfuzz.log"
+    src_file = args.log_file
+    if args.analyze_hypfuzz:
+        dst_file = args.log_file.split('/')[:-1] + ['hypfuzz.log']
+    elif args.analyze_bmcfuzz:
+        dst_file = args.log_file.split('/')[:-1] + ['bmcfuzz.log']
+    else:
+        log_message("Invalid log file")
+        return
+    dst_file = '/'.join(dst_file)
     with open(src_file, "r") as f:
         lines = f.readlines()
         time_format = "%Y-%m-%d %H:%M:%S,%f"
@@ -150,7 +157,7 @@ def analyze_log(args):
             time_diff_str = format_time_diff(time_diff)
             output_str = f"{time_diff_str} Coverage: {coverage}"
             output_lines.append(output_str)
-            print(output_str)
+            log_message(output_str)
     
     with open(dst_file, "w") as f:
         f.write(''.join(output_lines))
@@ -186,8 +193,6 @@ def prepare_data(data):
     return times, coverages
 
 def generate_graph(args):
-    print("TIME_OUT:", TIME_OUT)
-    print("TIME_INTERVAL:", TIME_INTERVAL)
     experiment_dir = os.path.join(NOOP_HOME, "tmp", "exp")
     xfuzz_data = []
     pathfuzz_data = []
@@ -195,30 +200,34 @@ def generate_graph(args):
     bmcfuzz_data = []
     
     match_pattern = re.compile(r"(.*) Coverage:(.*)%")
-    with open(os.path.join(experiment_dir, "xfuzz.log"), "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            match = match_pattern.match(line)
-            if match:
-                xfuzz_data.append((match.group(1), float(match.group(2))))
-    with open(os.path.join(experiment_dir, "pathfuzz.log"), "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            match = match_pattern.match(line)
-            if match:
-                pathfuzz_data.append((match.group(1), float(match.group(2))))
-    with open(os.path.join(experiment_dir, "hypfuzz.log"), "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            match = match_pattern.match(line)
-            if match:
-                hypfuzz_data.append((match.group(1), float(match.group(2))))
-    with open(os.path.join(experiment_dir, "bmcfuzz.log"), "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            match = match_pattern.match(line)
-            if match:
-                bmcfuzz_data.append((match.group(1), float(match.group(2))))
+    if args.analyze_xfuzz:
+        with open(os.path.join(experiment_dir, "xfuzz.log"), "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                match = match_pattern.match(line)
+                if match:
+                    xfuzz_data.append((match.group(1), float(match.group(2))))
+    if args.analyze_pathfuzz:
+        with open(os.path.join(experiment_dir, "pathfuzz.log"), "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                match = match_pattern.match(line)
+                if match:
+                    pathfuzz_data.append((match.group(1), float(match.group(2))))
+    if args.analyze_hypfuzz:
+        with open(os.path.join(experiment_dir, "hypfuzz.log"), "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                match = match_pattern.match(line)
+                if match:
+                    hypfuzz_data.append((match.group(1), float(match.group(2))))
+    if args.analyze_bmcfuzz:
+        with open(os.path.join(experiment_dir, "bmcfuzz.log"), "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                match = match_pattern.match(line)
+                if match:
+                    bmcfuzz_data.append((match.group(1), float(match.group(2))))
     
     xfuzz_times, xfuzz_coverages = prepare_data(xfuzz_data)
     pathfuzz_times, pathfuzz_coverages = prepare_data(pathfuzz_data)
@@ -229,10 +238,14 @@ def generate_graph(args):
     plt.figure(figsize=(10, 6))
 
     # 绘制每条曲线
-    plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
-    plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g', marker='s')
-    plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b', marker='^')
-    plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
+    if args.analyze_xfuzz:
+        plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
+    if args.analyze_pathfuzz:
+        plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g', marker='s')
+    if args.analyze_hypfuzz:
+        plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b', marker='^')
+    if args.analyze_bmcfuzz:
+        plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
 
     # 设置标题和标签
     plt.title("Fuzz Coverage", fontsize=14)
@@ -277,7 +290,14 @@ if __name__ == "__main__":
     parser.add_argument("--do-hypfuzz", "-dh", action='store_true', help="Do hypfuzz")
     parser.add_argument("--do-bmcfuzz", "-db", action='store_true', help="Do bmcfuzz")
 
+    parser.add_argument("--analyze-log", "-al", action='store_true', help="Analyze log")
+    parser.add_argument("--log-file", "-lf", type=str, help="Log file")
+
     parser.add_argument("--generate-graph", "-g", action='store_true', help="Generate graph")
+    parser.add_argument("--analyze-xfuzz", "-ax", action='store_true', help="Analyze xfuzz log")
+    parser.add_argument("--analyze-pathfuzz", "-ap", action='store_true', help="Analyze pathfuzz log")
+    parser.add_argument("--analyze-hypfuzz", "-ah", action='store_true', help="Analyze hypfuzz log")
+    parser.add_argument("--analyze-bmcfuzz", "-ab", action='store_true', help="Analyze bmcfuzz log")
 
     args = parser.parse_args()
 
@@ -292,6 +312,9 @@ if __name__ == "__main__":
 
     if args.do_hypfuzz or args.do_bmcfuzz:
         do_bmc(args)
+    
+    if args.analyze_log:
+        analyze_log(args)
     
     if args.generate_graph:
         generate_graph(args)

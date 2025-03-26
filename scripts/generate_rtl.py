@@ -141,7 +141,8 @@ def generate_rocket_rtl(args):
     
     commands = f"{NOOP_HOME}/build/fuzzer"
     commands += f" --auto-exit"
-    commands += f"-- ./reset.bin"
+    commands += f" --"
+    commands += f" {NOOP_HOME}/tmp/bin/reset.bin"
     commands += f" -C 500"
     commands += f" --dump-wave-full"
     commands += f" --wave-path {NOOP_HOME}/tmp/run_wave.vcd"

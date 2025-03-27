@@ -436,7 +436,8 @@ object CoverPoint {
         )
         case "line" => LineCoverage.annotations.toSeq
         case "fsm" => FsmCoverage.annotations.toSeq
-        case "toggle" => ToggleCoverage.registers.toSeq
+        // case "toggle" => ToggleCoverage.registers.toSeq
+        case "toggle" => ToggleCoverage.all.toSeq
         case "toggle_full" => ToggleCoverage.all.toSeq
         case "ready_valid" => ReadyValidCoverage.annotations.toSeq
         case _ => Seq()

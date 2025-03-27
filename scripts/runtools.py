@@ -83,7 +83,7 @@ def clear_logs(path=None):
 
 class FuzzArgs:
     fuzzing = True
-    cover_type = "toggle"
+    cover_type = "toggle_full"
     max_runs = 0
     corpus_input = ""
     

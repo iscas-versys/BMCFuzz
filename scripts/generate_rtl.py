@@ -174,7 +174,7 @@ if __name__ == "__main__":
     parser.add_argument("--cpu", type=str, default="rocket")
 
     parser.add_argument("--only-build", "-b", action="store_true")
-    parser.add_argument("--cover-type", "-c", type=str, default="toggle")
+    parser.add_argument("--cover-type", "-c", type=str, default="toggle_full")
 
     args = parser.parse_args()
 

@@ -16,7 +16,7 @@ BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
 
 class FuzzArgs:
     fuzzing = True
-    cover_type = "toggle"
+    cover_type = "toggle_full"
     max_runs = 0
     corpus_input = ""
     
@@ -190,7 +190,7 @@ class Scheduler:
     snapshot_id = 0
 
     cpu = ""
-    cover_type = "toggle"
+    cover_type = "toggle_full"
 
     solver_mode = "sat"
 
@@ -477,7 +477,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--run_snapshot', '-r', action='store_true')
     parser.add_argument('--cpu', '-p', type=str, default="rocket")
-    parser.add_argument('--cover_type', '-c', type=str, default="toggle")
+    parser.add_argument('--cover_type', '-c', type=str, default="toggle_full")
 
     args = parser.parse_args()
 

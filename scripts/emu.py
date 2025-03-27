@@ -153,7 +153,7 @@ if __name__ == "__main__":
     parser.add_argument("--fuzz", "-f", action='store_true', help="Run fuzz")
 
     # run options
-    parser.add_argument("--cover-type", "-c", type=str, default="toggle_full", help="Cover type")
+    parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
 
     parser.add_argument("--no-diff", "-n", action='store_true', help="No diff")
 

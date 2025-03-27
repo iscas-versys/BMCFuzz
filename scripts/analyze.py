@@ -287,7 +287,7 @@ if __name__ == "__main__":
     
     parser.add_argument("--snapshot", "-s", type=int, help="Snapshot id")
 
-    parser.add_argument("--cover", "-c", type=str, help="Cover type", default="toggle_full")
+    parser.add_argument("--cover", "-c", type=str, help="Cover type", default="toggle")
 
     args = parser.parse_args()
     

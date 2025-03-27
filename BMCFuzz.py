@@ -346,7 +346,7 @@ if __name__ == "__main__":
     parser.add_argument("--test-reset", "-tr", action='store_true', help="Run test reset snapshot")
 
     parser.add_argument("--cpu", type=str, default="rocket", help="CPU type")
-    parser.add_argument("--cover-type", "-c", type=str, default="toggle_full", help="Cover type")
+    parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")
 
     parser.add_argument("--delete-yaml", "-d", action='store_true', help="Delete yaml")
 

@@ -5,7 +5,7 @@ module GEN_w42_toggle(
   input reset,
   input [42 - 1: 0] valid
 );
-  parameter COVER_TOTAL = 8940;
+  parameter COVER_TOTAL = 38253;
   parameter COVER_INDEX;
 `ifndef SYNTHESIS
 `ifdef DIFFTEST

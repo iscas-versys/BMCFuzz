@@ -5,14 +5,14 @@ module GEN_w8_toggle(
   input reset,
   input [8 - 1: 0] valid
 );
-  parameter COVER_TOTAL = 8940;
+  parameter COVER_TOTAL = 38253;
   parameter COVER_INDEX;
 `ifndef SYNTHESIS
 `ifdef DIFFTEST
   import "DPI-C" function void v_cover_toggle (
     longint cover_index
   );
-  always @(posedge gbl_clk) begin
+  always @(posedge gbl_clklk) begin
     if (!reset) begin
             if (valid[0]) begin
         v_cover_toggle(COVER_INDEX + 0);

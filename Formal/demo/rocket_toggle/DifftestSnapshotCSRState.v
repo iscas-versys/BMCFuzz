@@ -16,7 +16,7 @@ import "DPI-C" function void v_difftest_SnapshotCSRState (
 );
 
 
-  always @(posedge clock) begin
+  always @(posedge gbl_clklk) begin
     if (enable)
       v_difftest_SnapshotCSRState (io_minstret, io_mcycle, io_coreid);
   end

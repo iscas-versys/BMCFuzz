@@ -12,7 +12,7 @@
 extern crate libc;
 extern crate rand;
 
-use std::env;
+use std::{env, time::Instant};
 use std::ffi::CString;
 use std::process::Command;
 use std::fs;
@@ -143,6 +143,8 @@ pub static mut COVER_NAME: Option<String> = None;
 
 pub static mut CORPUS_NUM: u64 = 0;
 
+pub static mut COVERAGE_CHECK_TIME: Option<Instant> = None;
+
 pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     // insert c.nop in the beginning of the input
     let mut input_bytes = input.bytes().to_vec();
@@ -166,6 +168,12 @@ pub(crate) fn fuzz_harness(input: &BytesInput) -> ExitKind {
     let fuzz_id = unsafe { NUM_RUNS };
     if unsafe{ ONLY_FUZZ } {
         ret = sim_run_from_memory(&new_input);
+        let duration = unsafe { COVERAGE_CHECK_TIME.as_ref().unwrap().elapsed().as_secs_f64() };
+        if duration > 20.0 {
+            unsafe { COVERAGE_CHECK_TIME = Some(Instant::now()) };
+            let cover_points_output = format!("{}/tmp/fuzz_coverage.csv", env::var("NOOP_HOME").unwrap());
+            store_cover_points(cover_points_output);
+        }
     } else {
         let fuzz_run_dir = format!("{}/tmp/fuzz_run", env::var("NOOP_HOME").unwrap());
         let fuzz_run_id_dir = format!("{}/{}", fuzz_run_dir, fuzz_id);
@@ -318,6 +326,7 @@ pub(crate) fn set_corpus_num(corpus_dir: String) {
 
 pub(crate) fn set_cover_points() {
     // read the accumulated coverage points from the file
+    unsafe { COVERAGE_CHECK_TIME = Some(Instant::now()) };
     let cover_file_path = env::var("COVER_POINTS_OUT").unwrap()+"/cover_points.csv";
     if fs::metadata(&cover_file_path).is_err() {
         println!("No cover points file found");

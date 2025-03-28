@@ -135,7 +135,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
         lines = file.readlines()
     cover_name_begin = re.compile(r"static const char \*\w+_NAMES\[\] = {")
     cover_name_end = re.compile(r'};')
-    cover_name = re.compile(r'\"(.*)\"')
+    cover_name_pattern = re.compile(r'\"(.*)\"')
     cover_name_flag = False
     for line in lines:
         cover_name_match = cover_name_begin.search(line)
@@ -145,9 +145,16 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
         if cover_name_flag:
             if cover_name_end.search(line):
                 break
-            cover_name_match = cover_name.search(line)
+            cover_name_match = cover_name_pattern.search(line)
             if cover_name_match:
-                covername2id[cover_name_match.group(1)] = cover_id
+                cover_name = cover_name_match.group(1).replace(".", "_")
+                if cover_name in covername2id.keys():
+                    if cover_name.endswith("]"):
+                        cover_name = cover_name.split("[")
+                        cover_name = str(cover_name[0]) + "_t_0[" + str(cover_name[1])
+                    else:
+                        cover_name = cover_name + "_t_0"
+                covername2id[cover_name] = cover_id
                 cover_id += 1
 
     # 获取环境变量
@@ -205,10 +212,12 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
             # 修改 cover 语句，生成带有新的 label 的格式
             cover_name = current_module + "." + signal_name
             cover_name = re.sub(sub_toggle_pattern, r'\2', cover_name)
+            cover_name = cover_name.replace(".", "_")
             cover_id = covername2id.get(cover_name, -1)
             if cover_id == -1:
                 log_message(f"cover_name: {cover_name} not found in covername2id.")
                 cover_id = len(cover_points)
+                exit(1)
             if mode == "smt":
                 new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
             elif mode == "sat":

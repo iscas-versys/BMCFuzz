@@ -271,7 +271,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     default_cover_type = "toggle"
-    default_time_out = 30 * 60 * 60
+    default_time_out = 36 * 60 * 60
     # default_time_out = 60
     default_time_interval = 20
     # default_time_interval = 2

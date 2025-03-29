@@ -5,39 +5,42 @@ import logging
 import csv
 import argparse
 
-NOOP_HOME = os.getenv("NOOP_HOME")
+from runtools import NOOP_HOME, BMCFUZZ_HOME
 
-def parse_hebxin_log(file_path):
+MAX_COVER_POINTS = 38253
+
+def parse_uncovered_log(file_path, output_path):
     with open(file_path, "r") as f:
         lines = f.readlines()
     
-    cover_pattern = re.compile(r"hexbin/cover_(\d+).bin")
+    # cover_pattern = re.compile(r"hexbin/cover_(\d+).bin")
+    cover_pattern = re.compile(r"(\d+):\w+")
     
-    cover_points = [0 for _ in range(11747)]
+    cover_points = [1 for _ in range(MAX_COVER_POINTS)]
     for line in lines:
         match = cover_pattern.search(line)
         if match:
-            cover_points[int(match.group(1))] = 1
+            cover_points[int(match.group(1))] = 0
     
-    with open("hexbin.csv", "w", newline='', encoding='utf-8') as file:
+    with open(output_path, "w", newline='', encoding='utf-8') as file:
         field_name = ['Index', 'Covered']
         csv_writer = csv.DictWriter(file, fieldnames=field_name)
         csv_writer.writeheader()
         
-        for i in range(11747):
+        for i in range(MAX_COVER_POINTS):
             csv_writer.writerow({'Index': i, 'Covered': cover_points[i]})
     
-    with open("hexbin.log", "w") as f:
-        f.write("")
+    # with open(file_path, "w") as f:
+    #     f.write("")
 
-def parse_formal_log(file_path):
+def parse_covered_log(file_path, output_path):
     uncover_case_pattern = re.compile(r"未发现case: cover_(\d+)")
     cover_case_pattern = re.compile(r"发现case: cover_(\d+)")
 
     with open(file_path, "r") as f:
         lines = f.readlines()
     
-    cover_points = [0 for _ in range(11747)]
+    cover_points = [0 for _ in range(MAX_COVER_POINTS)]
     for line in lines:
         if uncover_case_pattern.search(line):
             continue
@@ -45,80 +48,90 @@ def parse_formal_log(file_path):
         if match:
             cover_points[int(match.group(1))] = 1
     
-    with open("formal.csv", "w", newline='', encoding='utf-8') as file:
+    with open(output_path, "w", newline='', encoding='utf-8') as file:
         field_name = ['Index', 'Covered']
         csv_writer = csv.DictWriter(file, fieldnames=field_name)
         csv_writer.writeheader()
         
-        for i in range(11747):
+        for i in range(MAX_COVER_POINTS):
             csv_writer.writerow({'Index': i, 'Covered': cover_points[i]})
     
-    with open("formal.log", "w") as f:
-        f.write("")
+    # with open(file_path, "w") as f:
+    #     f.write("")
     
 
-def diff_hexbin_log(file1, file2):
-    hexbin20_covered = [0 for _ in range(11747)]
+def diff_covered_points(file1, file2):
+    file1_covered = [0 for _ in range(MAX_COVER_POINTS)]
     with open(file1, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             if int(row['Covered']) == 1:
-                hexbin20_covered[int(row['Index'])] = 1
+                file1_covered[int(row['Index'])] = 1
     
-    hexbin30_covered = [0 for _ in range(11747)]
+    file2_covered = [0 for _ in range(MAX_COVER_POINTS)]
     with open(file2, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             if int(row['Covered']) == 1:
-                hexbin30_covered[int(row['Index'])] = 1
+                file2_covered[int(row['Index'])] = 1
     
-    timeout_covered = []
-    added_covered = []
-    for i in range(11747):
-        if hexbin20_covered[i] == 0 and hexbin30_covered[i] == 1:
-            added_covered.append(i)
-        if hexbin20_covered[i] == 1 and hexbin30_covered[i] == 0:
-            timeout_covered.append(i)
+    point2name = {}
+    cover_name_file = os.path.join(BMCFUZZ_HOME, "scripts", "cover_name.dat")
+    with open(cover_name_file, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            index, name = line.strip().split(",")
+            point2name[int(index)] = name
     
-    print("File1 covered: ", len(timeout_covered))
-    print("File2 covered: ", len(added_covered))
+    file1_add = []
+    file2_add = []
+    for i in range(MAX_COVER_POINTS):
+        if file1_covered[i] == 0 and file2_covered[i] == 1:
+            file2_add.append(i)
+        if file1_covered[i] == 1 and file2_covered[i] == 0:
+            file1_add.append(i)
     
-    with open("file1.csv", "w", newline='', encoding='utf-8') as file:
-        field_name = ['Index']
+    print("File1 covered: ", len(file1_add))
+    print("File2 covered: ", len(file2_add))
+    
+    field_name = ['Index', 'Name']
+
+    file1_dir = os.path.dirname(file1)
+    file1_output = os.path.join(file1_dir, "file1.csv")
+    with open(file1_output, "w", newline='', encoding='utf-8') as file:
         csv_writer = csv.DictWriter(file, fieldnames=field_name)
         csv_writer.writeheader()
         
-        for i in timeout_covered:
-            csv_writer.writerow({'Index': i})
+        for i in file1_add:
+            csv_writer.writerow({'Index': i, 'Name': point2name[i]})
     
-    with open("file2.csv", "w", newline='', encoding='utf-8') as file:
-        field_name = ['Index']
+    file2_dir = os.path.dirname(file2)
+    file2_output = os.path.join(file2_dir, "file2.csv")
+    with open(file2_output, "w", newline='', encoding='utf-8') as file:
         csv_writer = csv.DictWriter(file, fieldnames=field_name)
         csv_writer.writeheader()
         
-        for i in added_covered:
-            csv_writer.writerow({'Index': i})
+        for i in file2_add:
+            csv_writer.writerow({'Index': i, 'Name': point2name[i]})
 
 if __name__ == "__main__":
     os.chdir(NOOP_HOME)
 
     parser = argparse.ArgumentParser()
     
-    parser.add_argument("--parse", '-p', action='store_true', help="Parse hexbin log")
-    parser.add_argument("--formal", '-f', action='store_true', help="Parse formal log")
-    parser.add_argument("--file", '-f', type=str, default="hexbin.log", help="File")
-
+    parser.add_argument("--parse-covered", '-pc', action='store_true', help="Parse covered log")
+    parser.add_argument("--parse-uncovered", '-pu', action='store_true', help="Parse uncovered log")
     parser.add_argument("--diff", '-d', action='store_true', help="Diff hexbin log")
+
     parser.add_argument("--file1", '-f1', type=str, default="hexbin20.csv", help="File1")
     parser.add_argument("--file2", '-f2', type=str, default="hexbin30_init.csv", help="File2")
 
     args = parser.parse_args()
 
-    if args.parse:
-        if args.formal:
-            parse_formal_log(args.file)
-        else:
-            parse_hebxin_log(args.file)
+    if args.parse_covered:
+        parse_covered_log(args.file1, args.file2)
+    if args.parse_uncovered:
+        parse_uncovered_log(args.file1, args.file2)
     if args.diff:
-        diff_hexbin_log(args.file1, args.file2)
+        diff_covered_points(args.file1, args.file2)
 

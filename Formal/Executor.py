@@ -27,6 +27,8 @@ class Executor:
     cover_tasks_dir = ""
 
     MAX_WORKERS = 120
+
+    debug = False
     
     SIGNAL_MATCH_RULES = {
         'nutshell': [
@@ -125,10 +127,11 @@ class Executor:
         else:
             log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
         
-        if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}.sby"):
-            os.remove(f"{self.cover_tasks_dir}/cover_{cover}.sby")
-        if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}"):
-            shutil.rmtree(f"{self.cover_tasks_dir}/cover_{cover}")
+        if not self.debug:
+            if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}.sby"):
+                os.remove(f"{self.cover_tasks_dir}/cover_{cover}.sby")
+            if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}"):
+                shutil.rmtree(f"{self.cover_tasks_dir}/cover_{cover}")
         
         return cover_point
         
@@ -256,8 +259,9 @@ class Executor:
         commands += f" > {log_file_path} 2>&1"
 
         ret = run_command(commands, shell=True)
-        os.remove(bin_file_path)
-        os.remove(f"{log_file_path}")
+        if not self.debug:
+            os.remove(bin_file_path)
+            os.remove(f"{log_file_path}")
         log_message(f"已生成footprints文件: {footprints_file_path}")
 
         return 0
@@ -268,9 +272,7 @@ if __name__ == "__main__":
     log_init()
     clean_cover_files()
 
-    # set_max_cover_points(11747)
-    set_max_cover_points(8940)
-    sample_cover_points = [5886]
+    sample_cover_points = [1939, 8826]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
     run_snapshot = True
@@ -284,7 +286,7 @@ if __name__ == "__main__":
     generate_sby_files(sample_cover_points, cpu, solver_mode)
 
     executor = Executor()
-    executor.init("rocket", run_snapshot, solver_mode)
+    executor.init("rocket", run_snapshot, solver_mode, debug=True)
     executor.set_snapshot_id(snapshot_id, snapshot_file)
     cover_cases, execute_time = executor.run(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")

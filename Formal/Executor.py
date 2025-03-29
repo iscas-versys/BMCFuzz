@@ -48,12 +48,14 @@ class Executor:
         ],
     }
 
-    def init(self, cpu, run_snapshot, mode):
+    def init(self, cpu, run_snapshot, mode, debug=False):
         self.cpu = cpu
         self.run_snapshot = run_snapshot
         self.env_path = str(os.getenv("OSS_CAD_SUITE_HOME"))
         self.cover_tasks_dir = str(os.getenv("COVER_POINTS_OUT"))
         self.mode = mode
+
+        self.debug = debug
 
         # 加载OSS CAD Suite环境
         log_message(f"try to load env: {self.env_path}")

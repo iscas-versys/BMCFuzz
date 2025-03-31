@@ -55,7 +55,8 @@ def run_emu(args):
 
     if args.dump_trace:
         commands += " --dump-commit-trace"
-        commands += " --dump-ref-trace"
+        if not args.no_diff:
+            commands += " --dump-ref-trace"
         commands += " -b 0"
     if args.dump_csr:
         commands += " --dump-csr-change"

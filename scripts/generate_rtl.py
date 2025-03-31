@@ -131,6 +131,10 @@ def generate_rocket_rtl(args):
     log_message("replace SimTop.sv in SetInitValues")
 
     # 生成reset wave和reset snapshot
+    generate_reset_snapshot(init_dir, args.cover_type)
+
+def generate_reset_snapshot(init_dir, cover_type):
+    # 生成reset wave和reset snapshot
     default_reset_cycles = 22
     if not os.path.exists(os.path.join(NOOP_HOME, "tmp", "bin")):
         os.mkdir(os.path.join(NOOP_HOME, "tmp", "bin"))
@@ -138,6 +142,10 @@ def generate_rocket_rtl(args):
         # 0x00000013
         f.write(b"\x13\x00\x00\x00")
     log_message("generate reset.bin")
+
+    fuzz_run_dir = os.path.join(NOOP_HOME, "tmp", "fuzz_run", "0")
+    os.makedirs(os.path.join(fuzz_run_dir, "csr_snapshot"), exist_ok=True)
+    os.makedirs(os.path.join(fuzz_run_dir, "csr_wave"), exist_ok=True)
     
     commands = f"{NOOP_HOME}/build/fuzzer"
     commands += f" --auto-exit"
@@ -152,11 +160,10 @@ def generate_rocket_rtl(args):
     ret = run_command(commands, shell=True)
     log_message("generate reset snapshot")
 
-    fuzz_run_dir = os.path.join(NOOP_HOME, "tmp", "fuzz_run", "0")
     src_reset_snapshot = os.path.join(fuzz_run_dir, "csr_snapshot", "csr_snapshot_0")
     src_reset_wave = os.path.join(fuzz_run_dir, "csr_wave", f"csr_wave_0_{default_reset_cycles}.vcd")
     dst_reset_snapshot = os.path.join(init_dir, "reset_snapshot")
-    dst_reset_wave = os.path.join(init_dir, f"reset_{args.cover_type}.vcd")
+    dst_reset_wave = os.path.join(init_dir, f"reset_{cover_type}.vcd")
     if os.path.exists(dst_reset_snapshot):
         os.remove(dst_reset_snapshot)
     if os.path.exists(dst_reset_wave):

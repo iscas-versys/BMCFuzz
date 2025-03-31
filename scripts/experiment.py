@@ -259,6 +259,7 @@ def generate_graph(args):
     # 显示图表
     plt.grid(True)
     plt.tight_layout()
+    plt.ylim(65, 88)
     # plt.show()
     output_path = os.path.join(NOOP_HOME, "tmp", "exp", "output.png")
     plt.savefig(output_path)

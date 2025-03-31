@@ -179,7 +179,6 @@ class BMCFuzz:
         fuzz_args = FuzzArgs()
         fuzz_args.cover_type = self.cover_type
         fuzz_args.max_runs = 6000
-        fuzz_args.corpus_input = os.getenv("RISCV_CORPUS")
 
         fuzz_args.continue_on_errors = True
         # fuzz_args.insert_nop = True
@@ -193,6 +192,10 @@ class BMCFuzz:
         fuzz_args.dump_wave = True
 
         fuzz_args.as_footprints = True
+        if fuzz_args.as_footprints:
+            fuzz_args.corpus_input = os.getenv("FOOTPRINTS_CORPUS")
+        else:
+            fuzz_args.corpus_input = os.getenv("LINEARIZED_CORPUS")
 
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file

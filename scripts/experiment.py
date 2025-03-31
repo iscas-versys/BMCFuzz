@@ -84,9 +84,9 @@ def do_fuzz(args):
     fuzzer.cover_type = args.cover_type
     # fuzzer.max_runs = 1000000
     if args.do_xfuzz:
-        fuzzer.corpus_input = os.path.join(NOOP_HOME, "corpus", "linearized", "riscv-tests")
+        fuzzer.corpus_input = os.getenv("LINEARIZED_CORPUS")
     elif args.do_pathfuzz:
-        fuzzer.corpus_input = os.path.join(NOOP_HOME, "corpus", "footprints", "riscv-tests")
+        fuzzer.corpus_input = os.getenv("FOOTPRINTS_CORPUS")
 
     fuzzer.continue_on_errors = True
     fuzzer.only_fuzz = True

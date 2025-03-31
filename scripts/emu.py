@@ -84,8 +84,10 @@ def run_fuzz(args):
     default_fuzz_instr = 5000
     default_fuzz_cycles = 10000
 
-    default_corpus = os.path.join(NOOP_HOME, "corpus", "linearized", "riscv-tests")
-    # default_corpus = os.path.join(NOOP_HOME, "corpus", "linearized", "riscv-dv")
+    if args.as_footprints:
+        default_corpus = os.getenv("FOOTPRINTS_CORPUS")
+    else:
+        default_corpus = os.getenv("LINEARIZED_CORPUS")
     
     fuzz_args = FuzzArgs()
 

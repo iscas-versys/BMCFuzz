@@ -40,6 +40,13 @@ class PointSelector:
                 if len(self.module_contain_points[module]) == 0:
                     log_message("Module %d is empty" % module)
     
+    def get_unselected_points(self):
+        unselected_points = []
+        for points in self.module_contain_points:
+            if len(points) > 0:
+                unselected_points += list(points)
+        return unselected_points
+    
     def generate_cover_points(self):
         total_select_num = 0
         total_select_points = []

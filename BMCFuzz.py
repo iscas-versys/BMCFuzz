@@ -234,11 +234,11 @@ class BMCFuzz:
 
             self.csr_transition_selector.update()
 
-            self.scheduler.output_uncovered_points(loop_count)
+            self.scheduler.output_uncovered_points()
         
         # display stats
         self.scheduler.display_coverage()
-        self.scheduler.output_uncovered_points(loop_count)
+        self.scheduler.output_uncovered_points()
 
         # restart init
         self.scheduler.restart_init()

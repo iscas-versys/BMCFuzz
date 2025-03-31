@@ -1,9 +1,9 @@
 
 /*verilator tracing_off*/
-module GEN_w28_toggle(
+module GEN_w20_toggle(
   input clock,
   input reset,
-  input [28 - 1: 0] valid
+  input [20 - 1: 0] valid
 );
   parameter COVER_TOTAL = 10906;
   parameter COVER_INDEX;
@@ -73,30 +73,6 @@ module GEN_w28_toggle(
       end
       if (valid[19]) begin
         v_cover_toggle(COVER_INDEX + 19);
-      end
-      if (valid[20]) begin
-        v_cover_toggle(COVER_INDEX + 20);
-      end
-      if (valid[21]) begin
-        v_cover_toggle(COVER_INDEX + 21);
-      end
-      if (valid[22]) begin
-        v_cover_toggle(COVER_INDEX + 22);
-      end
-      if (valid[23]) begin
-        v_cover_toggle(COVER_INDEX + 23);
-      end
-      if (valid[24]) begin
-        v_cover_toggle(COVER_INDEX + 24);
-      end
-      if (valid[25]) begin
-        v_cover_toggle(COVER_INDEX + 25);
-      end
-      if (valid[26]) begin
-        v_cover_toggle(COVER_INDEX + 26);
-      end
-      if (valid[27]) begin
-        v_cover_toggle(COVER_INDEX + 27);
       end
     end
   end

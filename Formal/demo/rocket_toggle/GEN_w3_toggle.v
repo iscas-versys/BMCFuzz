@@ -5,7 +5,7 @@ module GEN_w3_toggle(
   input reset,
   input [3 - 1: 0] valid
 );
-  parameter COVER_TOTAL = 8065;
+  parameter COVER_TOTAL = 10906;
   parameter COVER_INDEX;
 `ifndef SYNTHESIS
 `ifdef DIFFTEST

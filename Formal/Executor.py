@@ -3,6 +3,7 @@ import re
 import subprocess
 import shutil
 import csv
+import json
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from Verilog_VCD.Verilog_VCD import parse_vcd
@@ -117,15 +118,18 @@ class Executor:
             log_message(f"发现case: cover_{cover}")
             v_file_path = os.path.join(cover_dir, "engine_0", "trace0_tb.v")
             vcd_file_path = os.path.join(cover_dir, "engine_0", "trace0.vcd")
+            witness_file_path = os.path.join(cover_dir, "engine_0", "trace0_aiw.yw")
             hexbin_dir = os.path.join(self.cover_tasks_dir, "hexbin")
-            if os.path.exists(v_file_path):
-                log_message(f"开始解析文件: {v_file_path}")
+            if os.path.exists(witness_file_path):
+                log_message(f"开始解析文件: {witness_file_path}")
                 # self.parse_v_file(cover, v_file_path, hexbin_dir)
-                self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
-                self.generate_footprint(cover, hexbin_dir)
+                self.parse_witness_file(cover, witness_file_path, hexbin_dir)
+                self.generate_footprint(cover, hexbin_dir, src_format="witness")
+                # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
+                # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                 cover_point = cover
             else:
-                log_message(f".v文件不存在: {v_file_path}")
+                log_message(f"witness文件不存在: {witness_file_path}")
         else:
             log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
         
@@ -241,18 +245,51 @@ class Executor:
                     memory_map[addr] = data
         
         self.bin_file_builder(memory_map, output_file_path)
+    
+    def parse_witness_file(self, cover_no, witness_file_path, output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+        witness_output_path = os.path.join(output_dir, f"cover_{cover_no}.witness")
 
-    def generate_footprint(self, cover_point, output_dir):
-        bin_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
+        with open(witness_file_path, 'r') as witness_file:
+            witness_data = json.load(witness_file)
+        step_data = witness_data['steps']
+        with open(witness_output_path, 'w') as f:
+            steps = len(step_data)
+            f.write(str(steps) + "\n")
+            step = 0
+            for data in step_data:
+                step += 1
+                bits = data['bits'][:64]
+                upper_32 = bits[:32]
+                lower_32 = bits[32:]
+
+                hex_bits = f"{int(bits, 2):#018x}"
+                upper_32 = f"{int(upper_32, 2):#010x}"
+                lower_32 = f"{int(lower_32, 2):#010x}"
+
+                f.write(f"{hex_bits}\n")
+                
+                if int(bits, 2) != 0:
+                    log_message(f"Step {step}: {lower_32} {upper_32}")
+                    # log_message(f"bits: {bits}")
+
+    def generate_footprint(self, cover_point, output_dir, src_format="bin"):
+        if src_format == "bin":
+            src_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
+        elif src_format == "witness":
+            src_file_path = os.path.join(output_dir, f"cover_{cover_point}.witness")
         footprints_file_path = os.path.join(output_dir, f"cover_{cover_point}.footprints")
         log_file_path = os.path.join(output_dir, f"cover_{cover_point}.log")
 
         commands = f"{NOOP_HOME}/build/fuzzer"
         commands += f" --auto-exit"
-        commands += f" -- {bin_file_path}"
+        commands += f" -- {src_file_path}"
+        if src_format == "witness":
+            commands += f" --as-witness"
         commands += f" -I 300"
         commands += f" -C 3000"
         commands += f" --fuzz-id 0"
+        commands += f" --no-diff"
         if self.run_snapshot:
             commands += " --run-snapshot"
             commands += f" --load-snapshot {self.snapshot_file}"
@@ -262,7 +299,7 @@ class Executor:
 
         ret = run_command(commands, shell=True)
         if not self.debug:
-            os.remove(bin_file_path)
+            os.remove(f"{src_file_path}")
             os.remove(f"{log_file_path}")
         log_message(f"已生成footprints文件: {footprints_file_path}")
 
@@ -274,7 +311,9 @@ if __name__ == "__main__":
     log_init()
     clean_cover_files()
 
-    sample_cover_points = [1939, 8826]
+    # sample_cover_points = [1939, 8826]
+    sample_cover_points = [9226]
+    # sample_cover_points = [5886]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
     run_snapshot = True
@@ -293,9 +332,11 @@ if __name__ == "__main__":
     cover_cases, execute_time = executor.run(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
     print("cover_cases:", cover_cases)
-    # v_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_5886", "engine_0", "trace0_tb.v")
-    # vcd_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_5886", "engine_0", "trace0.vcd")
+    # v_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_9226", "engine_0", "trace0_tb.v")
+    # vcd_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_9226", "engine_0", "trace0.vcd")
+    # witness_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_9226", "engine_0", "trace0_aiw.yw")
     # output_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "hexbin")
-    # executor.parse_v_file(5886, v_file_path, output_dir)
-    # executor.parse_vcd_file(5886, vcd_file_path, output_dir)
+    # executor.parse_v_file(9226, v_file_path, output_dir)
+    # executor.parse_vcd_file(9226, vcd_file_path, output_dir)
+    # executor.parse_witness_file(9226, witness_file_path, output_dir)
     generate_empty_cover_points_file()

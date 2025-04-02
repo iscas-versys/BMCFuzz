@@ -68,6 +68,9 @@ def run_emu(args):
     
     if args.as_footprints:
         commands += " --as-footprints"
+    
+    if args.as_witness:
+        commands += " --as-witness"
 
     if args.dump_trace:
         commands += f" > {args.output_file}"
@@ -167,6 +170,7 @@ if __name__ == "__main__":
     parser.add_argument("--wave-path", type=str, default=default_wave_path, help="Wave file")
 
     parser.add_argument("--as-footprints", "-af", action='store_true', help="As footprints")
+    parser.add_argument("--as-witness", "-aw", action='store_true', help="As witness")
 
     parser.add_argument("--fuzz-id", type=int, default=default_fuzz_id, help="Fuzz id")
     parser.add_argument("--run-snapshot", "-r", action='store_true', help="Run snapshot")

@@ -239,13 +239,17 @@ def generate_graph(args):
 
     # 绘制每条曲线
     if args.analyze_xfuzz:
-        plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
+        # plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
+        plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r')
     if args.analyze_pathfuzz:
-        plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g', marker='s')
+        # plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g', marker='s')
+        plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g')
     if args.analyze_hypfuzz:
-        plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b', marker='^')
+        # plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b', marker='^')
+        plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b')
     if args.analyze_bmcfuzz:
-        plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
+        # plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
+        plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple')
 
     # 设置标题和标签
     plt.title("Fuzz Coverage", fontsize=14)
@@ -259,7 +263,7 @@ def generate_graph(args):
     # 显示图表
     plt.grid(True)
     plt.tight_layout()
-    plt.ylim(65, 88)
+    plt.ylim(60, 88)
     # plt.show()
     output_path = os.path.join(NOOP_HOME, "tmp", "exp", "output.png")
     plt.savefig(output_path)

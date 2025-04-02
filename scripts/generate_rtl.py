@@ -76,6 +76,10 @@ def generate_nutshell_rtl(args):
         f.writelines(src_lines)
     log_message("replace SimTop.sv in SetInitValues")
 
+    # 替换GEN文件
+    update_GEN_file(os.path.join(build_dir, "rtl"), formal_dir)
+    log_message("replace GEN file")
+
 def generate_rocket_rtl(args):
     build_dir = os.path.join(NOOP_HOME, "build")
     rtl_src = os.path.join(build_dir, "rtl", "SimTop.sv")
@@ -130,8 +134,25 @@ def generate_rocket_rtl(args):
         f.writelines(src_lines)
     log_message("replace SimTop.sv in SetInitValues")
 
+    # 替换GEN文件
+    update_GEN_file(os.path.join(build_dir, "rtl"), formal_dir)
+    log_message("replace GEN file")
+
     # 生成reset wave和reset snapshot
     generate_reset_snapshot(init_dir, args.cover_type)
+
+def update_GEN_file(src_dir, dst_dir):
+    with os.scandir(dst_dir) as entries:
+        for entry in entries:
+            if entry.is_file() and entry.name.startswith("GEN_"):
+                os.remove(entry.path)
+
+    with os.scandir(src_dir) as entries:
+        for entry in entries:
+            if entry.is_file() and entry.name.startswith("GEN_"):
+                src_file = os.path.join(src_dir, entry.name)
+                dst_file = os.path.join(dst_dir, entry.name)
+                shutil.copy(src_file, dst_file)
 
 def generate_reset_snapshot(init_dir, cover_type):
     # 生成reset wave和reset snapshot

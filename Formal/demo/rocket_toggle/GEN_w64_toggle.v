@@ -5,7 +5,7 @@ module GEN_w64_toggle(
   input reset,
   input [64 - 1: 0] valid
 );
-  parameter COVER_TOTAL = 10906;
+  parameter COVER_TOTAL = 9715;
   parameter COVER_INDEX;
 `ifndef SYNTHESIS
 `ifdef DIFFTEST

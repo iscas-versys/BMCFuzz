@@ -277,7 +277,7 @@ class Scheduler:
         if test_formal:
             self.point_selector.MAX_POINT_NUM = len(self.points_name)
         cover_points = self.point_selector.generate_cover_points()
-        self.output_unselected_points()
+        self.output_points_stats(cover_points)
         while(True):
             # 清理并重新生成cover points文件
             clean_cover_files()
@@ -292,7 +292,7 @@ class Scheduler:
             else:
                 log_message("未发现新case,重新选点")
                 cover_points = self.point_selector.generate_cover_points()
-                self.output_unselected_points()
+                self.output_points_stats(cover_points)
             if len(cover_points) == 0:
                 log_message("未发现新case,且无可选点")
                 return False
@@ -392,13 +392,24 @@ class Scheduler:
                 file.write(f"{point}:{module_name}.{point_name}\n")
             file.write("\n")
     
-    def output_unselected_points(self, output_file=""):
+    def output_points_stats(self, selected_points, output_file=""):
         if output_file == "":
-            output_file = os.path.join(BMCFUZZ_HOME, "Formal", "logs")
-            output_file = os.path.join(output_file, f"unselected_points.log")
+            output_dir = os.path.join(BMCFUZZ_HOME, "Formal", "logs")
+            selected_points_file = os.path.join(output_dir, f"selected_points.log")
+            unselected_points_file = os.path.join(output_dir, f"unselected_points.log")
         
-        log_message(f"Output unselected points to {output_file}")
-        with open(output_file, mode='w', encoding='utf-8') as file:
+        log_message(f"Output selected points to {selected_points_file}")
+        with open(selected_points_file, mode='w', encoding='utf-8') as file:
+            file.write(f"Selected points: {len(selected_points)}\n")
+            for point in selected_points:
+                module = self.point2module[point]
+                point_name = self.points_name[point]
+                module_name = self.module_name[module]
+                file.write(f"{point}:{module_name}.{point_name}\n")
+            file.write("\n")
+        
+        log_message(f"Output unselected points to {unselected_points_file}")
+        with open(unselected_points_file, mode='w', encoding='utf-8') as file:
             unselected_points = self.point_selector.get_unselected_points()
             file.write(f"Unselected points: {len(unselected_points)}\n")
             for point in unselected_points:

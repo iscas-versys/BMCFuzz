@@ -106,7 +106,7 @@ class Executor:
         st_time = time.time()
         return_code = run_command(sby_command, shell=True)
         ed_time = time.time()
-        log_message(f"cover_{cover} sby执行完成, 耗时: {ed_time - st_time:.2f} 秒")
+        log_message(f"cover_{cover} sby执行完成, 耗时: {ed_time - st_time:.2f} 秒", print_message=False)
 
         cover_point = -1
         cover_dir = os.path.join(self.cover_tasks_dir, f"cover_{cover}")
@@ -115,13 +115,13 @@ class Executor:
         if self.mode == "sat":
             pass_code = 2
         if return_code == pass_code:
-            log_message(f"发现case: cover_{cover}")
+            log_message(f"发现case: cover_{cover}", print_message=False)
             v_file_path = os.path.join(cover_dir, "engine_0", "trace0_tb.v")
             vcd_file_path = os.path.join(cover_dir, "engine_0", "trace0.vcd")
             witness_file_path = os.path.join(cover_dir, "engine_0", "trace0_aiw.yw")
             hexbin_dir = os.path.join(self.cover_tasks_dir, "hexbin")
             if os.path.exists(witness_file_path):
-                log_message(f"开始解析文件: {witness_file_path}")
+                log_message(f"开始解析文件: {witness_file_path}", print_message=False)
                 # self.parse_v_file(cover, v_file_path, hexbin_dir)
                 self.parse_witness_file(cover, witness_file_path, hexbin_dir)
                 self.generate_footprint(cover, hexbin_dir, src_format="witness")
@@ -129,9 +129,9 @@ class Executor:
                 # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                 cover_point = cover
             else:
-                log_message(f"witness文件不存在: {witness_file_path}")
+                log_message(f"witness文件不存在: {witness_file_path}", print_message=False)
         else:
-            log_message(f"未发现case: cover_{cover}, 返回值: {return_code}")
+            log_message(f"未发现case: cover_{cover}, 返回值: {return_code}", print_message=False)
         
         if not self.debug:
             if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}.sby"):
@@ -172,7 +172,7 @@ class Executor:
         lower_32_hex = f"{lower_32:#010x}"
         upper_32 = int(data[:32], 2)
         upper_32_hex = f"{upper_32:#010x}"
-        log_message(f"Address: {addr_hex}, Data: {lower_32_hex} {upper_32_hex}")
+        log_message(f"Address: {addr_hex}, Data: {lower_32_hex} {upper_32_hex}", print_message=False)
         
         data = int(data, 2).to_bytes(8, byteorder='little')
 
@@ -184,12 +184,12 @@ class Executor:
             for addr in sorted(memory_map.keys()):
                 if current_addr < addr:
                     gap_size = addr - current_addr
-                    log_message(f"Filling gap of {gap_size} bytes from {current_addr:#010x} to {addr:#010x}")
+                    log_message(f"Filling gap of {gap_size} bytes from {current_addr:#010x} to {addr:#010x}", print_message=False)
                     output_file.write(b'\x00' * gap_size)
                     current_addr = addr
                 output_file.write(memory_map[addr])
                 current_addr += 8
-        log_message(f"已解析并保存bin文件: {output_file_path}")
+        log_message(f"已解析并保存bin文件: {output_file_path}", print_message=False)
 
     def parse_vcd_file(self, cover_no, vcd_file_path, output_dir):
         os.makedirs(output_dir, exist_ok=True)
@@ -269,8 +269,8 @@ class Executor:
 
                 f.write(f"{hex_bits}\n")
                 
-                if int(bits, 2) != 0:
-                    log_message(f"Step {step}: {lower_32} {upper_32}")
+                if int(bits, 2) != 0 and int(bits, 2) != 0xFFFFFFFFFFFFFFFF:
+                    log_message(f"Step {step}: {lower_32} {upper_32}", print_message=False)
                     # log_message(f"bits: {bits}")
 
     def generate_footprint(self, cover_point, output_dir, src_format="bin"):
@@ -301,7 +301,7 @@ class Executor:
         if not self.debug:
             os.remove(f"{src_file_path}")
             os.remove(f"{log_file_path}")
-        log_message(f"已生成footprints文件: {footprints_file_path}")
+        log_message(f"已生成footprints文件: {footprints_file_path}", print_message=False)
 
         return 0
 

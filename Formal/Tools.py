@@ -65,7 +65,7 @@ def run_command(command, shell=False):
         reset_terminal()
         return -1
     finally:
-        log_message("Closing process: " + command)
+        log_message("Closing process: " + command, print_message=False)
 
 def kill_process_and_children(pid):
     try:

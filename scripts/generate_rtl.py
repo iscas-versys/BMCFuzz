@@ -9,6 +9,12 @@ from runtools import NOOP_HOME, BMCFUZZ_HOME
 from runtools import run_command
 from runtools import log_init, log_message
 
+build_dir = os.path.join(NOOP_HOME, "build")
+rtl_src = os.path.join(build_dir, "rtl", "SimTop.sv")
+
+formal_dir = ""
+init_dir = ""
+
 def rtl_init(args):
     # 生成build目录
     build_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
@@ -22,23 +28,9 @@ def rtl_init(args):
     log_message("generate build directory")
 
 def generate_nutshell_rtl(args):
-    build_dir = os.path.join(NOOP_HOME, "build")
-    rtl_src = os.path.join(build_dir, "rtl", "SimTop.sv")
-    cover_src = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
-
-    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}_{args.cover_type}")
-    init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
-
-    # 替换firrtl-cover.cpp
-    formal_cover_dst = os.path.join(formal_dir, "firrtl-cover.cpp")
-    if os.path.exists(formal_cover_dst):
-        os.remove(formal_cover_dst)
-    shutil.copy(cover_src, formal_cover_dst)
-    log_message("replace firrtl-cover.cpp")
-
-    src_lines = []
+    init_lines = []
     with open(rtl_src, "r") as f:
-        src_lines = f.readlines()
+        init_lines = f.readlines()
 
     # 修改array中的ram [7:0]为ram [0:7]，并复制array_0_ext.v到SimTop.sv最后
     array_0_ext_src = os.path.join(build_dir, "rtl", "array_0_ext.v")
@@ -47,101 +39,109 @@ def generate_nutshell_rtl(args):
     for i, line in enumerate(array_lines):
         if "ram [7:0]" in line:
             array_lines[i] = line.replace("ram [7:0]", "ram [0:7]")
-    src_lines.extend(array_lines)
+    init_lines.extend(array_lines)
     log_message("change ram [7:0] to ram [0:7] and copy array_0_ext.v to SimTop.sv")
 
-    formal_lines = src_lines.copy()
+    formal_lines = init_lines.copy()
 
-    # 修改enToggle和enToggle_past的值
-    for i, line in enumerate(src_lines):
-        elements = line.split()
-        if len(elements) != 0 and elements[0] == "reg":
-            if elements[1] == "enToggle" or elements[1] == "enToggle_past":
-                src_lines[i] = src_lines[i].replace("1\'h0", "1'h1")
-    log_message("change enToggle and enToggle_past value")
+    init_lines = modify_enToggle_value(init_lines)
     
-    # 替换Formal目录下的rtl文件
     formal_rtl_dst = os.path.join(formal_dir, "SimTop.sv")
-    if os.path.exists(formal_rtl_dst):
-        os.remove(formal_rtl_dst)
-    with open(formal_rtl_dst, "w") as f:
-        f.writelines(formal_lines)
+    write_rtl_file(formal_rtl_dst, formal_lines)
     log_message("replace SimTop.sv in Formal")
-
-    # 替换SetInitValues目录下的rtl文件
+    
     init_rtl_dst = os.path.join(init_dir, "SimTop_"+args.cover_type+".sv")
-    if os.path.exists(init_rtl_dst):
-        os.remove(init_rtl_dst)
-    with open(init_rtl_dst, "w") as f:
-        f.writelines(src_lines)
+    write_rtl_file(init_rtl_dst, init_lines)
     log_message("replace SimTop.sv in SetInitValues")
 
-    # 替换GEN文件
-    update_GEN_file(os.path.join(build_dir, "rtl"), formal_dir)
-    log_message("replace GEN file")
+    replace_firrtl_file()
+    update_GEN_file()
+
+    reset_cycles = 22
+    generate_reset_snapshot(args.cover_type, reset_cycles)
 
 def generate_rocket_rtl(args):
-    build_dir = os.path.join(NOOP_HOME, "build")
-    rtl_src = os.path.join(build_dir, "rtl", "SimTop.sv")
-    cover_src = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
-
-    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}_{args.cover_type}")
-    init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
-
     log_message("generate rocket rtl")
 
-    # 替换firrtl-cover.cpp
-    formal_cover_dst = os.path.join(formal_dir, "firrtl-cover.cpp")
-    if os.path.exists(formal_cover_dst):
-        os.remove(formal_cover_dst)
-    shutil.copy(cover_src, formal_cover_dst)
-    log_message("replace firrtl-cover.cpp")
-
-    src_lines = []
+    init_lines = []
     with open(rtl_src, "r") as f:
-        src_lines = f.readlines()
-    formal_lines = src_lines.copy()
+        init_lines = f.readlines()
+    formal_lines = init_lines.copy()
 
-    # 修改enToggle和enToggle_past的值
+    init_lines = modify_enToggle_value(init_lines)
+
+    formal_rtl_dst = os.path.join(formal_dir, "SimTop.sv")
+    write_rtl_file(formal_rtl_dst, formal_lines)
+    log_message("replace SimTop.sv in Formal")
+
+    init_rtl_dst = os.path.join(init_dir, "SimTop_"+args.cover_type+".sv")
+    write_rtl_file(init_rtl_dst, init_lines)
+    log_message("replace SimTop.sv in SetInitValues")
+
+    replace_firrtl_file()
+    update_GEN_file()
+
+    reset_cycles = 22
+    generate_reset_snapshot(args.cover_type, reset_cycles)
+
+def generate_boom_rtl(args):
+    log_message("generate boom rtl")
+    
+    init_lines = []
+    with open(rtl_src, "r") as f:
+        init_lines = f.readlines()
+    formal_lines = init_lines.copy()
+    
+    init_lines = modify_enToggle_value(init_lines)
+    
+    formal_rtl_dst = os.path.join(formal_dir, "SimTop.sv")
+    write_rtl_file(formal_rtl_dst, formal_lines)
+    log_message("replace SimTop.sv in Formal")
+    
+    init_rtl_dst = os.path.join(init_dir, "SimTop_"+args.cover_type+".sv")
+    write_rtl_file(init_rtl_dst, init_lines)
+    log_message("replace SimTop.sv in SetInitValues")
+    
+    replace_firrtl_file()
+    update_GEN_file()
+    
+    reset_cycles = 22
+    generate_reset_snapshot(args.cover_type, reset_cycles)
+
+def replace_firrtl_file():
+    src_file = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")
+    dst_file = os.path.join(formal_dir, "firrtl-cover.cpp")
+    if os.path.exists(dst_file):
+        os.remove(dst_file)
+    shutil.copy(src_file, dst_file)
+
+def modify_enToggle_value(src_lines):
+    log_message("change enToggle and enToggle_past value")
     for i, line in enumerate(src_lines):
         elements = line.split()
         if len(elements) != 0 and elements[0] == "reg":
             if elements[1] == "enToggle" or elements[1] == "enToggle_past":
                 src_lines[i] = src_lines[i].replace("1\'h0", "1'h1")
-    log_message("change enToggle and enToggle_past value")
-    
-    # multi clock -> gbl_clk
-    for i, line in enumerate(formal_lines):
+    return src_lines
+
+def change_clock(src_lines):
+    log_message("change multi clock to gbl_clk")
+    for i, line in enumerate(src_lines):
         clock_pattern = re.compile(r"\(posedge (\w+)\)")
         clock_match = clock_pattern.search(line)
         if clock_match:
-            formal_lines[i] = formal_lines[i].replace(clock_match.group(1), "gbl_clk")
-    log_message("change multi clock to gbl_clk")
+            src_lines[i] = src_lines[i].replace(clock_match.group(1), "gbl_clk")
+    return src_lines
 
-    # 替换Formal目录下的rtl文件
-    formal_rtl_dst = os.path.join(formal_dir, "SimTop.sv")
-    if os.path.exists(formal_rtl_dst):
-        os.remove(formal_rtl_dst)
-    with open(formal_rtl_dst, "w") as f:
-        f.writelines(formal_lines)
-    log_message("replace SimTop.sv in Formal")
+def write_rtl_file(file_path, lines):
+    log_message(f"write rtl file:{file_path}")
+    with open(file_path, "w") as f:
+        f.writelines(lines)
 
-    # 替换SetInitValues目录下的rtl文件
-    init_rtl_dst = os.path.join(init_dir, "SimTop_"+args.cover_type+".sv")
-    if os.path.exists(init_rtl_dst):
-        os.remove(init_rtl_dst)
-    with open(init_rtl_dst, "w") as f:
-        f.writelines(src_lines)
-    log_message("replace SimTop.sv in SetInitValues")
-
-    # 替换GEN文件
-    update_GEN_file(os.path.join(build_dir, "rtl"), formal_dir)
-    log_message("replace GEN file")
-
-    # 生成reset wave和reset snapshot
-    generate_reset_snapshot(init_dir, args.cover_type)
-
-def update_GEN_file(src_dir, dst_dir):
+def update_GEN_file():
+    src_dir = os.path.join(build_dir, "rtl")
+    dst_dir = formal_dir
+    log_message("update GEN file")
     with os.scandir(dst_dir) as entries:
         for entry in entries:
             if entry.is_file() and entry.name.startswith("GEN_"):
@@ -153,10 +153,14 @@ def update_GEN_file(src_dir, dst_dir):
                 src_file = os.path.join(src_dir, entry.name)
                 dst_file = os.path.join(dst_dir, entry.name)
                 shutil.copy(src_file, dst_file)
+                with open(dst_file, "r") as f:
+                    lines = f.readlines()
+                lines = change_clock(lines)
+                with open(dst_file, "w") as f:
+                    f.writelines(lines)
 
-def generate_reset_snapshot(init_dir, cover_type):
-    # 生成reset wave和reset snapshot
-    default_reset_cycles = 22
+def generate_reset_snapshot(cover_type, reset_cycles):
+    log_message("generate reset snapshot")
     if not os.path.exists(os.path.join(NOOP_HOME, "tmp", "bin")):
         os.mkdir(os.path.join(NOOP_HOME, "tmp", "bin"))
     with open(os.path.join(NOOP_HOME, "tmp", "bin", "reset.bin"), "wb") as f:
@@ -175,14 +179,14 @@ def generate_reset_snapshot(init_dir, cover_type):
     commands += f" -C 500"
     commands += f" --dump-wave-full"
     commands += f" --wave-path {NOOP_HOME}/tmp/run_wave.vcd"
-    commands += f" --dump-reset-cycles {default_reset_cycles}"
+    commands += f" --dump-reset-cycles {reset_cycles}"
     commands += f" --dump-csr-change"
     log_message("generate reset snapshot command:"+commands)
     ret = run_command(commands, shell=True)
     log_message("generate reset snapshot")
 
     src_reset_snapshot = os.path.join(fuzz_run_dir, "csr_snapshot", "csr_snapshot_0")
-    src_reset_wave = os.path.join(fuzz_run_dir, "csr_wave", f"csr_wave_0_{default_reset_cycles}.vcd")
+    src_reset_wave = os.path.join(fuzz_run_dir, "csr_wave", f"csr_wave_0_{reset_cycles}.vcd")
     dst_reset_snapshot = os.path.join(init_dir, "reset_snapshot")
     dst_reset_wave = os.path.join(init_dir, f"reset_{cover_type}.vcd")
     if os.path.exists(dst_reset_snapshot):
@@ -206,10 +210,17 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}_{args.cover_type}")
+    init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
+
     rtl_init(args)
     if not args.only_build:
         if args.cpu == "rocket":
             generate_rocket_rtl(args)
         elif args.cpu == "nutshell":
             generate_nutshell_rtl(args)
-    
+        elif args.cpu == "boom":
+            generate_boom_rtl(args)
+        else:
+            log_message("cpu type not support")
+            sys.exit(1)

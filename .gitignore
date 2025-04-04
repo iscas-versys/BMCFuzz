@@ -44,5 +44,6 @@ SetInitValues/csr_transition/*
 
 scripts/__pycache__
 scripts/logs
+scripts/cover_name.dat
 
 logs/*

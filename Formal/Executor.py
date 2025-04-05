@@ -312,13 +312,14 @@ if __name__ == "__main__":
     clean_cover_files()
 
     # sample_cover_points = [1939, 8826]
-    sample_cover_points = [9226]
+    sample_cover_points = [14350]
     # sample_cover_points = [5886]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
     run_snapshot = True
     snapshot_id = 0
-    cpu = "rocket"
+    # cpu = "rocket"
+    cpu = "boom"
     cover_type = "toggle"
     solver_mode = "sat"
     snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
@@ -327,7 +328,7 @@ if __name__ == "__main__":
     generate_sby_files(sample_cover_points, cpu, solver_mode)
 
     executor = Executor()
-    executor.init("rocket", run_snapshot, solver_mode, debug=True)
+    executor.init(cpu, run_snapshot, solver_mode, debug=True)
     executor.set_snapshot_id(snapshot_id, snapshot_file)
     cover_cases, execute_time = executor.run(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")

@@ -86,6 +86,7 @@ def kill_process_and_children(pid):
 def generate_rtl_files(run_snapshot, cpu, cover_type, mode):
     # 获取环境变量
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
+    os.makedirs(cover_tasks_path, exist_ok=True)
     rtl_init_dir = str(os.getenv("RTL_INIT_DIR"))
     rtl_src_dir = str(os.getenv("RTL_SRC_DIR"))
     rtl_dst_dir = str(os.getenv("RTL_DST_DIR"))
@@ -180,7 +181,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
     os.remove(rtl_file)
 
     # multiclock -> gbl_clk
-    if cpu == "rocket":
+    if cpu == "rocket" or cpu == "boom":
         log_message("change multiclock to gbl_clk")
         clock_pattern = re.compile(r'\(posedge (\w+)\)')
         for index, line in enumerate(lines):
@@ -297,6 +298,9 @@ def generate_sby_files(cover_points, cpu, mode):
     elif cpu == "rocket":
         default_depth = 75
         default_timeout = 2 * 60 * 60
+    elif cpu == "boom":
+        default_depth = 75
+        default_timeout = 2 * 60 * 60
     else:
         default_depth = 50
         default_timeout = 1 * 60 * 60
@@ -349,6 +353,9 @@ def set_max_cover_points(max_cover_points):
 def clean_cover_files():
     # 获取环境变量
     cover_points_path = str(os.getenv("COVER_POINTS_OUT"))
+    if not os.path.exists(cover_points_path):
+        log_message(f"Cover points path {cover_points_path} not found.")
+        return
     
     # 遍历文件夹,删除cover_前缀的文件
     with os.scandir(cover_points_path) as entries:

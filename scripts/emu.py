@@ -84,8 +84,14 @@ def run_emu(args):
 
 def run_fuzz(args):
     default_runs = 1000
-    default_fuzz_instr = 5000
+    default_fuzz_instr = 10000
     default_fuzz_cycles = 10000
+
+    if args.save_errors:
+        shutil.rmtree(os.path.join(NOOP_HOME, "errors"), ignore_errors=True)
+        os.makedirs(os.path.join(NOOP_HOME, "errors"), exist_ok=True)
+        shutil.rmtree(os.path.join(NOOP_HOME, "crashes"), ignore_errors=True)
+        os.makedirs(os.path.join(NOOP_HOME, "crashes"), exist_ok=True)
 
     if args.as_footprints:
         default_corpus = os.getenv("FOOTPRINTS_CORPUS")
@@ -99,6 +105,7 @@ def run_fuzz(args):
     fuzz_args.corpus_input = default_corpus
 
     fuzz_args.continue_on_errors = True
+    fuzz_args.save_errors = args.save_errors
     # fuzz_args.run_snapshot = args.run_snapshot
     fuzz_args.only_fuzz = True
 
@@ -115,7 +122,7 @@ def run_fuzz(args):
     fuzz_args.snapshot_id = args.snapshot_id
 
     fuzz_args.make_log_file = os.path.join(NOOP_HOME, "tmp", "make_fuzzer.log")
-    fuzz_args.output_file = args.output_file
+    fuzz_args.output_file = os.path.join(NOOP_HOME, "tmp", "fuzz.log")
 
     if args.make_fuzzer:
         fuzz_args.make_fuzzer()
@@ -134,8 +141,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # default
-    default_max_circle = 3000
-    default_max_instr = 300
+    default_max_circle = 10000
+    default_max_instr = 10000
     default_fuzz_id = 0
     
     default_image = os.path.join(NOOP_HOME, "tmp", "bin", "test.bin")
@@ -157,6 +164,8 @@ if __name__ == "__main__":
     
     # fuzz
     parser.add_argument("--fuzz", "-f", action='store_true', help="Run fuzz")
+
+    parser.add_argument("--save-errors", "-se", action='store_true', help="Save errors")
 
     # run options
     parser.add_argument("--cover-type", "-c", type=str, default="toggle", help="Cover type")

@@ -105,7 +105,7 @@ def generate_boom_rtl(args):
     replace_firrtl_file()
     update_GEN_file()
     
-    reset_cycles = 22
+    reset_cycles = 35
     generate_reset_snapshot(args.cover_type, reset_cycles)
 
 def replace_firrtl_file():
@@ -155,6 +155,7 @@ def update_GEN_file():
                 shutil.copy(src_file, dst_file)
                 with open(dst_file, "r") as f:
                     lines = f.readlines()
+                log_message(f"change clock in {entry.name}")
                 lines = change_clock(lines)
                 with open(dst_file, "w") as f:
                     f.writelines(lines)
@@ -181,6 +182,7 @@ def generate_reset_snapshot(cover_type, reset_cycles):
     commands += f" --wave-path {NOOP_HOME}/tmp/run_wave.vcd"
     commands += f" --dump-reset-cycles {reset_cycles}"
     commands += f" --dump-csr-change"
+    commands += f" > {NOOP_HOME}/tmp/reset.log"
     log_message("generate reset snapshot command:"+commands)
     ret = run_command(commands, shell=True)
     log_message("generate reset snapshot")

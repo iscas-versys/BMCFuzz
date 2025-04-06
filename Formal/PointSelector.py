@@ -61,6 +61,7 @@ class PointSelector:
         
             select_num = min(len(max_uncovered_points), self.MAX_POINT_NUM-total_select_num)
             select_points = random.sample(max_uncovered_points, select_num)
+            select_points.sort()
             self.remove_points(select_points)
 
             # debug
@@ -73,6 +74,7 @@ class PointSelector:
         
         log_message("Total select %d points" % total_select_num)
 
+        total_select_points.sort()
         return total_select_points
     
 

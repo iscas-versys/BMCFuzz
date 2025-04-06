@@ -5,7 +5,7 @@ module GEN_w40_toggle(
   input reset,
   input [40 - 1: 0] valid
 );
-  parameter COVER_TOTAL = 9715;
+  parameter COVER_TOTAL = 8065;
   parameter COVER_INDEX;
 `ifndef SYNTHESIS
 `ifdef DIFFTEST

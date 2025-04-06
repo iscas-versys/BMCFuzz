@@ -81,7 +81,7 @@ def generate_rocket_rtl(args):
     replace_firrtl_file()
     update_GEN_file()
 
-    reset_cycles = 22
+    reset_cycles = 24
     generate_reset_snapshot(args.cover_type, reset_cycles)
 
 def generate_boom_rtl(args):

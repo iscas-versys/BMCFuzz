@@ -1,18 +1,18 @@
 
 /*verilator tracing_off*/
-module GEN_w36_toggle(
+module GEN_w35_toggle(
   input clock,
   input reset,
-  input [36 - 1: 0] valid
+  input [35 - 1: 0] valid
 );
-  parameter COVER_TOTAL = 8065;
+  parameter COVER_TOTAL = 8744;
   parameter COVER_INDEX;
 `ifndef SYNTHESIS
 `ifdef DIFFTEST
   import "DPI-C" function void v_cover_toggle (
     longint cover_index
   );
-  always @(posedge clock) begin
+  always @(posedge gbl_clk) begin
     if (!reset) begin
             if (valid[0]) begin
         v_cover_toggle(COVER_INDEX + 0);
@@ -118,9 +118,6 @@ module GEN_w36_toggle(
       end
       if (valid[34]) begin
         v_cover_toggle(COVER_INDEX + 34);
-      end
-      if (valid[35]) begin
-        v_cover_toggle(COVER_INDEX + 35);
       end
     end
   end

@@ -134,8 +134,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # default
-    default_max_circle = 3000
-    default_max_instr = 300
+    default_max_circle = 10000
+    default_max_instr = 10000
     default_fuzz_id = 0
     
     default_image = os.path.join(NOOP_HOME, "tmp", "bin", "test.bin")

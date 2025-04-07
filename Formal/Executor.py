@@ -12,9 +12,6 @@ import time
 
 from Tools import *
 
-NOOP_HOME = os.getenv("NOOP_HOME")
-BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
-
 class Executor:
     run_snapshot = False
     snapshot_id = 0
@@ -312,15 +309,17 @@ if __name__ == "__main__":
     clean_cover_files()
 
     # sample_cover_points = [1939, 8826]
-    sample_cover_points = [14350]
-    # sample_cover_points = [5886]
+    # sample_cover_points = [14350]
+    sample_cover_points = [1180]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
     run_snapshot = True
+    # run_snapshot = False
     snapshot_id = 0
-    # cpu = "rocket"
-    cpu = "boom"
-    cover_type = "toggle"
+    cpu = "rocket"
+    # cpu = "boom"
+    # cover_type = "toggle"
+    cover_type = "line"
     solver_mode = "sat"
     snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
 

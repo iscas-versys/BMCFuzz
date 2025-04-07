@@ -10,6 +10,9 @@ from datetime import datetime
 
 MAX_COVER_POINTS = 0
 
+NOOP_HOME = os.getenv("NOOP_HOME")
+BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
+
 def log_init(path=None):
     if path is None:
         current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -87,11 +90,9 @@ def generate_rtl_files(run_snapshot, cpu, cover_type, mode):
     # 获取环境变量
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     os.makedirs(cover_tasks_path, exist_ok=True)
-    rtl_init_dir = str(os.getenv("RTL_INIT_DIR"))
-    rtl_src_dir = str(os.getenv("RTL_SRC_DIR"))
-    rtl_dst_dir = str(os.getenv("RTL_DST_DIR"))
-
-    rtl_src_dir = rtl_src_dir+"_"+cover_type
+    rtl_init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues")
+    rtl_src_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{cpu}")
+    rtl_dst_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
 
     # 清理输出目录
     if os.path.exists(cover_tasks_path):
@@ -127,39 +128,33 @@ def generate_rtl_files(run_snapshot, cpu, cover_type, mode):
 # 解析并修改RTL文件
 def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
     # cover name to cover id
-    rtl_dir = str(os.getenv("RTL_SRC_DIR"))
-    rtl_dir = rtl_dir+"_"+cover_type
+    rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{cpu}")
+    rtl_dir = rtl_dir
     cover_name_file = rtl_dir + "/firrtl-cover.cpp"
-    covername2id = {}
-    cover_id = 0
+    cover_points_name = []
     with open(cover_name_file, 'r') as file:
         lines = file.readlines()
-    cover_name_begin = re.compile(r"static const char \*\w+_NAMES\[\] = {")
-    cover_name_end = re.compile(r'};')
-    cover_name_pattern = re.compile(r'\"(.*)\"')
-    cover_name_flag = False
-    for line in lines:
-        cover_name_match = cover_name_begin.search(line)
-        if cover_name_match:
-            cover_name_flag = True
-            continue
-        if cover_name_flag:
-            if cover_name_end.search(line):
-                break
-            cover_name_match = cover_name_pattern.search(line)
+        cover_name_begin = re.compile(r"static const char \*\w+_NAMES\[\] = {")
+        cover_name_end = re.compile(r'};')
+        cover_name_pattern = re.compile(r'\"(.*)\"')
+        cover_name_flag = False
+        for line in lines:
+            cover_name_match = cover_name_begin.search(line)
             if cover_name_match:
-                cover_name = cover_name_match.group(1).replace(".", "_")
-                if cover_name in covername2id.keys():
-                    if cover_name.endswith("]"):
-                        cover_name = cover_name.split("[")
-                        cover_name = str(cover_name[0]) + "_t_0[" + str(cover_name[1])
-                    else:
-                        cover_name = cover_name + "_t_0"
-                covername2id[cover_name] = cover_id
-                cover_id += 1
+                cover_name_flag = True
+                continue
+            if cover_name_flag:
+                if cover_name_end.search(line):
+                    break
+                cover_name_match = cover_name_pattern.search(line)
+                if cover_name_match:
+                    module_name = cover_name_match.group(1).split(".")[0]
+                    signal_name = cover_name_match.group(1).split(".")[1:]
+                    # log_message(f"module_name: {module_name}, signal_name: {signal_name}", False)
+                    cover_points_name.append((module_name, signal_name))
 
     # 获取环境变量
-    rtl_dir = str(os.getenv("RTL_DST_DIR"))
+    rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
     
     if run_snapshot:
         rtl_file = rtl_dir + "/SimTop_init.sv"
@@ -189,46 +184,47 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
             if clock_match:
                 # log_message(f"clock_match: {clock_match.group(1)}", False)
                 lines[index] = re.sub(clock_pattern, '(posedge gbl_clk)', line)
-
-    cover_points = [None] * len(covername2id)
-    current_module = None
-
-    # 正则表达式匹配模块声明和cover语句
-    module_pattern = re.compile(r'\bmodule\s+(\w+)')
-    cover_pattern = re.compile(r'cover\s*\(\s*([^\)]+)\s*\)')
-    sub_toggle_pattern = re.compile(r'(_t)(\[\d+\])?$')
-
-    new_lines = []
     
-    for line in lines:
-        # 检查模块声明
-        module_match = module_pattern.search(line)
-        if module_match:
-            current_module = module_match.group(1)
-        
-        # 检查cover语句
-        cover_match = cover_pattern.search(line)
-        if cover_match and current_module:
-            signal_name = cover_match.group(1)
-            # 修改 cover 语句，生成带有新的 label 的格式
-            cover_name = current_module + "." + signal_name
-            cover_name = re.sub(sub_toggle_pattern, r'\2', cover_name)
-            cover_name = cover_name.replace(".", "_")
-            cover_id = covername2id.get(cover_name, -1)
-            if cover_id == -1:
-                log_message(f"cover_name: {cover_name} not found in covername2id.")
-                cover_id = len(cover_points)
-                exit(1)
-            if mode == "smt":
-                new_cover_line = f"    cov_count_{cover_id}: cover({signal_name});\n"
-            elif mode == "sat":
-                new_cover_line = f"    cov_count_{cover_id}: assert(~{signal_name});\n"
-            new_lines.append(new_cover_line)
-            cover_points[cover_id] = (current_module, signal_name)
-        else:
-            # 如果不是 cover 语句，直接将原内容加入到新文件
-            new_lines.append(line)
-        
+    new_lines = []
+    cover_block_begin_pattern = re.compile(f'GEN_w(\d+)_{cover_type}.*{cover_type}_(\d+)')
+    cover_block_end_pattern = re.compile(f'\);')
+    cover_block_reset_pattern = re.compile(r"\.reset\((.*)\),")
+    cover_block_valid_pattern = re.compile(r"\.valid\((.*)\)")
+    cover_block_match = False
+    cover_block_index = 0
+    cover_block_len = 0
+    for index, line in enumerate(lines):
+        new_lines.append(line)
+        cover_block_begin_match = cover_block_begin_pattern.search(line)
+        if cover_block_begin_match:
+            cover_block_match = True
+            cover_block_len = int(cover_block_begin_match.group(1))
+            cover_block_index = int(cover_block_begin_match.group(2))
+        if cover_block_match:
+            cover_block_reset_match = re.search(cover_block_reset_pattern, line)
+            if cover_block_reset_match:
+                cover_block_reset = cover_block_reset_match.group(1)
+            cover_block_valid_match = re.search(cover_block_valid_pattern, line)
+            if cover_block_valid_match:
+                cover_block_valid = cover_block_valid_match.group(1)
+            if re.search(cover_block_end_pattern, line):
+                cover_block_match = False
+                new_lines.append("  always @(posedge gbl_clk) begin\n")
+                new_lines.append(f"    if (!{cover_block_reset}) begin\n")
+                if cover_block_len > 1:
+                    for i in range(cover_block_len):
+                        if mode == "smt":
+                            new_lines.append(f"      cov_count_{cover_block_index+i}: cover({cover_block_valid}[{i}]);\n")
+                        elif mode == "sat":
+                            new_lines.append(f"      cov_count_{cover_block_index+i}: assert(~{cover_block_valid}[{i}]);\n")
+                else:
+                    if mode == "smt":
+                        new_lines.append(f"      cov_count_{cover_block_index}: cover({cover_block_valid});\n")
+                    elif mode == "sat":
+                        new_lines.append(f"      cov_count_{cover_block_index}: assert(~{cover_block_valid});\n")
+                new_lines.append("    end\n")
+                new_lines.append("  end\n")
+
     # 为每个reg插入Initial语句
     if not run_snapshot:
         lines = []
@@ -267,17 +263,16 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
     # 将修改后的内容写入新的RLT文件
     with open(rtl_file, 'w') as new_file:
         new_file.writelines(new_lines)
-        # new_file.writelines(lines)
     
     # 设置MAX_COVER_POINTS
-    set_max_cover_points(len(cover_points))
+    set_max_cover_points(len(cover_points_name))
 
-    return cover_points
+    return cover_points_name
 
 # 生成 .sby 文件
 def generate_sby_files(cover_points, cpu, mode):
     # 获取环境变量
-    rtl_dir = str(os.getenv("RTL_DST_DIR"))
+    rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     sby_template = str(os.getenv("SBY_TEMPLATE"))
 
@@ -390,4 +385,22 @@ def generate_empty_cover_points_file(cover_num=0):
             csv_writer.writerow({'Index': i, 'Covered': 0})
 
 if __name__ == "__main__":
-    pass
+    os.chdir(NOOP_HOME)
+    clear_logs()
+    log_init()
+    clean_cover_files()
+
+    # sample_cover_points = [1939, 8826]
+    sample_cover_points = [5886]
+    # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
+
+    run_snapshot = False
+    snapshot_id = 0
+    cpu = "rocket"
+    # cpu = "boom"
+    cover_type = "toggle"
+    solver_mode = "sat"
+    snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
+
+    generate_rtl_files(run_snapshot, cpu, cover_type, solver_mode)
+    generate_sby_files(sample_cover_points, cpu, solver_mode)

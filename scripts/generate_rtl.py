@@ -212,7 +212,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}_{args.cover_type}")
+    formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}")
     init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
 
     rtl_init(args)

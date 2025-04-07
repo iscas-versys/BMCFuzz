@@ -11,9 +11,6 @@ from Tools import *
 from PointSelector import PointSelector
 from Executor import Executor
 
-NOOP_HOME = os.getenv("NOOP_HOME")
-BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
-
 class FuzzArgs:
     fuzzing = True
     cover_type = "toggle"

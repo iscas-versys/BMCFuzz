@@ -41,6 +41,19 @@ SetInitValues/__pycache__
 SetInitValues/csr_wave/*
 SetInitValues/csr_snapshot/*
 SetInitValues/csr_transition/*
+SetInitValues/nutshell/reset_snapshot
+SetInitValues/nutshell/*.vcd
+SetInitValues/nutshell/*.sv
+SetInitValues/rocket/reset_snapshot
+SetInitValues/rocket/*.vcd
+SetInitValues/rocket/*.sv
+SetInitValues/boom/reset_snapshot
+SetInitValues/boom/*.vcd
+SetInitValues/boom/*.sv
+
+ccover/Formal/demo/nutshell_toggle/*.cpp
+ccover/Formal/demo/nutshell_toggle/GEN_w*_toggle.v
+ccover/Formal/demo/nutshell_toggle/SimTop.cv
 
 scripts/__pycache__
 scripts/logs

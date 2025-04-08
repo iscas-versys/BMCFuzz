@@ -52,15 +52,15 @@ SetInitValues/rtl_src/boom/reset_snapshot
 SetInitValues/rtl_src/boom/*.vcd
 SetInitValues/rtl_src/boom/*.sv
 
-Formal/demo/nutshell_toggle/firrtl-cover.cpp
-Formal/demo/nutshell_toggle/GEN_w*_toggle.v
-Formal/demo/nutshell_toggle/SimTop.sv
-Formal/demo/rocket_toggle/firrtl-cover.cpp
-Formal/demo/rocket_toggle/GEN_w*_toggle.v
-Formal/demo/rocket_toggle/SimTop.sv
-Formal/demo/boom_toggle/firrtl-cover.cpp
-Formal/demo/boom_toggle/GEN_w*_toggle.v
-Formal/demo/boom_toggle/SimTop.sv
+Formal/demo/nutshell/firrtl-cover.cpp
+Formal/demo/nutshell/GEN_w*.v
+Formal/demo/nutshell/SimTop.sv
+Formal/demo/rocket/firrtl-cover.cpp
+Formal/demo/rocket/GEN_w*.v
+Formal/demo/rocket/SimTop.sv
+Formal/demo/boom/firrtl-cover.cpp
+Formal/demo/boom/GEN_w*.v
+Formal/demo/boom/SimTop.sv
 
 scripts/__pycache__
 scripts/logs

@@ -32,15 +32,8 @@ def generate_nutshell_rtl(args):
     with open(rtl_src, "r") as f:
         init_lines = f.readlines()
 
-    # 修改array中的ram [7:0]为ram [0:7]，并复制array_0_ext.v到SimTop.sv最后
-    array_0_ext_src = os.path.join(build_dir, "rtl", "array_0_ext.v")
-    with open(array_0_ext_src, "r") as f:
-        array_lines = f.readlines()
-    for i, line in enumerate(array_lines):
-        if "ram [7:0]" in line:
-            array_lines[i] = line.replace("ram [7:0]", "ram [0:7]")
-    init_lines.extend(array_lines)
-    log_message("change ram [7:0] to ram [0:7] and copy array_0_ext.v to SimTop.sv")
+    append_array_file(init_lines)
+    log_message("append array file to SimTop")
 
     formal_lines = init_lines.copy()
 
@@ -107,6 +100,22 @@ def generate_boom_rtl(args):
     
     reset_cycles = 35
     generate_reset_snapshot(args.cover_type, reset_cycles)
+
+def append_array_file(src_lines):
+    array_lines = []
+    with os.scandir(os.path.join(build_dir, "rtl")) as entries:
+        for entry in entries:
+            if entry.name.startswith("array"):
+                log_message(f"append {entry.name} to SimTop")
+                with open(entry.path, "r") as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        ram_match = re.search(r"ram \[(\d+):0\]", line)
+                        if ram_match:
+                            line = line.replace(f"ram [{ram_match.group(1)}:0]", f"ram [0:{ram_match.group(1)}]")
+                        array_lines.append(line)
+    src_lines.extend(array_lines)
+    return src_lines
 
 def replace_firrtl_file():
     src_file = os.path.join(build_dir, "generated-src", "firrtl-cover.cpp")

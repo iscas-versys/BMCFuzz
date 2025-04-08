@@ -24,7 +24,7 @@ class Executor:
     env_path = ""
     cover_tasks_dir = ""
 
-    MAX_WORKERS = 120
+    MAX_WORKERS = 250
 
     debug = False
     

@@ -3,7 +3,7 @@ import random
 from Tools import *
 
 class PointSelector:
-    MAX_POINT_NUM = 150
+    MAX_POINT_NUM = 300
 
     uncovered_points_num = 0
     module_contain_points = []

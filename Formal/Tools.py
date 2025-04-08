@@ -150,6 +150,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
                 if cover_name_match:
                     module_name = cover_name_match.group(1).split(".")[0]
                     signal_name = cover_name_match.group(1).split(".")[1:]
+                    signal_name = ".".join(signal_name)
                     # log_message(f"module_name: {module_name}, signal_name: {signal_name}", False)
                     cover_points_name.append((module_name, signal_name))
 
@@ -292,7 +293,7 @@ def generate_sby_files(cover_points, cpu, mode):
         default_timeout = 1 * 60 * 60
     elif cpu == "rocket":
         default_depth = 75
-        default_timeout = 1.5 * 60 * 60
+        default_timeout = 3 * 60 * 60
     elif cpu == "boom":
         default_depth = 75
         default_timeout = 2 * 60 * 60

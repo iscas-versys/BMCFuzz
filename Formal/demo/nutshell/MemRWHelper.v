@@ -11,7 +11,7 @@ module MemRWHelper(
 
   `define RAM_ITEMS (2 * 1024 * 1024 * 1024) / 8 // 2^(28) [27:0] [27:3] [2:0]
   // reg [63:0] memory [0 : `RAM_SIZE / 8 - 1];
-  `define MAX_LINES 8
+  `define MAX_LINES 16
   // 由于是2GiB内存 相当于只考虑r_index % RAM_ITEMS
   // 直接相联缓存：最多 8 行
   reg [63:0] cache_data [0:`MAX_LINES]; // 数据

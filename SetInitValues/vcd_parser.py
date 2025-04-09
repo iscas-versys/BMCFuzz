@@ -21,10 +21,9 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net, cpu):
 
     if cpu == "nutshell":
         cache_tag_pattern = re.compile(r"cache\.metaArray\.ram\..*ram")
-        # cache_tag_pattern = None
-        tlb_tag_pattern = None
+        tlb_tag_pattern = re.compile(r"tlb\.mdTLB\.tlbmd_\d+\[\d+\]")
     elif cpu == "rocket":
-        cache_tag_pattern = re.compile(r"cache\.tag_array_(\d+)\[\d+\]")
+        cache_tag_pattern = re.compile(r"cache\.tag_array_\d+\[\d+\]")
         tlb_tag_pattern = re.compile(r"ptw\.tags|tag_vpn")
     elif cpu == "boom":
         cache_tag_pattern = None

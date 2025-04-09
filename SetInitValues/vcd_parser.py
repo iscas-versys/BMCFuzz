@@ -18,18 +18,26 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net, cpu):
     # if name == "cycleCnt[63:0]" or name == "instrCnt[63:0]":
     #     last_value = 0
     full_name = f"{hier}.{name}"
+
     if cpu == "nutshell":
         cache_tag_pattern = re.compile(r"cache\.metaArray\.ram\..*ram")
         # cache_tag_pattern = None
+        tlb_tag_pattern = None
     elif cpu == "rocket":
         cache_tag_pattern = re.compile(r"cache\.tag_array_(\d+)\[\d+\]")
+        tlb_tag_pattern = re.compile(r"ptw\.tags|tag_vpn")
     elif cpu == "boom":
         cache_tag_pattern = None
+        tlb_tag_pattern = None
     else:
         cache_tag_pattern = None
+        tlb_tag_pattern = None
     
     if cache_tag_pattern is not None and cache_tag_pattern.search(full_name):
         log_message(f"Set cache tag ram {full_name} to 0")
+        last_value = 0
+    if tlb_tag_pattern is not None and tlb_tag_pattern.search(full_name):
+        log_message(f"Set tlb tag {full_name} to 0")
         last_value = 0
     
     # 构造自定义格式的字典

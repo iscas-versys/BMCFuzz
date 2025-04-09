@@ -25,9 +25,13 @@ def run_and_capture_output(cmd):
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1, shell=True)
 
     coverage_lines = []
+    debug_lines = []
 
     try:
         for line in iter(process.stdout.readline, ""):
+            debug_lines.append(line)
+            if len(debug_lines) > 100:
+                debug_lines = debug_lines[-100:]
             elapsed_time = time.time() - start_time
             
             if "Total Coverage" in line and elapsed_time - pre_time > TIME_INTERVAL:
@@ -58,6 +62,9 @@ def run_and_capture_output(cmd):
         process.stdout.close()
         process.stderr.close()
         reset_terminal()
+        with open(os.path.join(NOOP_HOME, "tmp", "debug.log"), "w") as f:
+            f.write("".join(debug_lines))
+        log_message("Debug log saved")
     
     return coverage_lines
 

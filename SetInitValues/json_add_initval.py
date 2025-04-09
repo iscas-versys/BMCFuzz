@@ -2,7 +2,7 @@ import json
 import re
 import os
 
-from tools import log_message
+from runtools import log_message
 
 reg_cnt = 0
 

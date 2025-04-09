@@ -136,7 +136,7 @@ class BMCFuzz:
         wave_json_path = wave_vcd_path.replace('.vcd', '.json')
         if os.path.exists(wave_json_path):
             os.remove(wave_json_path)
-        vcd_to_json(wave_vcd_path, wave_json_path)
+        vcd_to_json(wave_vcd_path, wave_json_path, self.cpu)
         log_message(f"Convert wave vcd to json executed successfully.")
 
         # set regs init values

@@ -300,6 +300,13 @@ class Executor:
             os.remove(f"{log_file_path}")
         log_message(f"已生成footprints文件: {footprints_file_path}", print_message=False)
 
+        with open(footprints_file_path, "ab") as f:
+            data = f.read()
+            if len(data) == 0:
+                data = b"\x13\x00\x00\x00"
+                f.write(data)
+                log_message(f"footprints文件为空, 写入默认数据: {data}", print_message=False)
+
         return 0
 
 if __name__ == "__main__":

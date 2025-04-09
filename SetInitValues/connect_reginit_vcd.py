@@ -1,6 +1,6 @@
 import json
 
-from tools import log_message
+from runtools import log_message
 
 def find_registers(hierarchy, path="SimTop"):
     """Recursively find all registers with their paths in the hierarchy."""

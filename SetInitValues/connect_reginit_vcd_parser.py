@@ -2,7 +2,7 @@ import json
 import re
 import os
 
-from tools import log_message
+from runtools import log_message
 
 def find_registers(hierarchy, path="SimTop"):
     """Recursively find all registers with their paths in the hierarchy."""
@@ -47,14 +47,6 @@ def update_registers_with_vcd(reg_paths, vcd_data):
         # Normalize the signal name
         normalized_name = normalize_signal_name(signal['name'])
         vcd_dict[normalized_name] = signal['value']
-        # Clear cache tags
-        cache_tag_pattern = re.compile(r"cache\.tag_array_(\d+)\[\d+\]")
-        tag_value_pattern = re.compile(r"(\d+)'b[01]+")
-        cache_tag_match = cache_tag_pattern.search(normalized_name)
-        if cache_tag_match:
-            log_message(f"Clearing tag value for {normalized_name}")
-            tag_value_match = tag_value_pattern.search(signal['value'])
-            vcd_dict[normalized_name] = f"{tag_value_match.group(1)}'h0"
 
     for reg_path, reg in reg_paths.items():
         # Normalize the register name

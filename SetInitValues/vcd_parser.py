@@ -1,8 +1,10 @@
 import json
 from Verilog_VCD.Verilog_VCD import parse_vcd
 from sys import argv
+from runtools import log_message
+import re
 
-def convert_netinfo_to_custom_format(netinfo, net_id, net):
+def convert_netinfo_to_custom_format(netinfo, net_id, net, cpu):
     # 提取网络信息
     hier = net['hier']
     name = net['name']
@@ -13,7 +15,21 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net):
     last_value = last_time_value[1]
 
     # 修改cycleCnt[63:0]和instrCnt[63:0]的值
-    if name == "cycleCnt[63:0]" or name == "instrCnt[63:0]":
+    # if name == "cycleCnt[63:0]" or name == "instrCnt[63:0]":
+    #     last_value = 0
+    full_name = f"{hier}.{name}"
+    if cpu == "nutshell":
+        cache_tag_pattern = re.compile(r"cache\.metaArray\.ram\..*ram")
+        # cache_tag_pattern = None
+    elif cpu == "rocket":
+        cache_tag_pattern = re.compile(r"cache\.tag_array_(\d+)\[\d+\]")
+    elif cpu == "boom":
+        cache_tag_pattern = None
+    else:
+        cache_tag_pattern = None
+    
+    if cache_tag_pattern is not None and cache_tag_pattern.search(full_name):
+        log_message(f"Set cache tag ram {full_name} to 0")
         last_value = 0
     
     # 构造自定义格式的字典
@@ -26,7 +42,7 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net):
     
     return custom_format
 
-def vcd_to_json(vcd_path, output_json_path):
+def vcd_to_json(vcd_path, output_json_path, cpu):
     # 解析VCD文件
     vcd_data = parse_vcd(vcd_path)
     # 初始化ID计数器
@@ -36,7 +52,7 @@ def vcd_to_json(vcd_path, output_json_path):
     # 处理每个网络信息并添加到列表中
     for netinfo in vcd_data.values():
         for net in netinfo['nets']:
-            custom_output = convert_netinfo_to_custom_format(netinfo, net_id, net)
+            custom_output = convert_netinfo_to_custom_format(netinfo, net_id, net, cpu)
             custom_outputs.append(custom_output)
             net_id += 1
     # 输出整个列表为JSON格式

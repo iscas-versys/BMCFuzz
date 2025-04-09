@@ -300,7 +300,7 @@ class Executor:
             os.remove(f"{log_file_path}")
         log_message(f"已生成footprints文件: {footprints_file_path}", print_message=False)
 
-        with open(footprints_file_path, "ab") as f:
+        with open(footprints_file_path, "r+b") as f:
             data = f.read()
             if len(data) == 0:
                 data = b"\x13\x00\x00\x00"
@@ -323,10 +323,11 @@ if __name__ == "__main__":
     run_snapshot = True
     # run_snapshot = False
     snapshot_id = 0
-    cpu = "rocket"
+    cpu = "nutshell"
+    # cpu = "rocket"
     # cpu = "boom"
-    # cover_type = "toggle"
-    cover_type = "line"
+    cover_type = "toggle"
+    # cover_type = "line"
     solver_mode = "sat"
     snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
 

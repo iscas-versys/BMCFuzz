@@ -289,8 +289,8 @@ def generate_sby_files(cover_points, cpu, mode):
     verilog_files = '\n'.join([file for file in rtl_files])
 
     if cpu == "nutshell":
-        default_depth = 30
-        default_timeout = 1 * 60 * 60
+        default_depth = 75
+        default_timeout = 2 * 60 * 60
     elif cpu == "rocket":
         default_depth = 75
         default_timeout = 3 * 60 * 60

@@ -117,13 +117,16 @@ class Executor:
             vcd_file_path = os.path.join(cover_dir, "engine_0", "trace0.vcd")
             witness_file_path = os.path.join(cover_dir, "engine_0", "trace0_aiw.yw")
             hexbin_dir = os.path.join(self.cover_tasks_dir, "hexbin")
-            if os.path.exists(witness_file_path):
-                log_message(f"开始解析文件: {witness_file_path}", print_message=False)
+            if os.path.exists(witness_file_path) or os.path.exists(vcd_file_path):
                 # self.parse_v_file(cover, v_file_path, hexbin_dir)
-                self.parse_witness_file(cover, witness_file_path, hexbin_dir)
-                self.generate_footprint(cover, hexbin_dir, src_format="witness")
-                # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
-                # self.generate_footprint(cover, hexbin_dir, src_format="bin")
+                if self.mode == "smt":
+                    log_message(f"开始解析文件: {vcd_file_path}", print_message=False)
+                    self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
+                    self.generate_footprint(cover, hexbin_dir, src_format="bin")
+                elif self.mode == "sat":
+                    log_message(f"开始解析文件: {witness_file_path}", print_message=False)
+                    self.parse_witness_file(cover, witness_file_path, hexbin_dir)
+                    self.generate_footprint(cover, hexbin_dir, src_format="witness")
                 cover_point = cover
             else:
                 log_message(f"witness文件不存在: {witness_file_path}", print_message=False)

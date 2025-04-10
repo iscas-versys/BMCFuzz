@@ -15,7 +15,7 @@ import "DPI-C" function void v_difftest_LrScEvent (
 );
 
 
-  always @(posedge gbl_clk) begin
+  always @(posedge glb_clk) begin
     if (enable)
       v_difftest_LrScEvent (io_success, io_coreid);
   end

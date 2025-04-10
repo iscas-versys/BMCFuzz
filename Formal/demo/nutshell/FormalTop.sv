@@ -1,5 +1,5 @@
 module FormalTop;
-(* gclk *) wire gbl_clk;
+(* gclk *) wire glb_clk;
 wire clock;
 wire reset;
 wire [63:0] difftest_exit;
@@ -15,13 +15,13 @@ wire difftest_uart_in_valid;
 wire [7:0] difftest_uart_in_ch;
 
 reg reg_reset = 1'b1;
-always @(posedge gbl_clk) begin
+always @(posedge glb_clk) begin
   if (reg_reset) begin
     reg_reset <= 1'b0;
   end
 end
 
-assign clock = gbl_clk;
+assign clock = glb_clk;
 assign reset = reg_reset;
 assign difftest_perfCtrl_clean = 1'b0;
 assign difftest_perfCtrl_dump = 1'b0;

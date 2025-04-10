@@ -125,6 +125,8 @@ class Executor:
                     self.generate_footprint(cover, hexbin_dir, src_format="bin")
                 elif self.mode == "sat":
                     log_message(f"开始解析文件: {witness_file_path}", print_message=False)
+                    # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
+                    # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                     self.parse_witness_file(cover, witness_file_path, hexbin_dir)
                     self.generate_footprint(cover, hexbin_dir, src_format="witness")
                 cover_point = cover
@@ -250,16 +252,24 @@ class Executor:
         os.makedirs(output_dir, exist_ok=True)
         witness_output_path = os.path.join(output_dir, f"cover_{cover_no}.witness")
 
-        with open(witness_file_path, 'r') as witness_file:
-            witness_data = json.load(witness_file)
-        step_data = witness_data['steps']
+        display_witness_command = f"source {self.env_path} && yosys-witness display {witness_file_path} > {witness_output_path}"
+        display_witness_command = f"bash -c '{display_witness_command}'"
+        run_command(display_witness_command, shell=True)
+
+        step_data = []
+        with open(witness_output_path, 'r') as witness_file:
+            lines = witness_file.readlines()
+            for line in lines:
+                if "rand_value" in line:
+                    step_data.append(line.strip().split(" ")[-1])
+                
         with open(witness_output_path, 'w') as f:
             steps = len(step_data)
             f.write(str(steps) + "\n")
             step = 0
-            for data in step_data:
+            for bits in step_data:
                 step += 1
-                bits = data['bits'][:64]
+                # bits = data['bits'][:64]
                 upper_32 = bits[:32]
                 lower_32 = bits[32:]
 

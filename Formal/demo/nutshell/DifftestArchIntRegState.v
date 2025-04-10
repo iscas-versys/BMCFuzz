@@ -76,7 +76,7 @@ import "DPI-C" function void v_difftest_ArchIntRegState (
 );
 
 
-  always @(posedge clock) begin
+  always @(posedge glb_clk) begin
     if (enable)
       v_difftest_ArchIntRegState (io_value_0, io_value_1, io_value_2, io_value_3, io_value_4, io_value_5, io_value_6, io_value_7, io_value_8, io_value_9, io_value_10, io_value_11, io_value_12, io_value_13, io_value_14, io_value_15, io_value_16, io_value_17, io_value_18, io_value_19, io_value_20, io_value_21, io_value_22, io_value_23, io_value_24, io_value_25, io_value_26, io_value_27, io_value_28, io_value_29, io_value_30, io_value_31, io_coreid);
   end

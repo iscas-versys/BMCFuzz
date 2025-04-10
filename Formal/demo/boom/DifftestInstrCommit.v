@@ -47,7 +47,7 @@ import "DPI-C" function void v_difftest_InstrCommit (
 );
 
 
-  always @(posedge gbl_clk) begin
+  always @(posedge glb_clk) begin
     if (enable)
       v_difftest_InstrCommit (io_skip, io_isRVC, io_rfwen, io_fpwen, io_vecwen, io_wpdest, io_wdest, io_pc, io_instr, io_robIdx, io_lqIdx, io_sqIdx, io_isLoad, io_isStore, io_nFused, io_special, io_coreid, io_index);
   end

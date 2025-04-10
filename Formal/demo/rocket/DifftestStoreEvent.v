@@ -21,7 +21,7 @@ import "DPI-C" function void v_difftest_StoreEvent (
 );
 
 
-  always @(posedge gbl_clk) begin
+  always @(posedge glb_clk) begin
     if (enable)
       v_difftest_StoreEvent (io_addr, io_data, io_mask, io_coreid, io_index);
   end

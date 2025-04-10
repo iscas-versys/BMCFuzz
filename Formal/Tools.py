@@ -176,15 +176,15 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
         lines = file.readlines()
     os.remove(rtl_file)
 
-    # multiclock -> gbl_clk
-    if cpu == "rocket" or cpu == "boom":
-        log_message("change multiclock to gbl_clk")
-        clock_pattern = re.compile(r'\(posedge (\w+)\)')
-        for index, line in enumerate(lines):
-            clock_match = clock_pattern.search(line)
-            if clock_match:
-                # log_message(f"clock_match: {clock_match.group(1)}", False)
-                lines[index] = re.sub(clock_pattern, '(posedge gbl_clk)', line)
+    # multiclock -> glb_clk
+    # if cpu == "rocket" or cpu == "boom":
+    log_message("change multiclock to glb_clk")
+    clock_pattern = re.compile(r'\(posedge (\w+)\)')
+    for index, line in enumerate(lines):
+        clock_match = clock_pattern.search(line)
+        if clock_match:
+            # log_message(f"clock_match: {clock_match.group(1)}", False)
+            lines[index] = re.sub(clock_pattern, '(posedge glb_clk)', line)
     
     new_lines = []
     cover_block_begin_pattern = re.compile(f'GEN_w(\d+)_{cover_type}.*{cover_type}_(\d+)')
@@ -210,7 +210,7 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
                 cover_block_valid = cover_block_valid_match.group(1)
             if re.search(cover_block_end_pattern, line):
                 cover_block_match = False
-                new_lines.append("  always @(posedge gbl_clk) begin\n")
+                new_lines.append("  always @(posedge glb_clk) begin\n")
                 new_lines.append(f"    if (!{cover_block_reset}) begin\n")
                 if cover_block_len > 1:
                     for i in range(cover_block_len):
@@ -289,7 +289,7 @@ def generate_sby_files(cover_points, cpu, mode):
     verilog_files = '\n'.join([file for file in rtl_files])
 
     if cpu == "nutshell":
-        default_depth = 75
+        default_depth = 90
         default_timeout = 2 * 60 * 60
     elif cpu == "rocket":
         default_depth = 75

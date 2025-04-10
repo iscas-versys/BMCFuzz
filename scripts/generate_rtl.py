@@ -134,12 +134,12 @@ def modify_enToggle_value(src_lines):
     return src_lines
 
 def change_clock(src_lines):
-    log_message("change multi clock to gbl_clk")
+    log_message("change multi clock to glb_clk")
     for i, line in enumerate(src_lines):
         clock_pattern = re.compile(r"\(posedge (\w+)\)")
         clock_match = clock_pattern.search(line)
         if clock_match:
-            src_lines[i] = src_lines[i].replace(clock_match.group(1), "gbl_clk")
+            src_lines[i] = src_lines[i].replace(clock_match.group(1), "glb_clk")
     return src_lines
 
 def write_rtl_file(file_path, lines):

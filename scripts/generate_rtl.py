@@ -24,7 +24,7 @@ def rtl_init(args):
     ret = run_command(build_command, shell=True)
     if ret:
         log_message("generate build directory failed, ret:", ret)
-        return
+        exit(1)
     log_message("generate build directory")
 
 def generate_nutshell_rtl(args):

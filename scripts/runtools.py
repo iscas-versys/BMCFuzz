@@ -22,19 +22,19 @@ def run_command(command, shell=False):
     try:
         process = subprocess.Popen(command, shell=shell, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
         return_code = process.wait()
-        return return_code
     except KeyboardInterrupt:
         log_message("Process interrupted, terminating")
         kill_process_and_children(process.pid)
         reset_terminal()
-        return -1
+        return_code = -1
     except Exception as e:
         log_message(f"Error: {e}")
         kill_process_and_children(process.pid)
         reset_terminal()
-        return -1
+        return_code = -1
     finally:
         log_message("Closing process: " + command)
+        return return_code
 
 def kill_process_and_children(pid):
     try:

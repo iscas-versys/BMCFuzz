@@ -23,7 +23,12 @@ def run_emu(args):
         fuzz_args.make_fuzzer()
 
     if args.use_asm_test:
+        asm_compile_commands = f"cd {BMCFUZZ_HOME}/asms && ./compile.sh"
+        run_command(asm_compile_commands, shell=True)
         asm_test_bin = os.path.join(BMCFUZZ_HOME, "asms", "test.bin")
+        if not os.path.exists(asm_test_bin):
+            log_message("ASM test bin not found!")
+            sys.exit(1)
         args.image = asm_test_bin
 
     if args.dump_csr:

@@ -5,10 +5,12 @@ import argparse
 import subprocess
 import time
 
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 from datetime import datetime
+# from scipy.interpolate import make_interp_spline
 
 from runtools import NOOP_HOME, BMCFUZZ_HOME
 from runtools import log_init, clear_logs, log_message, reset_terminal
@@ -17,6 +19,7 @@ from runtools import kill_process_and_children
 
 TIME_OUT = 30 * 60 * 60
 TIME_INTERVAL = 20
+END_LINE = ""
 
 def run_and_capture_output(cmd):
     start_time = time.time()
@@ -40,11 +43,13 @@ def run_and_capture_output(cmd):
                 minutes = int((elapsed_time % 3600) / 60)
                 seconds = int(elapsed_time % 60)
                 line = "Coverage:"+line.split(' ')[-1].replace('\n','')
+                end_line = f"{END_LINE} {line}"
                 cover_message = f"{hours:>3}h{minutes:>3}m{seconds:>3}s {line}"
                 log_message(cover_message, print_message=False)
                 coverage_lines.append(cover_message)
             
             if elapsed_time > TIME_OUT:
+                coverage_lines.append(end_line)
                 log_message("Process timeout, terminating")
                 kill_process_and_children(process.pid)
                 break
@@ -111,6 +116,7 @@ def do_fuzz(args):
     log_message("Output coverage")
     output_file = os.path.join(NOOP_HOME, "tmp", "exp", f"{fuzz_name}.log")
     with open(output_file, "w") as f:
+        f.write("  0h  0m  0s Coverage:  0.00%\n")
         f.write("\n".join(coverage_lines))
 
 def do_bmc(args):
@@ -141,6 +147,7 @@ def format_time_diff(time_diff):
 
 def analyze_log(args):
     output_lines = []
+    # output_lines.append(f" 0h  0m  0s Coverage: 0.00%")
     src_file = args.log_file
     if args.analyze_hypfuzz:
         dst_file = args.log_file.split('/')[:-1] + ['hypfuzz.log']
@@ -158,15 +165,23 @@ def analyze_log(args):
             timestamp_str, coverage_str = line.split(' - ')
             timestamp = datetime.strptime(timestamp_str, time_format)
             coverage = coverage_str.split(': ')[1]
+            end_line = f"{END_LINE} Coverage: {coverage}"
 
             time_diff = timestamp - start_time
 
+            if time_diff.total_seconds() > TIME_OUT:
+                break
+
             time_diff_str = format_time_diff(time_diff)
             output_str = f"{time_diff_str} Coverage: {coverage}"
+            if len(output_lines) and output_str == output_lines[-1]:
+                continue
             output_lines.append(output_str)
             log_message(output_str)
+        output_lines.append(end_line)
     
     with open(dst_file, "w") as f:
+        f.write("  0h  0m  0s Coverage:  0.00%\n")
         f.write(''.join(output_lines))
 
 def parse_time_to_seconds(time_str):
@@ -199,6 +214,22 @@ def prepare_data(data):
     coverages = [t[1] for t in data]
     return times, coverages
 
+# def smooth_line(x, y, points=300):
+#     # 转换为numpy数组
+#     log_message(f"pre x:{x}")
+#     x = np.array(x)
+#     y = np.array(y)
+#     log_message(f"post x:{x}")
+    
+#     if len(x) < 4:  # 插值需要足够的点
+#         return x, y
+    
+#     # 创建更密集的 x 平滑点
+#     x_new = np.linspace(x.min(), x.max(), points)
+#     spline = make_interp_spline(x, y, k=3)  # k=3 表示立方样条
+#     y_new = spline(x_new)
+#     return x_new, y_new
+
 def generate_graph(args):
     experiment_dir = os.path.join(NOOP_HOME, "tmp", "exp")
     xfuzz_data = []
@@ -206,6 +237,8 @@ def generate_graph(args):
     hypfuzz_data = []
     bmcfuzz_data = []
     
+    max_coverage = 0.0
+    min_coverage = 100.0
     match_pattern = re.compile(r"(.*) Coverage:(.*)%")
     if args.analyze_xfuzz:
         with open(os.path.join(experiment_dir, "xfuzz.log"), "r") as f:
@@ -214,6 +247,9 @@ def generate_graph(args):
                 match = match_pattern.match(line)
                 if match:
                     xfuzz_data.append((match.group(1), float(match.group(2))))
+                    if int(float(match.group(2))) > 10:
+                        max_coverage = max(max_coverage, float(match.group(2)))
+                        min_coverage = min(min_coverage, float(match.group(2)))
     if args.analyze_pathfuzz:
         with open(os.path.join(experiment_dir, "pathfuzz.log"), "r") as f:
             lines = f.readlines()
@@ -221,6 +257,9 @@ def generate_graph(args):
                 match = match_pattern.match(line)
                 if match:
                     pathfuzz_data.append((match.group(1), float(match.group(2))))
+                    if int(float(match.group(2))) > 10:
+                        max_coverage = max(max_coverage, float(match.group(2)))
+                        min_coverage = min(min_coverage, float(match.group(2)))
     if args.analyze_hypfuzz:
         with open(os.path.join(experiment_dir, "hypfuzz.log"), "r") as f:
             lines = f.readlines()
@@ -228,6 +267,9 @@ def generate_graph(args):
                 match = match_pattern.match(line)
                 if match:
                     hypfuzz_data.append((match.group(1), float(match.group(2))))
+                    if int(float(match.group(2))) > 10:
+                        max_coverage = max(max_coverage, float(match.group(2)))
+                        min_coverage = min(min_coverage, float(match.group(2)))
     if args.analyze_bmcfuzz:
         with open(os.path.join(experiment_dir, "bmcfuzz.log"), "r") as f:
             lines = f.readlines()
@@ -235,6 +277,9 @@ def generate_graph(args):
                 match = match_pattern.match(line)
                 if match:
                     bmcfuzz_data.append((match.group(1), float(match.group(2))))
+                    if int(float(match.group(2))) > 10:
+                        max_coverage = max(max_coverage, float(match.group(2)))
+                        min_coverage = min(min_coverage, float(match.group(2)))
     
     xfuzz_times, xfuzz_coverages = prepare_data(xfuzz_data)
     pathfuzz_times, pathfuzz_coverages = prepare_data(pathfuzz_data)
@@ -248,15 +293,27 @@ def generate_graph(args):
     if args.analyze_xfuzz:
         # plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
         plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r')
+        # x, y = smooth_line(xfuzz_times, xfuzz_coverages)
+        # plt.plot(x, y, label='xfuzz', color='r')
+        # plt.scatter(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
     if args.analyze_pathfuzz:
         # plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g', marker='s')
         plt.plot(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g')
+        # x, y = smooth_line(pathfuzz_times, pathfuzz_coverages)
+        # plt.plot(x, y, label='pathfuzz', color='g')
+        # plt.scatter(pathfuzz_times, pathfuzz_coverages, label='pathfuzz', color='g', marker='s')
     if args.analyze_hypfuzz:
         # plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b', marker='^')
         plt.plot(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b')
+        # x, y = smooth_line(hypfuzz_times, hypfuzz_coverages)
+        # plt.plot(x, y, label='hypfuzz', color='b')
+        # plt.scatter(hypfuzz_times, hypfuzz_coverages, label='hypfuzz', color='b', marker='^')
     if args.analyze_bmcfuzz:
         # plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
         plt.plot(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple')
+        # x, y = smooth_line(bmcfuzz_times, bmcfuzz_coverages)
+        # plt.plot(x, y, label='bmcfuzz', color='purple')
+        # plt.scatter(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
 
     # 设置标题和标签
     plt.title("Fuzz Coverage", fontsize=14)
@@ -270,20 +327,26 @@ def generate_graph(args):
     # 显示图表
     plt.grid(True)
     plt.tight_layout()
-    plt.ylim(60, 88)
     # plt.show()
+    output_path = os.path.join(NOOP_HOME, "tmp", "exp", "output_full.png")
+    plt.savefig(output_path)
+
+    min_coverage = max(int(min_coverage)-5, 0)
+    max_coverage = min(int(max_coverage)+5, 100)
+    log_message(f"min_coverage: {min_coverage}, max_coverage: {max_coverage}")
+    plt.ylim(min_coverage, max_coverage)
     output_path = os.path.join(NOOP_HOME, "tmp", "exp", "output.png")
     plt.savefig(output_path)
 
 if __name__ == "__main__":
-    os.chdir(NOOP_HOME)
+    # os.chdir(NOOP_HOME)
     # clear_logs()
     log_init()
     
     parser = argparse.ArgumentParser()
 
     default_cover_type = "toggle"
-    default_time_out = 24 * 60 * 60
+    default_time_out = 19 * 60 * 60
     # default_time_out = 60
     default_time_interval = 20
     # default_time_interval = 2
@@ -315,6 +378,10 @@ if __name__ == "__main__":
 
     TIME_OUT = args.time_out
     TIME_INTERVAL = args.time_interval
+    end_hours = int(TIME_OUT / 3600)
+    end_minutes = int((TIME_OUT % 3600) / 60)
+    end_seconds = int(TIME_OUT % 60)
+    END_LINE = f"{end_hours:>3}h{end_minutes:>3}m{end_seconds:>3}s"
 
     if args.init:
         fuzz_init(args)

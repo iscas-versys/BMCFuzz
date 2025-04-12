@@ -313,10 +313,12 @@ class Scheduler:
         fuzz_args.corpus_input = os.getenv("CORPUS_DIR")
 
         fuzz_args.continue_on_errors = True
-        fuzz_args.insert_nop = True
         fuzz_args.only_fuzz = True
         
         fuzz_args.formal_cover_rate = self.coverage.get_formal_cover_rate()
+
+        fuzz_args.max_instr = 5000
+        fuzz_args.max_cycle = 5000
 
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file

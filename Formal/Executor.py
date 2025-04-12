@@ -264,7 +264,7 @@ class Executor:
                     step_data.append(line.strip().split(" ")[-1])
 
         if not self.run_snapshot:
-            step_data = step_data[1:]
+            step_data = step_data[2:]
                 
         with open(witness_output_path, 'w') as f:
             steps = len(step_data)

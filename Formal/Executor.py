@@ -262,6 +262,9 @@ class Executor:
             for line in lines:
                 if "rand_value" in line:
                     step_data.append(line.strip().split(" ")[-1])
+
+        if not self.run_snapshot:
+            step_data = step_data[1:]
                 
         with open(witness_output_path, 'w') as f:
             steps = len(step_data)

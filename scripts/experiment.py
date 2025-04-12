@@ -123,10 +123,10 @@ def do_bmc(args):
     fuzz_cmd = f"cd {NOOP_HOME} && source env.sh"
     if args.do_hypfuzz:
         fuzz_name = "hypfuzz"
-        fuzz_cmd += f" && python3 {NOOP_HOME}/ccover/Formal/Scheduler.py -c {args.cover_type}"
+        fuzz_cmd += f" && nohup python3 {NOOP_HOME}/ccover/Formal/Scheduler.py --cpu {args.cpu} -c {args.cover_type} 2> {NOOP_HOME}/tmp/test_err.log &"
     elif args.do_bmcfuzz:
         fuzz_name = "bmcfuzz"
-        fuzz_cmd += f" && python3 {NOOP_HOME}/ccover/BMCFuzz.py -f -d -c {args.cover_type}"
+        fuzz_cmd += f" && nohup python3 {NOOP_HOME}/ccover/BMCFuzz.py -f --cpu {args.cpu} -d -c {args.cover_type} 2> {NOOP_HOME}/tmp/test_err.log &"
     fuzz_cmd = f"bash -c \'{fuzz_cmd}\'"
     log_init(name=fuzz_name)
     log_message(f"Running {fuzz_name}")
@@ -137,6 +137,7 @@ def do_bmc(args):
     log_message("Output coverage")
     output_file = os.path.join(NOOP_HOME, "tmp", "exp", f"{fuzz_name}.log")
     with open(output_file, "w") as f:
+        f.write("  0h  0m  0s Coverage:  0.00%\n")
         f.write("\n".join(coverage_lines))
 
 def format_time_diff(time_diff):
@@ -347,19 +348,23 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
 
-    default_cover_type = "toggle"
     default_time_out = 24 * 60 * 60
     # default_time_out = 60
     default_time_interval = 20
     # default_time_interval = 2
 
+    default_cover_type = "toggle"
+    default_cpu = "rocket"
+
     default_output_dir = os.path.join(NOOP_HOME, "tmp", "exp")
     os.makedirs(default_output_dir, exist_ok=True)
 
-    parser.add_argument("--cover-type", "-c", type=str, default=default_cover_type, help="Coverage type")
     parser.add_argument("--time-out", "-to", type=int, default=default_time_out, help="Timeout")
     parser.add_argument("--time-interval", "-ti", type=int, default=default_time_interval, help="Time interval")
     parser.add_argument("--init", "-i", action='store_true', help="Initialize fuzzing")
+
+    parser.add_argument("--cover-type", "-c", type=str, default=default_cover_type, help="Coverage type")
+    parser.add_argument("--cpu", type=str, default=default_cpu, help="CPU type")
 
     parser.add_argument("--do-xfuzz", "-dx", action='store_true', help="Do xfuzz")
     parser.add_argument("--do-pathfuzz", "-dp", action='store_true', help="Do pathfuzz")

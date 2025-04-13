@@ -193,6 +193,7 @@ def generate_reset_snapshot(cover_type, reset_cycles):
     commands += f" --dump-csr-change"
     # commands += f" --no-diff"
     commands += f" > {NOOP_HOME}/tmp/reset.log"
+    commands = "bash -c '" + commands + "'"
     log_message("generate reset snapshot command:"+commands)
     ret = run_command(commands, shell=True)
     log_message("generate reset snapshot")

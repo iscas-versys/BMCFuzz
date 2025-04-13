@@ -309,6 +309,7 @@ class Executor:
         commands += f" --dump-footprints {footprints_file_path}"
         # commands += f" > dev/null 2>&1"
         commands += f" > {log_file_path} 2>&1"
+        commands = "bash -c '" + commands + "'"
 
         ret = run_command(commands, shell=True)
         if not self.debug:

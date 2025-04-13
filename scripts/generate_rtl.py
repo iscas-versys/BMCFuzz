@@ -182,7 +182,7 @@ def generate_reset_snapshot(cover_type, reset_cycles):
     os.makedirs(os.path.join(fuzz_run_dir, "csr_snapshot"), exist_ok=True)
     os.makedirs(os.path.join(fuzz_run_dir, "csr_wave"), exist_ok=True)
     
-    commands = f"{NOOP_HOME}/build/fuzzer"
+    commands = f"cd {NOOP_HOME} && source env.sh && ./build/fuzzer"
     commands += f" --auto-exit"
     commands += f" --"
     commands += f" {NOOP_HOME}/tmp/bin/reset.bin"
@@ -191,6 +191,7 @@ def generate_reset_snapshot(cover_type, reset_cycles):
     commands += f" --wave-path {NOOP_HOME}/tmp/run_wave.vcd"
     commands += f" --dump-reset-cycles {reset_cycles}"
     commands += f" --dump-csr-change"
+    # commands += f" --no-diff"
     commands += f" > {NOOP_HOME}/tmp/reset.log"
     log_message("generate reset snapshot command:"+commands)
     ret = run_command(commands, shell=True)

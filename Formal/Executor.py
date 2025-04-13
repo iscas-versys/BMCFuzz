@@ -294,7 +294,7 @@ class Executor:
         footprints_file_path = os.path.join(output_dir, f"cover_{cover_point}.footprints")
         log_file_path = os.path.join(output_dir, f"cover_{cover_point}.log")
 
-        commands = f"{NOOP_HOME}/build/fuzzer"
+        commands = f"cd {NOOP_HOME} && source env.sh && ./build/fuzzer"
         commands += f" --auto-exit"
         commands += f" -- {src_file_path}"
         if src_format == "witness":

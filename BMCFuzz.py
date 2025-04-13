@@ -111,6 +111,13 @@ class BMCFuzz:
         self.csr_transition_selector = CSRTransitionSelect()
         if not special_wave:
             self.csr_transition_selector.file_init(cpu, cover_type)
+        else:
+            csr_wave_dir = os.path.join(set_init_values_dir, 'csr_wave')
+            csr_snapshot_dir = os.path.join(set_init_values_dir, 'csr_snapshot')
+            reset_wave_file = os.path.join(set_init_values_dir, f'rtl_src/{cpu}/reset_{cover_type}.vcd')
+            reset_snapshot_file = os.path.join(set_init_values_dir, f'rtl_src/{cpu}/reset_snapshot')
+            shutil.copyfile(reset_wave_file, os.path.join(csr_wave_dir, '0.vcd'))
+            shutil.copyfile(reset_snapshot_file, os.path.join(csr_snapshot_dir, '0'))
         log_message("End CSR Transition Selector Init")
 
         """ Formal """

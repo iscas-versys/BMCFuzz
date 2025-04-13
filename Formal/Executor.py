@@ -127,7 +127,7 @@ class Executor:
                     self.generate_footprint(cover, hexbin_dir, src_format="bin")
                 elif self.mode == "sat":
                     log_message(f"开始解析文件: {witness_file_path}", print_message=False)
-                    self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
+                    # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
                     # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                     self.parse_witness_file(cover, witness_file_path, hexbin_dir)
                     self.generate_footprint(cover, hexbin_dir, src_format="witness")

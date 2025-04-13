@@ -226,7 +226,7 @@ class Scheduler:
 
         self.point_selector.init(module_id, self.point2module)
 
-        self.executor.init(cpu, run_snapshot, self.solver_mode)
+        self.executor.init(cpu, cover_type, run_snapshot, self.solver_mode)
 
         generate_empty_cover_points_file(point_id)
     

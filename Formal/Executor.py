@@ -20,6 +20,7 @@ class Executor:
     mode = ""
 
     cpu = ""
+    cover_type = ""
 
     env_path = ""
     cover_tasks_dir = ""
@@ -46,8 +47,9 @@ class Executor:
         ],
     }
 
-    def init(self, cpu, run_snapshot, mode, debug=False):
+    def init(self, cpu, cover_type, run_snapshot, mode, debug=False):
         self.cpu = cpu
+        self.cover_type = cover_type
         self.run_snapshot = run_snapshot
         self.env_path = str(os.getenv("OSS_CAD_SUITE_HOME"))
         self.cover_tasks_dir = str(os.getenv("COVER_POINTS_OUT"))
@@ -125,7 +127,7 @@ class Executor:
                     self.generate_footprint(cover, hexbin_dir, src_format="bin")
                 elif self.mode == "sat":
                     log_message(f"开始解析文件: {witness_file_path}", print_message=False)
-                    # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
+                    self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
                     # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                     self.parse_witness_file(cover, witness_file_path, hexbin_dir)
                     self.generate_footprint(cover, hexbin_dir, src_format="witness")
@@ -296,6 +298,7 @@ class Executor:
 
         commands = f"cd {NOOP_HOME} && source env.sh && ./build/fuzzer"
         commands += f" --auto-exit"
+        commands += f" -c firrtl.{self.cover_type}"
         commands += f" -- {src_file_path}"
         if src_format == "witness":
             commands += f" --as-witness"
@@ -334,17 +337,18 @@ if __name__ == "__main__":
 
     # sample_cover_points = [1939, 8826]
     # sample_cover_points = [14350]
-    sample_cover_points = [1180]
+    sample_cover_points = [142]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
     run_snapshot = True
     # run_snapshot = False
     snapshot_id = 0
-    cpu = "nutshell"
-    # cpu = "rocket"
+    # cpu = "nutshell"
+    cpu = "rocket"
     # cpu = "boom"
-    cover_type = "toggle"
+    # cover_type = "toggle"
     # cover_type = "line"
+    cover_type = "control"
     solver_mode = "sat"
     snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
 
@@ -352,7 +356,7 @@ if __name__ == "__main__":
     generate_sby_files(sample_cover_points, cpu, solver_mode)
 
     executor = Executor()
-    executor.init(cpu, run_snapshot, solver_mode, debug=True)
+    executor.init(cpu, cover_type, run_snapshot, solver_mode, debug=True)
     executor.set_snapshot_id(snapshot_id, snapshot_file)
     cover_cases, execute_time = executor.run(sample_cover_points)
     print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")

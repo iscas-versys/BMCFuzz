@@ -16,7 +16,7 @@ formal_dir = ""
 init_dir = ""
 
 def rtl_init(args):
-    os.mkdir(os.path.join(NOOP_HOME, "tmp"), exist_ok=True)
+    os.makedirs(os.path.join(NOOP_HOME, "tmp", "bin"), exist_ok=True)
     # 生成build目录
     build_command = f"cd {NOOP_HOME} && source env.sh && unset VERILATOR_ROOT && make clean"
     build_command += f" && make emu REF=$(pwd)/ready-to-run/riscv64-spike-so BMCFUZZ=1 FIRRTL_COVER={args.cover_type} EMU_TRACE=1 EMU_SNAPSHOT=1 -j16 > tmp/make_fuzzer.log 2>&1"

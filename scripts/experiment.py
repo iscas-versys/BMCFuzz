@@ -49,7 +49,6 @@ def run_and_capture_output(cmd):
                 coverage_lines.append(cover_message)
             
             if elapsed_time > TIME_OUT:
-                coverage_lines.append(end_line)
                 log_message("Process timeout, terminating")
                 kill_process_and_children(process.pid)
                 break
@@ -63,6 +62,7 @@ def run_and_capture_output(cmd):
         log_message(f"Error: {e}")
         kill_process_and_children(process.pid)
     finally:
+        coverage_lines.append(end_line)
         log_message("Closing process")
         process.stdout.close()
         process.stderr.close()

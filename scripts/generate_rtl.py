@@ -185,6 +185,7 @@ def generate_reset_snapshot(cover_type, reset_cycles):
     
     commands = f"cd {NOOP_HOME} && source env.sh && ./build/fuzzer"
     commands += f" --auto-exit"
+    commands += f" -c firrtl.{cover_type}"
     commands += f" --"
     commands += f" {NOOP_HOME}/tmp/bin/reset.bin"
     commands += f" -C 500"

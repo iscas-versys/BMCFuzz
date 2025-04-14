@@ -127,6 +127,9 @@ def do_bmc(args):
     elif args.do_bmcfuzz:
         fuzz_name = "bmcfuzz"
         fuzz_cmd += f" && nohup python3 {NOOP_HOME}/ccover/BMCFuzz.py -f --cpu {args.cpu} -d -c {args.cover_type} 2> {NOOP_HOME}/tmp/test_err.log &"
+    elif args.do_allbmc:
+        fuzz_name = "allbmc"
+        fuzz_cmd += f" && nohup python3 {NOOP_HOME}/ccover/Formal/Scheduler.py -tf --cpu {args.cpu} -c {args.cover_type} 2> {NOOP_HOME}/tmp/test_err.log &"
     fuzz_cmd = f"bash -c \'{fuzz_cmd}\'"
     log_init(name=fuzz_name)
     log_message(f"Running {fuzz_name}")
@@ -371,6 +374,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--do-hypfuzz", "-dh", action='store_true', help="Do hypfuzz")
     parser.add_argument("--do-bmcfuzz", "-db", action='store_true', help="Do bmcfuzz")
+    parser.add_argument("--do-allbmc", "-da", action='store_true', help="Do allfuzz")
 
     parser.add_argument("--analyze-log", "-al", action='store_true', help="Analyze log")
     parser.add_argument("--log-file", "-lf", type=str, help="Log file")
@@ -396,7 +400,7 @@ if __name__ == "__main__":
     if args.do_xfuzz or args.do_pathfuzz:
         do_fuzz(args)
 
-    if args.do_hypfuzz or args.do_bmcfuzz:
+    if args.do_hypfuzz or args.do_bmcfuzz or args.do_allbmc:
         do_bmc(args)
     
     if args.analyze_log:

@@ -191,6 +191,9 @@ class Scheduler:
 
     solver_mode = "sat"
 
+    # debug
+    covered_points = []
+
     def init(self, cpu, cover_type, run_snapshot=False):
         log_message("Scheduler init")
         log_message("cpu: " + cpu)
@@ -285,6 +288,7 @@ class Scheduler:
             cover_cases, time_cost = self.executor.run(cover_points)
             if len(cover_cases) > 0:
                 log_message(f"发现新case: {cover_cases}")
+                self.covered_points = cover_cases
                 break
             else:
                 log_message("未发现新case,重新选点")
@@ -297,8 +301,8 @@ class Scheduler:
 
         # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
-        if test_formal:
-            self.coverage.update_formal(cover_cases)
+        # if test_formal:
+        #     self.coverage.update_formal(cover_cases)
         self.coverage.update_formal_cover_rate(len(cover_cases), time_cost)
 
         return True
@@ -372,6 +376,44 @@ class Scheduler:
         return_code = run_command(fuzz_command, shell=True)
         log_message(f"Fuzz return code: {return_code}")
     
+    def run_formal_fuzz(self):
+        corpus_input = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "hexbin")
+        formal_fuzz_log = os.path.join(NOOP_HOME, "tmp", "fuzz.log")
+
+        fuzz_command = f"cd {NOOP_HOME} && source env.sh && build/fuzzer -c firrtl.{self.cover_type} --"
+        fuzz_extra_command = " --as-footprints"
+        fuzz_extra_command += f" -I 300"
+        fuzz_extra_command += f" -C 300"
+        fuzz_extra_command += f" --fuzz-id 0"
+        fuzz_extra_command += f" --no-diff"
+        fuzz_extra_command += f" >> {formal_fuzz_log} 2>&1"
+
+        with open(formal_fuzz_log, mode='w', encoding='utf-8') as file:
+            file.write(f"Formal Fuzz log\n")
+            file.write(f"Fuzz command: {fuzz_command}\n")
+            file.write(f"Fuzz extra command: {fuzz_extra_command}\n")
+            file.write("==============================================\n\n\n")
+        
+        covered_points = [0 for _ in range(len(self.points_name))]
+        with os.scandir(corpus_input) as entries:
+            for entry in entries:
+                if entry.name.endswith(".footprints"):
+                    commands = f"bash -c \'{fuzz_command} -- {entry.path} {fuzz_extra_command}\'"
+                    log_message(f"Formal Fuzz command: {commands}")
+                    ret_code = run_command(commands, shell=True)
+                    log_message(f"Formal Fuzz return code: {ret_code}")
+                    coverage_file_path = os.path.join(NOOP_HOME, "tmp", "sim_run_cover_points.csv")
+                    with open(coverage_file_path, mode='r', newline='', encoding='utf-8') as file:
+                        csv_reader = csv.DictReader(file)
+                        for row in csv_reader:
+                            covered_points[int(row['Index'])] = int(row['Covered'])
+        coverage_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_points.csv")
+        with open(coverage_file_path, mode='w', newline='', encoding='utf-8') as file:
+            csv_writer = csv.writer(file)
+            csv_writer.writerow(["Index", "Covered"])
+            for point, covered in enumerate(covered_points):
+                csv_writer.writerow([point, covered])
+        
     def display_coverage(self):
         self.coverage.display_coverage()
 
@@ -428,6 +470,13 @@ class Scheduler:
                 if int(row['Covered']) == 1:
                     covered_num += 1
                 cover_points.append(int(row['Covered']))
+        
+        not_covered_points = []
+        for point in self.covered_points:
+            if cover_points[point] == 0:
+                not_covered_points.append(point)
+        if len(not_covered_points) > 0:
+            log_message(f"Not covered points({len(not_covered_points)}): {not_covered_points}")
 
         new_covered_points = self.coverage.update_fuzz(cover_points)
         fuzz_covered_num = len(new_covered_points)
@@ -472,12 +521,12 @@ def test_formal(args=None):
     time.sleep(10)
     log_message("Start formal.")
     
-    while(True):
-        if not scheduler.run_formal(True):
-            log_message("Exit: no more points to cover.")
-            scheduler.display_coverage()
-            break
-        scheduler.display_coverage()
+    scheduler.run_formal(True)
+    scheduler.run_formal_fuzz()
+    scheduler.update_coverage()
+    scheduler.output_uncovered_points()
+    scheduler.display_coverage()
+    log_message("Formal end.")
 
 def run(args=None):
     # 初始化log
@@ -506,9 +555,14 @@ if __name__ == "__main__":
     parser.add_argument('--cpu', '-p', type=str, default="rocket")
     parser.add_argument('--cover_type', '-c', type=str, default="toggle")
 
+    parser.add_argument('--test-formal', '-tf', action='store_true')
+
     args = parser.parse_args()
 
-    run(args)
+    if args.test_formal:
+        test_formal(args)
+    else:
+        run(args)
     # generate_empty_cover_points_file()
     # test_fuzz()
     # test_formal(args)

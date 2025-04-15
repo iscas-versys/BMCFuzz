@@ -179,12 +179,17 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
     # multiclock -> glb_clk
     # if cpu == "rocket" or cpu == "boom":
     log_message("change multiclock to glb_clk")
-    clock_pattern = re.compile(r'\(posedge (\w+)\)')
+    clock_pattern = re.compile(r'\(posedge (\w+)\)|\(posedge (\w+) or')
     for index, line in enumerate(lines):
         clock_match = clock_pattern.search(line)
         if clock_match:
-            # log_message(f"clock_match: {clock_match.group(1)}", False)
-            lines[index] = re.sub(clock_pattern, '(posedge glb_clk)', line)
+            if clock_match.group(1) is not None:
+                pre_clock = clock_match.group(1)
+            else:
+                pre_clock = clock_match.group(2)
+            # log_message(f"clock_match: {pre_clock}", False)
+            lines[index] = lines[index].replace(pre_clock, 'glb_clk')
+            # lines[index] = re.sub(clock_pattern, '(posedge glb_clk)', line)
     
     new_lines = []
     cover_block_begin_pattern = re.compile(f'GEN_w(\d+)_{cover_type}.*{cover_type}_(\d+)')

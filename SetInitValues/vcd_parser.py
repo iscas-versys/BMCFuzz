@@ -26,8 +26,10 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net, cpu):
         cache_tag_pattern = re.compile(r"cache\.tag_array_\d+\[\d+\]")
         tlb_tag_pattern = re.compile(r"ptw\.tags|tag_vpn")
     elif cpu == "boom":
-        cache_tag_pattern = None
-        tlb_tag_pattern = None
+        # icache\.tag_array_0\[\d+\]\[\d+:\d+\]|dcache\.meta_\d+\.tag_array_\d+\[\d+\]\[\d+:\d+\]
+        cache_tag_pattern = re.compile(r"icache\.tag_array_0\[\d+\]\[\d+:\d+\]|dcache\.meta_\d+\.tag_array_\d+\[\d+\]\[\d+:\d+\]")
+        # tag_vpn|dtlb.*entry_tag\[\d+:\d+\]|dtlb.*entries_\d+_tag\[\d+:\d+\]
+        tlb_tag_pattern = re.compile(r"tag_vpn|dtlb.*entry_tag\[\d+:\d+\]|dtlb.*entries_\d+_tag\[\d+:\d+\]")
     else:
         cache_tag_pattern = None
         tlb_tag_pattern = None

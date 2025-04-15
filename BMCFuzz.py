@@ -41,6 +41,9 @@ class BMCFuzz:
     scheduler = None
 
     cover_type = None
+
+    # debug
+    test_coverage = False
     
     def init(self, cpu, cover_type, special_wave=False):
         self.cpu = cpu
@@ -197,6 +200,8 @@ class BMCFuzz:
 
         fuzz_args.dump_csr = True
         fuzz_args.dump_wave = True
+
+        fuzz_args.no_diff = self.test_coverage
 
         fuzz_args.as_footprints = True
         if fuzz_args.as_footprints:

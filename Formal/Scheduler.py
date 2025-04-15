@@ -193,6 +193,7 @@ class Scheduler:
 
     # debug
     covered_points = []
+    test_coverage = False
 
     def init(self, cpu, cover_type, run_snapshot=False):
         log_message("Scheduler init")
@@ -324,6 +325,8 @@ class Scheduler:
         fuzz_args.max_instr = 5000
         fuzz_args.max_cycle = 5000
 
+        fuzz_args.no_diff = self.test_coverage
+
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
 
@@ -359,6 +362,8 @@ class Scheduler:
 
         fuzz_args.dump_csr = True
         fuzz_args.dump_wave = True
+
+        fuzz_args.no_diff = self.test_coverage
 
         fuzz_args.snapshot_id = self.snapshot_id
 

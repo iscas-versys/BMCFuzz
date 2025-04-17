@@ -15,8 +15,8 @@ def convert_netinfo_to_custom_format(netinfo, net_id, net, cpu):
     last_value = last_time_value[1]
 
     # 修改cycleCnt[63:0]和instrCnt[63:0]的值
-    # if name == "cycleCnt[63:0]" or name == "instrCnt[63:0]":
-    #     last_value = 0
+    if name == "cycleCnt[63:0]" or name == "instrCnt[63:0]":
+        last_value = 0
     full_name = f"{hier}.{name}"
 
     if cpu == "nutshell":

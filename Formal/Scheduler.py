@@ -330,7 +330,7 @@ class Scheduler:
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file
 
-        fuzz_args.as_footprints = True
+        # fuzz_args.as_footprints = True
 
         self.clean_fuzz_run()
 
@@ -367,7 +367,7 @@ class Scheduler:
 
         fuzz_args.snapshot_id = self.snapshot_id
 
-        fuzz_args.as_footprints = True
+        # fuzz_args.as_footprints = True
 
         fuzz_args.make_log_file = make_log_file
         fuzz_args.output_file = fuzz_log_file

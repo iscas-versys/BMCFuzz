@@ -130,7 +130,8 @@ class Executor:
                     # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
                     # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                     self.parse_witness_file(cover, witness_file_path, hexbin_dir)
-                    self.generate_footprint(cover, hexbin_dir, src_format="witness")
+                    self.generate_memory(cover, hexbin_dir, src_format="witness", dst_format="bin")
+                    # self.generate_memory(cover, hexbin_dir, src_format="witness", dst_format="footprints")
                 cover_point = cover
             else:
                 log_message(f"witness文件不存在: {witness_file_path}", print_message=False)
@@ -288,12 +289,18 @@ class Executor:
                     log_message(f"Step {step}: {lower_32} {upper_32}", print_message=False)
                     # log_message(f"bits: {bits}")
 
-    def generate_footprint(self, cover_point, output_dir, src_format="bin"):
+    def generate_memory(self, cover_point, output_dir, src_format="bin", dst_format="footprints"):
         if src_format == "bin":
             src_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
         elif src_format == "witness":
             src_file_path = os.path.join(output_dir, f"cover_{cover_point}.witness")
-        footprints_file_path = os.path.join(output_dir, f"cover_{cover_point}.footprints")
+        if dst_format == "footprints":
+            dst_file_path = os.path.join(output_dir, f"cover_{cover_point}.footprints")
+        elif dst_format == "bin":
+            dst_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
+        if src_format == dst_format:
+            log_message(f"源文件格式与目标文件格式相同, 无需转换: {src_file_path} -> {dst_file_path}", print_message=False)
+            return 0
         log_file_path = os.path.join(output_dir, f"cover_{cover_point}.log")
 
         commands = f"cd {NOOP_HOME} && source env.sh && ./build/fuzzer"
@@ -309,7 +316,10 @@ class Executor:
         if self.run_snapshot:
             commands += " --run-snapshot"
             commands += f" --load-snapshot {self.snapshot_file}"
-        commands += f" --dump-footprints {footprints_file_path}"
+        if dst_format == "bin":
+            commands += f" --dump-linearized {dst_file_path}"
+        elif dst_format == "footprints":
+            commands += f" --dump-footprints {dst_file_path}"
         # commands += f" > dev/null 2>&1"
         commands += f" > {log_file_path} 2>&1"
         commands = "bash -c '" + commands + "'"
@@ -318,14 +328,14 @@ class Executor:
         if not self.debug:
             os.remove(f"{src_file_path}")
             os.remove(f"{log_file_path}")
-        log_message(f"已生成footprints文件: {footprints_file_path}", print_message=False)
+        log_message(f"已生成memory文件: {dst_file_path}", print_message=False)
 
-        with open(footprints_file_path, "r+b") as f:
+        with open(dst_file_path, "r+b") as f:
             data = f.read()
             if len(data) == 0:
                 data = b"\x13\x00\x00\x00"
                 f.write(data)
-                log_message(f"footprints文件为空, 写入默认数据: {data}", print_message=False)
+                log_message(f"memory文件为空, 写入默认数据: {data}", print_message=False)
 
         return 0
 
@@ -337,18 +347,18 @@ if __name__ == "__main__":
 
     # sample_cover_points = [1939, 8826]
     # sample_cover_points = [14350]
-    sample_cover_points = [142]
+    sample_cover_points = [8697]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
-    run_snapshot = True
-    # run_snapshot = False
+    # run_snapshot = True
+    run_snapshot = False
     snapshot_id = 0
     # cpu = "nutshell"
-    cpu = "rocket"
-    # cpu = "boom"
-    # cover_type = "toggle"
+    # cpu = "rocket"
+    cpu = "boom"
+    cover_type = "toggle"
     # cover_type = "line"
-    cover_type = "control"
+    # cover_type = "control"
     solver_mode = "sat"
     snapshot_file = os.path.join(BMCFUZZ_HOME, "SetInitValues", "csr_snapshot", f"{snapshot_id}")
 

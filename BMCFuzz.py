@@ -203,7 +203,7 @@ class BMCFuzz:
 
         fuzz_args.no_diff = self.test_coverage
 
-        fuzz_args.as_footprints = True
+        # fuzz_args.as_footprints = True
         if fuzz_args.as_footprints:
             fuzz_args.corpus_input = os.getenv("FOOTPRINTS_CORPUS")
         else:

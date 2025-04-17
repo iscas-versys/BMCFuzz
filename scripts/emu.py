@@ -71,6 +71,9 @@ def run_emu(args):
         # os.makedirs(footprints_path)
         commands += f" --dump-footprints {args.footprints_path}"
     
+    if args.dump_linearized:
+        commands += f" --dump-linearized {args.linearized_path}"
+    
     if args.as_footprints:
         commands += " --as-footprints"
     
@@ -163,6 +166,8 @@ if __name__ == "__main__":
     parser.add_argument("--dump-csr", "-dc", action='store_true', help="Dump CSR")
     parser.add_argument("--dump-footprints", "-df", action='store_true', help="Dump footprints")
     parser.add_argument("--footprints-path", "-fp", type=str, default=default_footprints_path, help="Footprints path")
+    parser.add_argument("--dump-linearized", "-dl", action='store_true', help="Dump linearized")
+    parser.add_argument("--linearized-path", "-lp", type=str, default=default_footprints_path, help="Linearized path")
 
     parser.add_argument("--use-asm-test", "-ua", action='store_true', help="Use asm test bin")
     parser.add_argument("--make-fuzzer", "-mf", action='store_true', help="Make fuzzer")

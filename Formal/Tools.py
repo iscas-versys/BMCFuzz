@@ -300,8 +300,8 @@ def generate_sby_files(cover_points, cpu, mode):
         default_depth = 75
         default_timeout = 3 * 60 * 60
     elif cpu == "boom":
-        default_depth = 120
-        default_timeout = 3 * 60 * 60
+        default_depth = 75
+        default_timeout = 4 * 60 * 60
     else:
         default_depth = 50
         default_timeout = 1 * 60 * 60

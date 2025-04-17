@@ -18,8 +18,8 @@ module MemRWHelper(
 // 由于是2GiB内存 相当于只考虑r_index % RAM_ITEMS
 reg [`MAX_CACHE_LINES-1:0] cache_valid = 0; // 有效位
 reg [`MAX_CACHE_INDEX-1:0] cache_index = 0; // 未hit时写入的位置
-reg [`RAM_DATA_WIDTH-1:0]  cache_data[0:`MAX_CACHE_LINES]; // 数据
-reg [`RAM_ADDR_WIDTH-1:0]  cache_tag [0:`MAX_CACHE_LINES]; // 25位
+reg [`RAM_DATA_WIDTH-1:0]  cache_data[0:`MAX_CACHE_LINES-1]; // 数据
+reg [`RAM_ADDR_WIDTH-1:0]  cache_tag [0:`MAX_CACHE_LINES-1]; // 25位
 
 // TODO: change cache tag to suitable for 2GiB memory address
 (* keep *) rand reg [`RAM_DATA_WIDTH-1:0] rand_value;

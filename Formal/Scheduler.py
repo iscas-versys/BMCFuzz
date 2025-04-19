@@ -386,6 +386,7 @@ class Scheduler:
         formal_fuzz_log = os.path.join(NOOP_HOME, "tmp", "fuzz.log")
 
         fuzz_command = f"cd {NOOP_HOME} && source env.sh && build/fuzzer -c firrtl.{self.cover_type} --"
+        fuzz_extra_command = " "
         # fuzz_extra_command = " --as-footprints"
         fuzz_extra_command += f" -I 300"
         fuzz_extra_command += f" -C 300"

@@ -220,6 +220,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--generate-cover-name", '-g', action='store_true', help="Generate cover name file")
     
+    parser.add_argument("--merge-csv", '-m', action='store_true', help="Merge csv files")
     parser.add_argument("--parse-name", '-pn', action='store_true', help="Parse cover name file")
     parser.add_argument("--parse-covered", '-pc', action='store_true', help="Parse covered log")
     parser.add_argument("--parse-uncovered", '-pu', action='store_true', help="Parse uncovered log")
@@ -233,6 +234,10 @@ if __name__ == "__main__":
     if args.generate_cover_name:
         generage_cover_name_file()
 
+    if args.merge_csv:
+        input_dir = os.path.dirname(args.file1)
+        output_file = os.path.join(NOOP_HOME, "tmp", "merged.csv")
+        merge_csv_files(input_dir, output_file)
     if args.parse_name:
         parse_cover_name(args.file1)
     if args.parse_covered:

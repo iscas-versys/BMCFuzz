@@ -386,7 +386,7 @@ class Scheduler:
         formal_fuzz_log = os.path.join(NOOP_HOME, "tmp", "fuzz.log")
 
         fuzz_command = f"cd {NOOP_HOME} && source env.sh && build/fuzzer -c firrtl.{self.cover_type} --"
-        fuzz_extra_command = " --as-footprints"
+        # fuzz_extra_command = " --as-footprints"
         fuzz_extra_command += f" -I 300"
         fuzz_extra_command += f" -C 300"
         fuzz_extra_command += f" --fuzz-id 0"
@@ -402,7 +402,7 @@ class Scheduler:
         covered_points = [0 for _ in range(len(self.points_name))]
         with os.scandir(corpus_input) as entries:
             for entry in entries:
-                if entry.name.endswith(".footprints"):
+                if entry.name.endswith(".footprints") or entry.name.endswith(".bin"):
                     commands = f"bash -c \'{fuzz_command} -- {entry.path} {fuzz_extra_command}\'"
                     log_message(f"Formal Fuzz command: {commands}")
                     ret_code = run_command(commands, shell=True)

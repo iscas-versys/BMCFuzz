@@ -9,6 +9,31 @@ from runtools import NOOP_HOME, BMCFUZZ_HOME
 
 MAX_COVER_POINTS = 0
 
+def merge_csv_files(input_dir, output_file):
+    point2name = parse_cover_name_file()
+
+    cover_points = [0 for _ in range(MAX_COVER_POINTS)]
+    with os.scandir(input_dir) as entries:
+        for entry in entries:
+            if entry.name.endswith(".csv"):
+                with open(entry.path, mode='r', newline='', encoding='utf-8') as file:
+                    csv_reader = csv.DictReader(file)
+                    for row in csv_reader:
+                        if int(row['Covered']) == 1:
+                            cover_points[int(row['Index'])] = 1
+    covered = sum(cover_points)
+
+    with open(output_file, "w", newline='', encoding='utf-8') as file:
+        field_name = ['Index', 'Covered', 'Name']
+        csv_writer = csv.DictWriter(file, fieldnames=field_name)
+        csv_writer.writeheader()
+        
+        for i in range(MAX_COVER_POINTS):
+            csv_writer.writerow({'Index': i, 'Covered': cover_points[i], 'Name': point2name[i]})
+        
+    print(f"Merged CSV file created at: {output_file}")
+    print(f"Covered points: {covered}/ {MAX_COVER_POINTS} {covered / MAX_COVER_POINTS * 100:.2f}%")
+
 def generage_cover_name_file():
     firrtl_cover_file = os.path.join(NOOP_HOME, "build", "generated-src", "firrtl-cover.cpp")
     cover_name_file = os.path.join(BMCFUZZ_HOME, "scripts", "cover_name.dat")

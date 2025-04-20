@@ -57,7 +57,6 @@ class Executor:
 
         self.debug = debug
 
-        # 加载OSS CAD Suite环境
         log_message(f"try to load env: {self.env_path}")
         env_command = f"bash -c 'source {self.env_path} && env'"
         env_vars = run_command(env_command, shell=True)
@@ -80,16 +79,15 @@ class Executor:
             with tqdm(total=len(futures), desc="Processing covers") as pbar:
                 for future in as_completed(futures):
                     cover = futures[future]
-                    # log_message(f"cover_{cover}执行完成")
                     try:
                         if future.result() != -1:
                             cover_cases.append(cover)
                         # print("result:", future.result())
                     except Exception as e:
-                        log_message(f"cover_{cover} 任务执行失败: {e}")
+                        log_message(f"cover_{cover} task failed: {e}")
                     pbar.update(1)
         end_time = time.time()
-        log_message(f"任务执行完成, 耗时: {end_time - strat_time:.2f} 秒, 共发现 {len(cover_cases)} 个case")
+        log_message(f"All tasks completed, total time: {end_time - strat_time:.2f} seconds, found {len(cover_cases)} cases", print_message=False)
 
         return (cover_cases, end_time - strat_time)
 
@@ -105,7 +103,7 @@ class Executor:
         st_time = time.time()
         return_code = run_command(sby_command, shell=True)
         ed_time = time.time()
-        log_message(f"cover_{cover} sby执行完成, 耗时: {ed_time - st_time:.2f} 秒", print_message=False)
+        log_message(f"cover_{cover} sby finished, time: {ed_time - st_time:.2f} seconds, return code: {return_code}", print_message=False)
 
         cover_point = -1
         cover_dir = os.path.join(self.cover_tasks_dir, f"cover_{cover}")
@@ -114,7 +112,7 @@ class Executor:
         if self.mode == "sat":
             pass_code = 2
         if return_code == pass_code:
-            log_message(f"发现case: cover_{cover}", print_message=False)
+            log_message(f"found case: cover_{cover}", print_message=False)
             v_file_path = os.path.join(cover_dir, "engine_0", "trace0_tb.v")
             vcd_file_path = os.path.join(cover_dir, "engine_0", "trace0.vcd")
             witness_file_path = os.path.join(cover_dir, "engine_0", "trace0_aiw.yw")
@@ -122,11 +120,11 @@ class Executor:
             if os.path.exists(witness_file_path) or os.path.exists(vcd_file_path):
                 # self.parse_v_file(cover, v_file_path, hexbin_dir)
                 if self.mode == "smt":
-                    log_message(f"开始解析文件: {vcd_file_path}", print_message=False)
+                    log_message(f"parse vcd file: {vcd_file_path}", print_message=False)
                     self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
                     self.generate_footprint(cover, hexbin_dir, src_format="bin")
                 elif self.mode == "sat":
-                    log_message(f"开始解析文件: {witness_file_path}", print_message=False)
+                    log_message(f"parse witness file: {witness_file_path}", print_message=False)
                     # self.parse_vcd_file(cover, vcd_file_path, hexbin_dir)
                     # self.generate_footprint(cover, hexbin_dir, src_format="bin")
                     self.parse_witness_file(cover, witness_file_path, hexbin_dir)
@@ -134,9 +132,9 @@ class Executor:
                     # self.generate_memory(cover, hexbin_dir, src_format="witness", dst_format="footprints")
                 cover_point = cover
             else:
-                log_message(f"witness文件不存在: {witness_file_path}", print_message=False)
+                log_message(f"No BMC output!", print_message=False)
         else:
-            log_message(f"未发现case: cover_{cover}, 返回值: {return_code}", print_message=False)
+            log_message(f"case({cover}) not covered, return code: {return_code}", print_message=False)
         
         if not self.debug:
             if os.path.exists(f"{self.cover_tasks_dir}/cover_{cover}.sby"):
@@ -194,7 +192,7 @@ class Executor:
                     current_addr = addr
                 output_file.write(memory_map[addr])
                 current_addr += 8
-        log_message(f"已解析并保存bin文件: {output_file_path}", print_message=False)
+        log_message(f"parse and save bin file: {output_file_path}", print_message=False)
 
     def parse_vcd_file(self, cover_no, vcd_file_path, output_dir):
         os.makedirs(output_dir, exist_ok=True)
@@ -299,7 +297,7 @@ class Executor:
         elif dst_format == "bin":
             dst_file_path = os.path.join(output_dir, f"cover_{cover_point}.bin")
         if src_format == dst_format:
-            log_message(f"源文件格式与目标文件格式相同, 无需转换: {src_file_path} -> {dst_file_path}", print_message=False)
+            log_message(f"the same format, no need to convert: {src_file_path} -> {dst_file_path}", print_message=False)
             return 0
         log_file_path = os.path.join(output_dir, f"cover_{cover_point}.log")
 
@@ -328,14 +326,14 @@ class Executor:
         if not self.debug:
             os.remove(f"{src_file_path}")
             os.remove(f"{log_file_path}")
-        log_message(f"已生成memory文件: {dst_file_path}", print_message=False)
+        log_message(f"generate memory file: {dst_file_path}", print_message=False)
 
         with open(dst_file_path, "r+b") as f:
             data = f.read()
             if len(data) == 0:
                 data = b"\x13\x00\x00\x00"
                 f.write(data)
-                log_message(f"memory文件为空, 写入默认数据: {data}", print_message=False)
+                log_message(f"empty memory file, write default data: {data}", print_message=False)
 
         return 0
 
@@ -347,15 +345,15 @@ if __name__ == "__main__":
 
     # sample_cover_points = [1939, 8826]
     # sample_cover_points = [14350]
-    sample_cover_points = [8697]
+    sample_cover_points = [2730, 623]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
-    # run_snapshot = True
-    run_snapshot = False
+    run_snapshot = True
+    # run_snapshot = False
     snapshot_id = 0
     # cpu = "nutshell"
-    # cpu = "rocket"
-    cpu = "boom"
+    cpu = "rocket"
+    # cpu = "boom"
     cover_type = "toggle"
     # cover_type = "line"
     # cover_type = "control"
@@ -369,7 +367,7 @@ if __name__ == "__main__":
     executor.init(cpu, cover_type, run_snapshot, solver_mode, debug=True)
     executor.set_snapshot_id(snapshot_id, snapshot_file)
     cover_cases, execute_time = executor.run(sample_cover_points)
-    print(f"共发现 {len(cover_cases)} 个case, 耗时: {execute_time:.6f} 秒")
+    print(f"total covered cases: {len(cover_cases)}, time cost: {execute_time:.6f} s")
     print("cover_cases:", cover_cases)
     # v_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_9226", "engine_0", "trace0_tb.v")
     # vcd_file_path = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "cover_9226", "engine_0", "trace0.vcd")

@@ -58,11 +58,9 @@ class Coverage:
         log_message(f"Total Coverage: {self.get_coverage()*100:.2f}%")
 
     def generate_cover_file(self):
-        # 获取环境变量
         cover_points_out = str(os.getenv("COVER_POINTS_OUT"))
         cover_points_file_path = cover_points_out + "/cover_points.csv"
 
-        # 检查文件是否存在, 如果存在则删除
         if os.path.exists(cover_points_file_path):
             os.remove(cover_points_file_path)
 

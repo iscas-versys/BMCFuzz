@@ -206,7 +206,6 @@ class Scheduler:
         self.cpu = cpu
         self.cover_type = cover_type
         
-        # 初始化Coverage和PointSelector
         log_message("Init Coverage and PointSelector")
         # False for BMCFuzz init
         cover_points_name = generate_rtl_files(False, cpu, cover_type, self.solver_mode)
@@ -255,16 +254,13 @@ class Scheduler:
             loop_count += 1
             log_message(f"Hybrid Loop {loop_count}")
 
-            # 选点并执行formal任务
             if not self.run_formal():
                 self.coverage.display_coverage()
                 log_message("Hybrid Loop End:No more cover points!")
                 break
 
-            # 执行fuzz任务
             self.run_fuzz()
 
-            # 获取fuzz结果并更新Coverage、PointSelector
             self.update_coverage()
 
             self.output_uncovered_points()
@@ -280,27 +276,23 @@ class Scheduler:
         cover_points = self.point_selector.generate_cover_points()
         self.output_points_stats(cover_points)
         while(True):
-            # 清理并重新生成cover points文件
             clean_cover_files()
             generate_sby_files(cover_points, self.cpu, self.solver_mode)
 
-            # 执行cover任务
-            snapshot_file = os.path.join(BMCFUZZ_HOME, 'SetInitValues', 'csr_snapshot', f"{self.snapshot_id}")
             cover_cases, time_cost = self.executor.run(cover_points)
             if len(cover_cases) > 0:
-                log_message(f"发现新case: {cover_cases}")
+                log_message(f"new covered case: {cover_cases}")
                 self.covered_points = cover_cases
                 break
             else:
-                log_message("未发现新case,重新选点")
+                log_message("no covered case, retry")
                 cover_points = self.point_selector.generate_cover_points()
                 self.output_points_stats(cover_points)
             if len(cover_points) == 0:
-                log_message("未发现新case,且无可选点")
+                log_message("Hybrid Loop End:No more cover points!")
                 return False
 
 
-        # 更新Coverage并生成cover_points文件
         self.coverage.generate_cover_file()
         # if test_formal:
         #     self.coverage.update_formal(cover_cases)
@@ -501,7 +493,6 @@ class Scheduler:
                 file.write(f"{point}:{module_name}.{point_name}\n")
             file.write("\n")
 
-        # Coverage信息
         self.coverage.display_coverage()
     
     def clean_fuzz_run(self):

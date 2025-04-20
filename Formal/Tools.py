@@ -73,34 +73,31 @@ def run_command(command, shell=False):
 def kill_process_and_children(pid):
     try:
         parent = psutil.Process(pid)
-        children = parent.children(recursive=True)  # 获取所有子进程
+        children = parent.children(recursive=True)
         for child in children:
-            child.terminate()  # 尝试优雅终止子进程
-        parent.terminate()  # 终止主进程
+            child.terminate()
+        parent.terminate()
 
         gone, still_alive = psutil.wait_procs([parent] + children, timeout=5)
         for p in still_alive:
-            p.kill()  # 强制杀死仍然存活的进程
+            p.kill()
         log_message("All processes killed")
     except psutil.NoSuchProcess:
         log_message("No such process")
 
-# 复制、解析并修改RTL文件
 def generate_rtl_files(run_snapshot, cpu, cover_type, mode):
-    # 获取环境变量
+    # get environment variables
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     os.makedirs(cover_tasks_path, exist_ok=True)
     rtl_init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues")
     rtl_src_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{cpu}")
     rtl_dst_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
 
-    # 清理输出目录
     if os.path.exists(cover_tasks_path):
         shutil.rmtree(cover_tasks_path)
     os.makedirs(cover_tasks_path)
     os.makedirs(rtl_dst_dir)
     
-    # 遍历文件夹,拷贝文件
     if not os.path.exists(rtl_src_dir):
         log_message(f"RTL source directory {rtl_src_dir} not found.")
         return
@@ -118,14 +115,12 @@ def generate_rtl_files(run_snapshot, cpu, cover_type, mode):
                         continue
                 shutil.copy(entry.path, rtl_dst_dir)
     
-    # 解析并修改RTL文件
     cover_points_name = parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode)
 
     log_message("Generated RTL files.")
     
     return cover_points_name
 
-# 解析并修改RTL文件
 def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
     # cover name to cover id
     rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{cpu}")
@@ -154,12 +149,11 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
                     # log_message(f"module_name: {module_name}, signal_name: {signal_name}", False)
                     cover_points_name.append((module_name, signal_name))
 
-    # 获取环境变量
     rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
     
     if run_snapshot:
+        log_message("modify reg_reset in FormalTop.sv")
         rtl_file = rtl_dir + "/SimTop_init.sv"
-        # 修改FormalTop模块的reg_reset
         formal_top_file = rtl_dir + "/FormalTop.sv"
         with open(formal_top_file, 'r') as file:
             lines = file.readlines()
@@ -231,8 +225,8 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
                 new_lines.append("    end\n")
                 new_lines.append("  end\n")
 
-    # 为每个reg插入Initial语句
     if not run_snapshot:
+        log_message("initial assume for reg")
         lines = []
         reg_cnt = 0 
         muti_reg_cnt = 0
@@ -266,30 +260,23 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
         new_lines = lines
         log_message(f"reg_cnt: {reg_cnt}\tmuti_reg_cnt: {muti_reg_cnt}")
     
-    # 将修改后的内容写入新的RLT文件
     with open(rtl_file, 'w') as new_file:
         new_file.writelines(new_lines)
     
-    # 设置MAX_COVER_POINTS
     set_max_cover_points(len(cover_points_name))
 
     return cover_points_name
 
-# 生成 .sby 文件
 def generate_sby_files(cover_points, cpu, mode):
-    # 获取环境变量
     rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
     cover_tasks_path = str(os.getenv("COVER_POINTS_OUT"))
     sby_template = str(os.getenv("SBY_TEMPLATE"))
 
-    # 读取模板文件内容
     with open(sby_template, 'r') as template_file:
         template_content = template_file.read()
     
-    # 获取所有RTL文件
     rtl_files = [os.path.join(rtl_dir, file) for file in os.listdir(rtl_dir)]
 
-    # 生成 formal_files 和 rtl_files 部分内容
     formal_files = '\n'.join([f"read -formal {os.path.basename(file)}" for file in rtl_files])
     verilog_files = '\n'.join([file for file in rtl_files])
 
@@ -326,7 +313,6 @@ def generate_sby_files(cover_points, cpu, mode):
         elif mode == "sat":
             scripts = f"chformal -remove -assert c:{cover_label} %n\n"
 
-        # 使用模板生成 sby 文件内容
         sby_file_content = template_content.format(
             mode=sby_mode,
             depth=default_depth,
@@ -339,7 +325,6 @@ def generate_sby_files(cover_points, cpu, mode):
             verilog_files=verilog_files
         )
         
-        # 将生成的内容写入新的 .sby 文件
         sby_file_name = os.path.join(cover_tasks_path, f"cover_{cover_id}.sby")
         with open(sby_file_name, 'w') as sby_file:
             sby_file.write(sby_file_content)
@@ -350,15 +335,12 @@ def set_max_cover_points(max_cover_points):
     global MAX_COVER_POINTS
     MAX_COVER_POINTS = max_cover_points
 
-# 清理coverTasks文件夹
 def clean_cover_files():
-    # 获取环境变量
     cover_points_path = str(os.getenv("COVER_POINTS_OUT"))
     if not os.path.exists(cover_points_path):
         log_message(f"Cover points path {cover_points_path} not found.")
         return
     
-    # 遍历文件夹,删除cover_前缀的文件
     with os.scandir(cover_points_path) as entries:
         for entry in entries:
             if entry.name.startswith("cover_"):
@@ -367,7 +349,6 @@ def clean_cover_files():
                 else:
                     shutil.rmtree(entry.path)
             elif entry.name == "hexbin":
-                # 清空hexbin文件夹
                 shutil.rmtree(entry.path)
                 os.mkdir(entry.path)
     
@@ -377,7 +358,6 @@ def generate_empty_cover_points_file(cover_num=0):
     cover_points_out = str(os.getenv("COVER_POINTS_OUT"))
     cover_points_file_path = cover_points_out + "/cover_points.csv"
     
-    # 检查文件是否存在, 如果存在则删除
     if os.path.exists(cover_points_file_path):
         os.remove(cover_points_file_path)
         

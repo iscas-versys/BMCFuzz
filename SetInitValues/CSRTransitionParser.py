@@ -75,7 +75,7 @@ fields = {
 }
 
 def vm_is_enabled(privilege_mode, mstatus, satp):
-    # 解析 mstatus 和 satp
+    # Check if virtual memory is enabled based on privilege mode and mstatus
     parsed_mstatus = parse_mstatus(mstatus)
     mprv = parsed_mstatus['MPRV'] == '1'
     mpp = parsed_mstatus['MPP']

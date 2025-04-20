@@ -76,24 +76,12 @@ def update_json_with_regs(json_data, sv_dir):
     return json_data
 
 def add_regs(input_json_path, output_json_path, sv_dir):
-    # 读取JSON文件
     with open(input_json_path, 'r') as json_file:
         json_data = json.load(json_file)
 
-    # 更新JSON数据
     updated_json_data = update_json_with_regs(json_data, sv_dir)
 
-    # 保存更新后的JSON数据
     with open(output_json_path, 'w') as json_file:
         json.dump(updated_json_data, json_file, indent=4)
     
     log_message(f"Total register count: {reg_cnt}")
-
-def main():
-    input_json_path = './hierarchy_emu.json'  # 输入的JSON文件路径
-    output_json_path = './hierarchy_emu_new.json'  # 输出的JSON文件路径
-    sv_dir = './SimTop_split'  # SystemVerilog文件所在的目录
-    add_regs(input_json_path, output_json_path, sv_dir)
-
-if __name__ == "__main__":
-    main()

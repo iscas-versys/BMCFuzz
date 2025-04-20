@@ -25,8 +25,6 @@ use crate::monitor::store_testcase;
 use libafl::prelude::*;
 use libc::*;
 
-// use std::fs::File;
-// use std::os::unix::io::AsRawFd; // 用于获取文件的文件描述符
 use csv::{Reader, Writer};
 use chrono::Local;
 
@@ -318,8 +316,8 @@ pub(crate) fn set_only_fuzz(only_fuzz: bool) {
 }
 
 pub(crate) fn set_corpus_num(corpus_dir: String) {
-    let entries = fs::read_dir(corpus_dir).unwrap(); // 读取文件夹中的所有条目
-    let count = entries.filter(|entry| entry.is_ok()).count(); // 过滤有效条目并计数
+    let entries = fs::read_dir(corpus_dir).unwrap();
+    let count = entries.filter(|entry| entry.is_ok()).count();
     unsafe { CORPUS_NUM = count as u64 };
     println!("Set init corpus runs:{}", count);
 }

@@ -11,7 +11,6 @@ data:
     nop
 
 loop:
-    # 死循环
     nop
     nop
     nop
@@ -42,7 +41,6 @@ loop:
     nop
     nop
     slli t0, t0, 1
-    csrw satp, t0
     nop
     nop
     nop

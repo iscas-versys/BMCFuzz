@@ -1,6 +1,6 @@
 .section .data
 page_table:
-    .quad 0x0000000000000000  # 简单映射的页表项
+    .quad 0x0000000000000000  # Simple mapped page table entry
 
 .section .text
 .global _start
@@ -8,10 +8,10 @@ page_table:
 _start:
     la t0, loop
     csrw mepc, t0
-    # 设置页表基地址寄存器 (satp)
+    # Set the page table base register (satp)
     la a0, page_table
-    srli a0, a0, 12          # 页表基地址需要右移12位
-    li a1, 0x8000000000000000 # Sv39模式
+    srli a0, a0, 12           # Page table base address must be shifted right by 12
+    li a1, 0x8000000000000000 # Sv39 mode
     or a0, a0, a1
     csrw satp, a0
     nop
@@ -23,15 +23,15 @@ _start:
     nop
     nop
 
-    # 刷新TLB
+    # Flush the TLB
     sfence.vma
 
-    # 设置S模式的返回地址
+    # Set the return address for S-mode
     la a0, supervisor_mode
     csrw mepc, a0
 
-    # 设置mstatus寄存器，启用S模式
-    li a0, (1 << 11)         # 设置MPP为S模式
+    # Configure mstatus register to enable S-mode
+    li a0, (1 << 11)         # Set MPP to S-mode
     csrs mstatus, a0
     nop
     nop
@@ -42,7 +42,7 @@ _start:
     nop
     nop
 
-    # 切换到S模式
+    # Switch to S-mode
     mret
     nop
     nop
@@ -54,14 +54,14 @@ _start:
     nop
 
 supervisor_mode:
-    # 示例虚拟地址访问
-    li a0, 0x0000000000000000 # 虚拟地址
-    lw a1, 0(a0)              # 加载数据
+    # Example virtual address access
+    li a0, 0x0000000000000000 # Virtual address
+    lw a1, 0(a0)              # Load data
 
-    # 结束程序
+    # Exit program
     li a7, 10
     ecall
 
 loop:
-    # 死循环
+    # Infinite loop
     j loop

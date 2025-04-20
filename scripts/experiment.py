@@ -219,18 +219,16 @@ def prepare_data(data):
     return times, coverages
 
 # def smooth_line(x, y, points=300):
-#     # 转换为numpy数组
 #     log_message(f"pre x:{x}")
 #     x = np.array(x)
 #     y = np.array(y)
 #     log_message(f"post x:{x}")
     
-#     if len(x) < 4:  # 插值需要足够的点
+#     if len(x) < 4:
 #         return x, y
     
-#     # 创建更密集的 x 平滑点
 #     x_new = np.linspace(x.min(), x.max(), points)
-#     spline = make_interp_spline(x, y, k=3)  # k=3 表示立方样条
+#     spline = make_interp_spline(x, y, k=3) 
 #     y_new = spline(x_new)
 #     return x_new, y_new
 
@@ -290,10 +288,8 @@ def generate_graph(args):
     hypfuzz_times, hypfuzz_coverages = prepare_data(hypfuzz_data)
     bmcfuzz_times, bmcfuzz_coverages = prepare_data(bmcfuzz_data)
 
-    # 绘制图表
     plt.figure(figsize=(10, 6))
 
-    # 绘制每条曲线
     if args.analyze_xfuzz:
         # plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r', marker='o')
         plt.plot(xfuzz_times, xfuzz_coverages, label='xfuzz', color='r')
@@ -319,16 +315,13 @@ def generate_graph(args):
         # plt.plot(x, y, label='bmcfuzz', color='purple')
         # plt.scatter(bmcfuzz_times, bmcfuzz_coverages, label='bmcfuzz', color='purple', marker='x')
 
-    # 设置标题和标签
     plt.title("Fuzz Coverage", fontsize=14)
     # plt.xlabel("Time (seconds)", fontsize=12)
     plt.xlabel("Time (hours)", fontsize=12)
     plt.ylabel("Coverage (%)", fontsize=12)
 
-    # 显示图例
     plt.legend()
 
-    # 显示图表
     plt.grid(True)
     plt.tight_layout()
     # plt.show()

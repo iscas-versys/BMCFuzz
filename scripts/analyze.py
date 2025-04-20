@@ -243,19 +243,15 @@ def rtl_diff():
     diff_dir = os.path.join(NOOP_HOME, "tmp", "diff")
     os.makedirs(diff_dir, exist_ok=True)
 
-    # 定义要比较的目录
     folder1 = "ccover/Formal/demo/rocket_toggle"
     folder2 = "build/rtl"
     diff_output_dir = "tmp/diff"
 
-    # 确保diff输出目录存在
     os.makedirs(diff_output_dir, exist_ok=True)
 
-    # 获取两个目录中的文件列表
     files1 = set(os.listdir(folder1))
     files2 = set(os.listdir(folder2))
 
-    # 找到两个目录中都有的文件
     common_files = files1 & files2
 
     def compare_and_save_diff(file1, file2, output_file):
@@ -270,13 +266,11 @@ def rtl_diff():
                     out.writelines(diff)
                 print(f"Differences found in {file1} and {file2}, saved to {output_file}")
 
-    # 遍历同名文件并比较
     for filename in common_files:
         file1 = os.path.join(folder1, filename)
         file2 = os.path.join(folder2, filename)
         diff_file = os.path.join(diff_output_dir, f"{filename}.diff")
         
-        # 只比较普通文件
         if os.path.isfile(file1) and os.path.isfile(file2):
             if not filecmp.cmp(file1, file2, shallow=False):
                 compare_and_save_diff(file1, file2, diff_file)

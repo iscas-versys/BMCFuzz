@@ -39,14 +39,14 @@ def run_command(command, shell=False):
 def kill_process_and_children(pid):
     try:
         parent = psutil.Process(pid)
-        children = parent.children(recursive=True)  # 获取所有子进程
+        children = parent.children(recursive=True)
         for child in children:
-            child.terminate()  # 尝试优雅终止子进程
-        parent.terminate()  # 终止主进程
+            child.terminate() 
+        parent.terminate()
 
         gone, still_alive = psutil.wait_procs([parent] + children, timeout=5)
         for p in still_alive:
-            p.kill()  # 强制杀死仍然存活的进程
+            p.kill() 
         log_message("All processes killed")
     except psutil.NoSuchProcess:
         log_message("No such process")

@@ -61,3 +61,80 @@ _start:
     nop
     nop
     nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+
+virtual_memory:
+    # 刷新TLB
+    sfence.vma
+    # 写入虚拟地址0x0
+    li t0, 0x2000
+    li t1, 43                  # 要写入的值
+    lw t3, 0x0(t0)
+    sw t1, 0x0(t0)             # 将值写入虚拟地址0x0
+    # 读取虚拟地址0x0
+    lw t3, 0x0(t0)             # 从虚拟地址0x0读取值
+    # 验证读取的值是否正确
+    beq t1, t3, success        # 如果值正确，跳转到success
+    # 错误处理
+    j failure
+
+success:
+    # 成功处理
+    j success                 # 无限循环表示成功
+
+failure:
+    # 失败处理
+    j failure                 # 无限循环表示失败
+
+error_handler:
+    # 死循环
+    nop
+    nop
+    nop
+    slli t1, t0, 2
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    j error_handler

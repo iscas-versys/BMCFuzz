@@ -91,7 +91,7 @@ def run_emu(args):
     log_message(f"Return code: {ret}")
 
 def run_fuzz(args):
-    default_runs = 1000
+    default_runs = 1290
     default_fuzz_instr = 10000
     default_fuzz_cycles = 10000
 

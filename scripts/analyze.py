@@ -4,8 +4,9 @@ import argparse
 import difflib
 import filecmp
 
-NOOP_HOME = os.getenv("NOOP_HOME")
-BMCFUZZ_HOME = os.getenv("BMCFUZZ_HOME")
+from runtools import NOOP_HOME, BMCFUZZ_HOME
+from runtools import run_command
+from runtools import log_message, clear_logs, log_init, reset_terminal
 
 class Snapshot:
     class RegInt:
@@ -275,8 +276,67 @@ def rtl_diff():
             if not filecmp.cmp(file1, file2, shallow=False):
                 compare_and_save_diff(file1, file2, diff_file)
 
+def module_parser(args):
+    rtl_dir = os.path.join(NOOP_HOME, "build", "rtl")
+    if not os.path.exists(rtl_dir):
+        log_message("RTL directory does not exist. Please run 'make src' first.")
+        return
+    
+    module_def_pattern = re.compile(r"^module\s+(\w+)\s*\(")
+    module_call_pattern = re.compile(r"(\w+)\s+(\w+)\s*\($")
+    # module_end_pattern = re.compile(r"endmodule")
+    clock_pattern = re.compile(r"^\s*always @\((.+)\)")
+    all_clocks = set()
+    with os.scandir(rtl_dir) as entries:
+        for entry in entries:
+            if entry.name.endswith(".v") or entry.name.endswith(".sv"):
+                log_message(f"Processing RTL file: {entry.name}")
+                with open(entry.path, 'r') as f:
+                    lines = f.readlines()
+                    module_calls = []
+                    module_clocks = []
+                    current_module = None
+                    for line in lines:
+                        clock_match = clock_pattern.search(line)
+                        if clock_match:
+                            all_clocks.add(clock_match.group(1))
+                            log_message(f"Found clock definition: {clock_match.group(1)}", print_message=False)
+                            if len(module_clocks) == 0:
+                                module_clocks.append(clock_match.group(1))
+                            elif clock_match.group(1) not in module_clocks:
+                                log_message(f"[Warn] Duplicate clock definition: {clock_match.group(1)} in {entry.name}", print_message=False)
+                            continue
+                        module_def_match = module_def_pattern.search(line)
+                        if module_def_match:
+                            if current_module is not None:
+                                log_message(f"Module {current_module} ended.", print_message=False)
+                                log_message(f"[Warn] More than one module definition in file {entry.name}", print_message=False)
+                            current_module = module_def_match.group(1)
+                            log_message(f"Found module definition: {current_module}", print_message=False)
+                            continue
+                        if current_module is None:
+                            continue
+                        module_call_match = module_call_pattern.search(line)
+                        if module_call_match:
+                            module_name = module_call_match.group(1)
+                            instance_name = module_call_match.group(2)
+                            if module_name in module_calls:
+                                log_message(f"Found duplicate module call: {module_name} in {current_module} as {instance_name}", print_message=False)
+                            else:
+                                module_calls.append(module_name)
+                                log_message(f"Found module call: {module_name} - {instance_name}", print_message=False)
+                            continue
+                        # if module_end_pattern.search(line):
+    
+    log_message("All module clocks:")
+    for clock in all_clocks:
+        log_message(f"{clock}", print_message=False)
 
 if __name__ == "__main__":
+    os.chdir(NOOP_HOME)
+    clear_logs()
+    log_init()
+
     parser = argparse.ArgumentParser()
     
     parser.add_argument("--snapshot", "-s", type=int, help="Snapshot id")
@@ -289,4 +349,6 @@ if __name__ == "__main__":
 
     # cover_point_parser(args.cover)
 
-    rtl_diff()
+    # rtl_diff()
+
+    module_parser(args)

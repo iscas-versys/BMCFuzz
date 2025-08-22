@@ -44,7 +44,7 @@ def run_emu(args):
     commands += f" -- {args.image}"
     commands += f" -I {args.max_instr}"
     commands += f" -C {args.max_circle}"
-    commands += f" --fuzz-id {args.fuzz_id}"
+    # commands += f" --fuzz-id {args.fuzz_id}"
 
     if args.run_snapshot:
         commands += " --run-snapshot"

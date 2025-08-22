@@ -286,6 +286,8 @@ def module_parser(args):
     module_call_pattern = re.compile(r"(\w+)\s+(\w+)\s*\($")
     # module_end_pattern = re.compile(r"endmodule")
     clock_pattern = re.compile(r"^\s*always @\((.+)\)")
+    reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
+    muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
     all_clocks = set()
     with os.scandir(rtl_dir) as entries:
         for entry in entries:
@@ -326,11 +328,25 @@ def module_parser(args):
                                 module_calls.append(module_name)
                                 log_message(f"Found module call: {module_name} - {instance_name}", print_message=False)
                             continue
+                        reg_match = reg_pattern.search(line)
+                        if reg_match:
+                            reg_name = reg_match.group(2)
+                            log_message(f"Found register:{reg_name}{reg_match.group(1)}", print_message=False)
+                            continue
+                        if muti_reg_pattern.search(line):
+                            muti_reg_match = muti_reg_pattern.search(line)
+                            reg_name = muti_reg_match.group(2)
+                            reg_number = int(muti_reg_match.group(3)) - int(muti_reg_match.group(4)) + 1
+                            if reg_number < 0:
+                                reg_number = -reg_number
+                            log_message(f"Found multi-register: {reg_name}{muti_reg_match.group(1)}, reg_number: {reg_number}", print_message=False)
+                            continue
+                        
                         # if module_end_pattern.search(line):
     
     log_message("All module clocks:")
     for clock in all_clocks:
-        log_message(f"{clock}", print_message=False)
+        log_message(f"{clock}")
 
 if __name__ == "__main__":
     os.chdir(NOOP_HOME)

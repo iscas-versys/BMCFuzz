@@ -115,7 +115,7 @@ def run_fuzz(args):
     fuzz_args.continue_on_errors = True
     fuzz_args.save_errors = args.save_errors
     # fuzz_args.run_snapshot = args.run_snapshot
-    fuzz_args.only_fuzz = True
+    # fuzz_args.only_fuzz = True
 
     fuzz_args.max_instr = default_fuzz_instr
     fuzz_args.max_cycle =  default_fuzz_cycles

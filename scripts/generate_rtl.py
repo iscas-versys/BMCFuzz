@@ -102,6 +102,40 @@ def generate_boom_rtl(args):
     reset_cycles = 35
     generate_reset_snapshot(args.cover_type, reset_cycles)
 
+def generate_xiangshan_rtl(args):
+    log_message("generate xiangshan rtl")
+    
+    log_message("copy rtl files to Formal")
+    rtl_dir = os.path.join(build_dir, "rtl")
+    with os.scandir(rtl_dir) as entries:
+        for entry in entries:
+            if entry.name.endswith(".sv"):
+                log_message(f"copy {entry.name} to Formal and SetInitValues")
+                shutil.copy(entry.path, os.path.join(formal_dir, entry.name))
+    generated_src_dir = os.path.join(build_dir, "generated-src")
+    with os.scandir(generated_src_dir) as entries:
+        for entry in entries:
+            if entry.name.endswith(".sv") or entry.name.endswith(".v"):
+                log_message(f"copy {entry.name} to Formal and SetInitValues")
+                shutil.copy(entry.path, os.path.join(formal_dir, entry.name))
+                
+    with os.scandir(formal_dir) as entries:
+        for entry in entries:
+            if not entry.name.endswith(".sv"):
+                continue
+            with open(entry.path, "r") as f:
+                lines = f.readlines()
+            log_message(f"process {entry.name}")
+            for i, line in enumerate(lines):
+                line = change_unpack(line)
+                line = change_cover(line)
+                line = change_clock(line)
+                lines[i] = line
+            with open(entry.path, "w") as f:
+                f.writelines(lines)
+    
+    replace_firrtl_file()
+
 def append_array_file(src_lines):
     array_lines = []
     with os.scandir(os.path.join(build_dir, "rtl")) as entries:
@@ -134,14 +168,26 @@ def modify_enToggle_value(src_lines):
                 src_lines[i] = src_lines[i].replace("1\'h0", "1'h1")
     return src_lines
 
-def change_clock(src_lines):
-    log_message("change multi clock to glb_clk")
-    for i, line in enumerate(src_lines):
-        clock_pattern = re.compile(r"\(posedge (\w+)\)")
-        clock_match = clock_pattern.search(line)
-        if clock_match:
-            src_lines[i] = src_lines[i].replace(clock_match.group(1), "glb_clk")
-    return src_lines
+def change_unpack(src_line):
+    unpack_pattern = re.compile(r"'{")
+    if unpack_pattern.search(src_line):
+        # log_message("change unpack lines")
+        src_line = src_line.replace("'{", "{")
+    return src_line
+
+def change_cover(src_line):
+    cover_pattern = re.compile(r"cover\(1'b1\);")
+    if cover_pattern.search(src_line):
+        # log_message("change cover lines")
+        src_line = src_line.replace("cover(1'b1);", "assert(1'b0);")
+    return src_line
+
+def change_clock(src_line):
+    clock_pattern = re.compile(r"^\s*always\s*@\(posedge (.+)\)")
+    if clock_pattern.search(src_line):
+        # log_message("change multi clock to glb_clk")
+        src_line = clock_pattern.sub(r"always @(posedge glb_clk)", src_line)
+    return src_line
 
 def write_rtl_file(file_path, lines):
     log_message(f"write rtl file:{file_path}")
@@ -218,7 +264,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--cpu", type=str, default="rocket")
+    parser.add_argument("--cpu", type=str, default="xiangshan")
 
     parser.add_argument("--only-build", "-b", action="store_true")
     parser.add_argument("--cover-type", "-c", type=str, default="toggle")
@@ -228,7 +274,7 @@ if __name__ == "__main__":
     formal_dir = os.path.join(BMCFUZZ_HOME, "Formal", "demo", f"{args.cpu}")
     init_dir = os.path.join(BMCFUZZ_HOME, "SetInitValues", "rtl_src", f"{args.cpu}")
 
-    rtl_init(args)
+    # rtl_init(args)
     if not args.only_build:
         if args.cpu == "rocket":
             generate_rocket_rtl(args)
@@ -236,6 +282,8 @@ if __name__ == "__main__":
             generate_nutshell_rtl(args)
         elif args.cpu == "boom":
             generate_boom_rtl(args)
+        elif args.cpu == "xiangshan":
+            generate_xiangshan_rtl(args)
         else:
             log_message("cpu type not support")
             sys.exit(1)

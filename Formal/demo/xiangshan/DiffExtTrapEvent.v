@@ -1,0 +1,37 @@
+
+`include "DifftestMacros.v"
+module DiffExtTrapEvent(
+  input         clock,
+  input         enable,
+  input         io_hasTrap,
+  input  [63:0] io_cycleCnt,
+  input  [63:0] io_instrCnt,
+  input         io_hasWFI,
+  input  [63:0] io_code,
+  input  [63:0] io_pc,
+  input  [ 7:0] io_coreid
+);
+  wire _dummy_unused = 1'b1;
+`ifndef SYNTHESIS
+`ifdef DIFFTEST
+`ifndef CONFIG_DIFFTEST_FPGA
+
+import "DPI-C" function void v_difftest_TrapEvent (
+  input       bit io_hasTrap,
+  input   longint io_cycleCnt,
+  input   longint io_instrCnt,
+  input       bit io_hasWFI,
+  input   longint io_code,
+  input   longint io_pc,
+  input      byte io_coreid
+);
+
+
+  always @(posedge clock) begin
+    if (enable)
+      v_difftest_TrapEvent (io_hasTrap, io_cycleCnt, io_instrCnt, io_hasWFI, io_code, io_pc, io_coreid);
+  end
+`endif // CONFIG_DIFFTEST_FPGA
+`endif // DIFFTEST
+`endif // SYNTHESIS
+endmodule

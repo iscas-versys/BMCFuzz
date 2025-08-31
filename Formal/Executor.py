@@ -348,12 +348,13 @@ if __name__ == "__main__":
     sample_cover_points = [2730, 623]
     # sample_cover_points = [533, 2549, 1470, 1236, 941, 1816, 1587, 2174, 2446, 1004]
 
-    run_snapshot = True
-    # run_snapshot = False
+    # run_snapshot = True
+    run_snapshot = False
     snapshot_id = 0
     # cpu = "nutshell"
-    cpu = "rocket"
+    # cpu = "rocket"
     # cpu = "boom"
+    cpu = "xiangshan"
     cover_type = "toggle"
     # cover_type = "line"
     # cover_type = "control"

@@ -149,6 +149,10 @@ def parse_and_modify_rtl_files(run_snapshot, cpu, cover_type, mode):
                     # log_message(f"module_name: {module_name}, signal_name: {signal_name}", False)
                     cover_points_name.append((module_name, signal_name))
 
+    # for Xiangshan
+    set_max_cover_points(len(cover_points_name))
+    return cover_points_name
+
     rtl_dir = os.path.join(BMCFUZZ_HOME, "Formal", "coverTasks", "rtl")
     
     if run_snapshot:

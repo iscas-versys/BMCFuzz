@@ -285,7 +285,7 @@ def module_parser(args):
     module_def_pattern = re.compile(r"^module\s+(\w+)\s*\(")
     module_call_pattern = re.compile(r"(\w+)\s+(\w+)\s*\($")
     # module_end_pattern = re.compile(r"endmodule")
-    clock_pattern = re.compile(r"^\s*always @\((.+)\)")
+    clock_pattern = re.compile(r"^\s*always\s*@\((.+)\)")
     reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)(\s*=\s*[^;]+)?;")
     muti_reg_pattern = re.compile(r"reg\s*(\[\d+:\d+\])?\s+(\w+)\s*\[(\d+):(\d+)\];")
     all_clocks = set()

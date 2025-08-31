@@ -14,12 +14,21 @@ from runtools import log_message, clear_logs, log_init, reset_terminal
 cover_point_index = 0
 
 def toggle_cover(reg_list, clock):
+    cover_delay = 5
+    cover_delay_block = f"""
+    reg [{cover_delay}:0] cover_delay = 0;
+    always @({clock}) begin
+        cover_delay <= {{1'b1, cover_delay[{cover_delay}:1]}};
+    end
+    """
+    
     toggle_cover_template = f"""
 `ifndef SYNTHESIS
     `ifdef DIFFTEST
         import "DPI-C" function void v_cover_toggle (
             longint cover_index
         );
+    {cover_delay_block}
     always @({clock}) begin
         cover_block
     end
@@ -29,11 +38,11 @@ def toggle_cover(reg_list, clock):
 
     pre_reg_template = "reg_name_pre <= reg_name;\n"
     cover_instance_template = """
-        if (valid) begin
+        if (cover_delay[0] & (valid)) begin
             v_cover_toggle(COVER_INDEX);
+            cov_count_COVER_INDEX: cover(1'b1);
         end
         """
-
 
     cover_block = []
     for reg_name, reg_length in reg_list:

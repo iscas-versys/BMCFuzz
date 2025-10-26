@@ -15,3 +15,14 @@ We implement BMCFuzz in a fully open-source tool and evaluate in on three widely
 
 ## Contact
 For more details, you can contact Shidong Shen [shensd@ios.ac.cn](mailto:shensd@ios.ac.cn) for further information.
+
+
+You may also cite the following paper for reference:
+
+```bibtex
+@inproceedings{shen2025bmcfuzz,
+  title     = {BMCFuzz: Hybrid Verification of Processors by Synergistic Integration of Bound Model Checking and Fuzzing},
+  author    = {Shidong Shen and Jinyu Liu and Weizhi Feng and Fu Song and Zhilin Wu},
+  booktitle = {International Conference on Computer-Aided Design (ICCAD)},
+  year      = {2025}
+}

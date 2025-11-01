@@ -5,7 +5,7 @@ Modern processors are becoming increasingly complex, making them hard to be bug-
 
 We implement BMCFuzz in a fully open-source tool and evaluate in on three widely-used open-source RISC-V processor designs (i.e., NutShell, Rocket, and BOOM). Experimental results show that BMCFuzz achieves higher coverage compared to the state-of-the-art methods and discover 3 previously unknown vulnerabilities, demonstrating the potential of BMCFuzz as a powerful, open-source tool for advancing processor design and verification.
 
-
+You can also see slides: [Slides](https://github.com/iscas-versys/BMCFuzz/blob/main/BMCFuzz_slides.pdf)
 ## DUTs
 
 * [NutShell](https://github.com/OSCPU/NutShell)
@@ -14,6 +14,7 @@ We implement BMCFuzz in a fully open-source tool and evaluate in on three widely
 
 
 ## Contact
+
 For more details, you can contact Shidong Shen [shensd@ios.ac.cn](mailto:shensd@ios.ac.cn) for further information.
 
 

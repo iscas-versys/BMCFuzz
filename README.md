@@ -5,7 +5,7 @@ Modern processors are becoming increasingly complex, making them hard to be bug-
 
 We implement BMCFuzz in a fully open-source tool and evaluate in on three widely-used open-source RISC-V processor designs (i.e., NutShell, Rocket, and BOOM). Experimental results show that BMCFuzz achieves higher coverage compared to the state-of-the-art methods and discover 3 previously unknown vulnerabilities, demonstrating the potential of BMCFuzz as a powerful, open-source tool for advancing processor design and verification.
 
-You can also see slides: [Slides](https://github.com/iscas-versys/BMCFuzz/blob/main/BMCFuzz_slides.pdf)
+You can also see paper: [Paper](https://ieeexplore.ieee.org/document/11240887) and slides: [Slides](https://github.com/iscas-versys/BMCFuzz/blob/main/BMCFuzz_slides.pdf)
 ## DUTs
 
 * [NutShell](https://github.com/OSCPU/NutShell)
@@ -21,9 +21,10 @@ For more details, you can contact Shidong Shen [shensd@ios.ac.cn](mailto:shensd@
 You may also cite the following paper for reference:
 
 ```bibtex
-@inproceedings{shen2025bmcfuzz,
-  title     = {BMCFuzz: Hybrid Verification of Processors by Synergistic Integration of Bound Model Checking and Fuzzing},
-  author    = {Shidong Shen and Jinyu Liu and Weizhi Feng and Fu Song and Zhilin Wu},
-  booktitle = {International Conference on Computer-Aided Design (ICCAD)},
-  year      = {2025}
-}
+@INPROCEEDINGS{shenbmcfuzz,
+  author={Shen, Shidong and Liu, Jinyu and Feng, Weizhi and Song, Fu and Wu, Zhilin},
+  booktitle={2025 IEEE/ACM International Conference On Computer Aided Design (ICCAD)}, 
+  title={BMCFuzz: Hybrid Verification of Processors by Synergistic Integration of Bound Model Checking and Fuzzing}, 
+  year={2025},
+  doi={10.1109/ICCAD66269.2025.11240887}}
+```

@@ -16,54 +16,17 @@ Cargo.lock
 *.pdb
 
 .vscode/
-Formal/coverTasks/
 
-# Ignore the logs
-Formal/logs/*.log
-Formal/logs/fuzz/*.log
+__pycache__
 
-Formal/__pycache__
-SetInitValues/*.v
-SetInitValues/*.sv
-SetInitValues/SimTop_Init/*.sv
-SetInitValues/SimTop_split/*.sv
-SetInitValues/SimTop_split_init/*.sv
-SetInitValues/*.json
-SetInitValues/*.yaml
-asms/*.bin
-asms/*.dump
-asms/*.o
-asms/*.elf
-SetInitValues/vcdvcd/.DS_Store
-SetInitValues/vcdvcd/__pycache__
-SetInitValues/*.vcd
-SetInitValues/__pycache__
-SetInitValues/csr_wave/*
-SetInitValues/csr_snapshot/*
-SetInitValues/csr_transition/*
-ccover/SetInitValues/rtl_src
-SetInitValues/rtl_src/nutshell/reset_snapshot
-SetInitValues/rtl_src/nutshell/*.vcd
-SetInitValues/rtl_src/nutshell/*.sv
-SetInitValues/rtl_src/rocket/reset_snapshot
-SetInitValues/rtl_src/rocket/*.vcd
-SetInitValues/rtl_src/rocket/*.sv
-SetInitValues/rtl_src/boom/reset_snapshot
-SetInitValues/rtl_src/boom/*.vcd
-SetInitValues/rtl_src/boom/*.sv
+logs/
 
-Formal/demo/nutshell/firrtl-cover.cpp
-Formal/demo/nutshell/GEN_w*.v
-Formal/demo/nutshell/SimTop.sv
-Formal/demo/rocket/firrtl-cover.cpp
-Formal/demo/rocket/GEN_w*.v
-Formal/demo/rocket/SimTop.sv
-Formal/demo/boom/firrtl-cover.cpp
-Formal/demo/boom/GEN_w*.v
-Formal/demo/boom/SimTop.sv
+corpus/
 
-scripts/__pycache__
-scripts/logs
-scripts/cover_name.dat
+formal_run/*
 
-logs/*
+snapshots/
+
+test/
+
+tmp/

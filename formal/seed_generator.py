@@ -279,6 +279,8 @@ class SMTParser(ResultParser):
                     current_addr = addr
                 output_file.write(memory_map[addr])
                 current_addr += 8
+            if current_addr == 0:
+                output_file.write(b'\x00' * 8)  # Write at least one zero entry if no data
         
         self.logger.debug(f"Generated bin file: {output_file_path}")
 

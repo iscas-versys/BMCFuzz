@@ -312,6 +312,9 @@ class Scheduler:
 
         while True:
             bmc_covered = self.do_bmc()
+            self.logger.info(
+                f"BMC phase covered {len(bmc_covered)} point(s):{bmc_covered}" 
+            )
 
             if not bmc_covered:
                 self.logger.info(
@@ -450,7 +453,11 @@ class Scheduler:
         self.logger.info("Starting snapshot loop")
 
         # First round: initial fuzzing to populate snapshot pool
-        self.fuzz_init()
+        if Config.FUZZER_INIT:
+            self.fuzz_init()
+        else:
+            self.logger.info("FUZZER_INIT is False - skipping initial fuzzing, running BMC-CGF without snapshot")
+            self.run_bmc_cgf()
 
         # Subsequent rounds: pick best snapshot -> load -> BMC-CGF
         while True:

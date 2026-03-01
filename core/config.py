@@ -41,6 +41,7 @@ class Config:
     FORMAL_RUN_DIR: str = os.path.join(BMCFUZZ_HOME, "formal_run")
 
     # Fuzzer Paths
+    FUZZER_INIT: bool = False
     FUZZER_INIT_RUNS: int = 10
     INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "linearized", "riscv-all")
     CORPUS_DIR: str = os.path.join(FORMAL_RUN_DIR, "corpus")

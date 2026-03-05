@@ -16,6 +16,8 @@ Cargo.lock
 *.pdb
 
 .vscode/
+.metals/
+.scala-build/
 
 __pycache__
 

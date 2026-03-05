@@ -52,8 +52,8 @@ class BMCFuzzLogger:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
         log_file_name = os.path.join(logs_main_dir, f"{prefix}_{timestamp}.log")
         
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+        console_formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
         
         file_handler = logging.FileHandler(log_file_name, encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)

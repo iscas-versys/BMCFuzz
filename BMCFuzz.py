@@ -37,11 +37,7 @@ def main():
     log_init(prefix=f"bmcfuzz_{args.project}")
 
 
-    scheduler = Scheduler()
-    scheduler.project_name = args.project
-    scheduler.cover_type = args.cover_type
-    scheduler.solver_mode = args.solver
-    scheduler.run_snapshot = args.snapshot
+    scheduler = Scheduler(project_name=args.project, cover_type=args.cover_type, solver_mode=args.solver, run_snapshot=args.snapshot)
 
     scheduler.run()
 

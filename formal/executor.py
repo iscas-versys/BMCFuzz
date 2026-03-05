@@ -260,11 +260,6 @@ class FormalExecutor:
                         result = future.result()
                         if result:
                             covered_points.append(point)
-                            self.logger.debug(f"Point {point} covered")
-                            
-                            # Call seed generator callback if set
-                            if self.seed_generator:
-                                self.seed_generator(point, self.formal_run_dir)
                                 
                     except Exception as e:
                         self.logger.error(
@@ -338,8 +333,13 @@ class FormalExecutor:
             # Return code 1: not covered
             # Return code 2: counterexample found (covered)
             if return_code == 0 and self.mode == "smt" or return_code == 2 and self.mode == "sat":
-                self.logger.info(f"Point {cover_point} successfully verified")
-                return True
+                # Call seed generator callback if set
+                if self.seed_generator(cover_point, self.formal_run_dir) is not None:
+                    self.logger.info(f"Point {cover_point} successfully verified")
+                    return True
+                else:
+                    self.logger.info(f"Point {cover_point} not covered, return code: {return_code}")
+                    return False
             else:
                 self.logger.info(
                     f"Point {cover_point} not covered, return code: {return_code}"

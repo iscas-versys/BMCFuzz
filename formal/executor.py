@@ -128,6 +128,8 @@ class FormalExecutor:
                        'sat': {'depth': 75, 'timeout': 3 * 3600}},
             'boom': {'smt': {'depth': 75, 'timeout': 4 * 3600},
                      'sat': {'depth': 75, 'timeout': 4 * 3600}},
+            'rocket_dcache': {'smt': {'depth': 150, 'timeout': 30 * 60},
+                              'sat': {'depth': 150, 'timeout': 30 * 60}},
         }
 
         default = {'depth': 50, 'timeout': 1 * 3600}
@@ -391,9 +393,9 @@ class FormalExecutor:
             
             cover_block_match = False
             cover_block_len = 0
-            cover_block_index = 0
             cover_block_reset = ""
             cover_block_valid = ""
+            cov_counter = 0  # independent counter, not tied to RTL index
             
             for line in lines:
                 new_lines.append(line)
@@ -403,7 +405,6 @@ class FormalExecutor:
                 if cover_block_begin_match:
                     cover_block_match = True
                     cover_block_len = int(cover_block_begin_match.group(1))
-                    cover_block_index = int(cover_block_begin_match.group(2))
                 
                 # Extract reset and valid signals
                 if cover_block_match:
@@ -424,30 +425,30 @@ class FormalExecutor:
                         new_lines.append(f"    if (!{cover_block_reset}) begin\n")
                         
                         if cover_block_len > 1:
-                            # Multi-bit cover
                             for i in range(cover_block_len):
                                 if self.mode == "smt":
                                     new_lines.append(
-                                        f"      cov_count_{cover_block_index+i}: "
+                                        f"      cov_count_{cov_counter}: "
                                         f"cover({cover_block_valid}[{i}]);\n"
                                     )
                                 elif self.mode == "sat":
                                     new_lines.append(
-                                        f"      cov_count_{cover_block_index+i}: "
+                                        f"      cov_count_{cov_counter}: "
                                         f"assert(~{cover_block_valid}[{i}]);\n"
                                     )
+                                cov_counter += 1
                         else:
-                            # Single-bit cover
                             if self.mode == "smt":
                                 new_lines.append(
-                                    f"      cov_count_{cover_block_index}: "
+                                    f"      cov_count_{cov_counter}: "
                                     f"cover({cover_block_valid});\n"
                                 )
                             elif self.mode == "sat":
                                 new_lines.append(
-                                    f"      cov_count_{cover_block_index}: "
+                                    f"      cov_count_{cov_counter}: "
                                     f"assert(~{cover_block_valid});\n"
                                 )
+                            cov_counter += 1
                         
                         new_lines.append("    end\n")
                         new_lines.append("  end\n")
@@ -463,6 +464,129 @@ class FormalExecutor:
             self.logger.error(f"Error adding cover statements: {e}")
             return False
     
+    def add_reg_initial_statements(self, rtl_file: str = None) -> int:
+        """
+        Insert ``initial assume(!reg)`` for every register in each module
+        of *rtl_file*.  Memory arrays are zero-initialised with a for-loop.
+
+        Used when there is no snapshot to provide initial register values,
+        so that the formal tool starts from a constrained (all-zero) state.
+
+        Args:
+            rtl_file: Path to RTL file (default: self.rtl_dir/SimTop.sv)
+
+        Returns:
+            Total number of registers that received initial statements.
+        """
+        if rtl_file is None:
+            rtl_file = os.path.join(self.rtl_dir, "SimTop.sv")
+
+        if not os.path.exists(rtl_file):
+            self.logger.error(f"RTL file not found: {rtl_file}")
+            return 0
+
+        self.logger.info(f"Inserting register initial statements in {rtl_file}")
+
+        with open(rtl_file, 'r') as f:
+            lines = f.readlines()
+
+        # Detect module boundaries
+        module_ranges: list[tuple[int, int]] = []
+        current_start: int | None = None
+        for i, line in enumerate(lines):
+            stripped = line.strip()
+            if re.match(r'^module\s+', stripped):
+                current_start = i
+            elif stripped == 'endmodule' and current_start is not None:
+                module_ranges.append((current_start, i))
+                current_start = None
+
+        total_regs = 0
+        for start, end in reversed(module_ranges):
+            module_text = ''.join(lines[start:end + 1])
+            processed_text, count = self._insert_reg_initial(module_text)
+            total_regs += count
+            if count > 0:
+                processed_lines = processed_text.splitlines(keepends=True)
+                lines[start:end + 1] = processed_lines
+
+        with open(rtl_file, 'w') as f:
+            f.writelines(lines)
+
+        self.logger.info(
+            f"Inserted initial statements for {total_regs} registers in {rtl_file}"
+        )
+        return total_regs
+
+    @staticmethod
+    def _insert_reg_initial(module_text: str) -> tuple[str, int]:
+        """
+        Insert initial statements for all registers in a single module block.
+
+        - Scalar registers:  ``initial assume(!<reg>);``
+        - Memory arrays:     zero-initialised via ``for`` loop
+        - ``_RAND_*`` helper registers are skipped.
+
+        Returns:
+            (processed_module_text, register_count)
+        """
+        scalar_reg_pat = re.compile(
+            r'^\s+reg\s+(?:\[\d+:\d+\]\s+)?(\w+)\s*;', re.MULTILINE
+        )
+        mem_reg_pat = re.compile(
+            r'^\s+reg\s+(?:\[\d+:\d+\]\s+)?(\w+)\s+\[(\d+):(\d+)\]\s*;',
+            re.MULTILINE,
+        )
+
+        scalar_regs: list[str] = []
+        mem_regs: list[tuple[str, int, int]] = []
+
+        for m in scalar_reg_pat.finditer(module_text):
+            name = m.group(1)
+            if name.startswith("_RAND_"):
+                continue
+            scalar_regs.append(name)
+
+        for m in mem_reg_pat.finditer(module_text):
+            name = m.group(1)
+            lo, hi = int(m.group(2)), int(m.group(3))
+            if name.startswith("_RAND_"):
+                continue
+            mem_regs.append((name, lo, hi))
+
+        mem_names = {name for name, _, _ in mem_regs}
+        scalar_regs = [r for r in scalar_regs if r not in mem_names]
+
+        if not scalar_regs and not mem_regs:
+            return module_text, 0
+
+        init_lines: list[str] = []
+        for name in scalar_regs:
+            init_lines.append(f"  initial assume(!{name});")
+
+        if mem_regs:
+            init_lines.append("  integer _init_i;")
+            init_lines.append("  initial begin")
+            for name, lo, hi in mem_regs:
+                init_lines.append(
+                    f"    for (_init_i = {lo}; _init_i <= {hi}; "
+                    f"_init_i = _init_i + 1)"
+                )
+                init_lines.append(f"      {name}[_init_i] = '0;")
+            init_lines.append("  end")
+
+        init_block = "\n".join(init_lines) + "\n"
+
+        module_text = module_text.rstrip()
+        if module_text.endswith("endmodule"):
+            module_text = (
+                module_text[: -len("endmodule")] + init_block + "endmodule\n"
+            )
+        else:
+            module_text += "\n" + init_block
+
+        return module_text, len(scalar_regs) + len(mem_regs)
+
     def cleanup(self, cover_points: List[int] = None):
         """
         Clean up generated files
@@ -505,32 +629,3 @@ class FormalExecutor:
             self.logger.info(
                 f"Cleaned up {len(cover_points)} coverage point files"
             )
-
-
-if __name__ == "__main__":
-    from utils.logger import log_init, clear_logs
-    
-    # Initialize logging
-    clear_logs()
-    log_init(prefix="formal_executor_test")
-    
-    # Create executor
-    executor = FormalExecutor()
-    executor.configure(project_name="nutshell", mode="sat", cover_type="toggle")
-    
-    # Test with sample coverage points
-    sample_points = [623, 2730]
-    
-    logger = BMCFuzzLogger.get_logger("Test")
-    logger.info("=== Testing Formal Executor ===")
-    
-    # Generate sby files
-    if executor.generate_sby_files(sample_points):
-        # Execute verification
-        covered_points = executor.execute(sample_points)
-        logger.info(f"Covered points: {covered_points}")
-    
-    # Cleanup
-    # executor.cleanup(sample_points)
-    
-    logger.info("Formal executor test completed!")

@@ -40,7 +40,7 @@ class PointSelector:
         for point, module in enumerate(point2module):
             self.module_contain_points[module].add(point)
     
-    def reset_uncovered_points(self, cover_points: List[int]) -> None:
+    def reset_uncovered_points(self, uncovered_points: List[int]) -> None:
         """
         Reset uncovered points based on coverage status
         
@@ -50,11 +50,10 @@ class PointSelector:
         self.logger.info("Reset uncovered points")
         self.uncovered_points_num = 0
         
-        for point, covered in enumerate(cover_points):
+        for point in uncovered_points:
             module = self.point2module[point]
-            if covered == 0:
-                self.uncovered_points_num += 1
-                self.module_contain_points[module].add(point)
+            self.uncovered_points_num += 1
+            self.module_contain_points[module].add(point)
     
     def update(self, cover_points: List[int]) -> None:
         """

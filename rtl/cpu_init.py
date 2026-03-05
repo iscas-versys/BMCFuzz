@@ -657,6 +657,9 @@ class CPUFuzzerManager(FuzzerManagerBase):
         
         return errors
     
+    def get_fuzz_inputs(self) -> List[str]:
+        return []
+    
     def get_coverage(self) -> Dict[str, Any]:
         """Get coverage data"""
         if self._results.get("coverage") is None:

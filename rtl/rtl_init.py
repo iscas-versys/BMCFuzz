@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.logger import BMCFuzzLogger
-from core.config import BMCFUZZ_HOME
+from core.config import Config, BMCFUZZ_HOME
 
 
 # =============================================================================
@@ -154,6 +154,16 @@ class FuzzerManagerBase(ABC):
         
         Returns:
             Dictionary with fuzzer results
+        """
+        pass
+    
+    @abstractmethod
+    def get_fuzz_inputs(self) -> List[str]:
+        """
+        Get fuzz inputs
+        
+        Returns:
+            List of fuzz inputs
         """
         pass
     
@@ -405,6 +415,15 @@ class RTLInit:
         """
         return self._fuzzer_manager.run(**kwargs)
     
+    def get_fuzz_inputs(self) -> List[str]:
+        """
+        Get fuzz inputs
+        
+        Returns:
+            List of fuzz inputs
+        """
+        return self._fuzzer_manager.get_fuzz_inputs()
+    
     def get_fuzzer_results(self) -> Dict[str, Any]:
         """
         Get fuzzer results including coverage, snapshots, waves
@@ -479,8 +498,14 @@ def initialize_rtl(project_name: str, cover_type: str = "toggle") -> RTLInit:
     global rtl_manager
     # Local import to avoid circular dependency
     from rtl.cpu_init import create_cpu_rtl_init
-    
-    rtl_manager = create_cpu_rtl_init(project_name, BMCFUZZ_HOME, cover_type)
+    from rtl.module_init import create_module_rtl_init
+
+    if project_name in Config.CPU_PROJECTS:
+        rtl_manager = create_cpu_rtl_init(project_name, BMCFUZZ_HOME, cover_type)
+    elif project_name in Config.MODULE_PROJECTS:
+        rtl_manager = create_module_rtl_init(project_name, BMCFUZZ_HOME, cover_type)
+    else:
+        raise ValueError(f"No RTLInit available for project: {project_name}")
     return rtl_manager
 
 def get_rtl_manager() -> RTLInit:
@@ -490,6 +515,8 @@ def get_rtl_manager() -> RTLInit:
     Returns:
         Global RTLInit instance or None if not initialized
     """
+    if rtl_manager is None:
+        raise ValueError("RTLInit not initialized")
     return rtl_manager
 
 

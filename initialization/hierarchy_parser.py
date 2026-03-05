@@ -88,7 +88,6 @@ class HierarchyParser:
         self,
         sv_top_file: str,
         output_json_path: str,
-        top_module_name: str = "SimTop",
         inc_dirs: Optional[List[str]] = None,
         define_macros: Optional[List[str]] = None,
         keep_temp: bool = True
@@ -97,6 +96,7 @@ class HierarchyParser:
         Parse a single Verilog file and generate JSON with module hierarchy
         and register info.  All register data is extracted from sv_top_file
         itself — no additional per-module source files are needed.
+        The top module is auto-detected as the one that is never instantiated.
         """
         from core.config import BMCFUZZ_HOME
 
@@ -111,14 +111,12 @@ class HierarchyParser:
         try:
             # Step 1: parse module instantiation hierarchy via svinst
             self.logger.info(f"Step 1: Running svinst on {sv_top_file}")
-            #! DEBUG --------------------------
-            if not temp_yaml.exists():
-                if not self._run_svinst(sv_top_file, str(temp_yaml), inc_dirs, define_macros):
-                    return False
+            if not self._run_svinst(sv_top_file, str(temp_yaml), inc_dirs, define_macros):
+                return False
 
-            # Step 2: convert YAML to hierarchy dict
+            # Step 2: convert YAML to hierarchy dict (top module auto-detected)
             self.logger.info(f"Step 2: Building hierarchy from {temp_yaml}")
-            hierarchy = self._yaml_to_hierarchy(str(temp_yaml), top_module_name)
+            hierarchy = self._yaml_to_hierarchy(str(temp_yaml))
             if not hierarchy:
                 return False
 
@@ -165,10 +163,8 @@ class HierarchyParser:
         self.logger.error(f"svinst failed: {cmd}")
         return False
 
-    def _yaml_to_hierarchy(
-        self, yaml_file_path: str, top_module_name: str
-    ) -> Optional[Dict[str, Any]]:
-        """Parse svinst YAML output and build a hierarchy dict"""
+    def _yaml_to_hierarchy(self, yaml_file_path: str) -> Optional[Dict[str, Any]]:
+        """Parse svinst YAML output and build a hierarchy dict. Top module is the one never instantiated."""
         try:
             with open(yaml_file_path, 'r') as f:
                 data = yaml.safe_load(f)
@@ -179,10 +175,19 @@ class HierarchyParser:
                 self.logger.debug(f"Found {len(file.get('defs', []))} modules in {file.get('file_name', 'unknown file')}")
 
             module_map = {m['mod_name']: m for m in all_modules if 'mod_name' in m}
-            top = module_map.get(top_module_name)
-            if not top:
-                self.logger.error(f"Top module '{top_module_name}' not found")
+            instantiated = set()
+            for m in all_modules:
+                for inst in (m.get('insts') or []):
+                    instantiated.add(inst.get('mod_name'))
+            top_candidates = [name for name in module_map if name not in instantiated]
+            if not top_candidates:
+                self.logger.error("No top module found (every module is instantiated elsewhere)")
                 return None
+            top_module_name = top_candidates[0]
+            if len(top_candidates) > 1:
+                self.logger.warning(f"Multiple top candidates: {top_candidates}, using '{top_module_name}'")
+            self.logger.info(f"Auto-detected top module: {top_module_name}")
+            top = module_map[top_module_name]
 
             def build(mod: Dict[str, Any]) -> Dict[str, Any]:
                 insts = []
@@ -244,7 +249,7 @@ class HierarchyParser:
             bit_width = (m.group(1) or '').strip()
             reg_name = m.group(2)
             count = abs(int(m.group(3)) - int(m.group(4))) + 1
-            if count <= 16:
+            if count <= 32:
                 for i in range(count):
                     name = f"{bit_width} {reg_name}[{i}]".strip() if bit_width else f"{reg_name}[{i}]"
                     reg_list.append({"regname": name, "initval": 'None'})
@@ -276,19 +281,17 @@ class HierarchyParser:
 def generate_hierarchy_with_regs(
     sv_top_file: str,
     output_json_path: str,
-    top_module_name: str = "SimTop",
     inc_dirs: Optional[List[str]] = None,
     define_macros: Optional[List[str]] = None,
     keep_temp: bool = True
 ) -> bool:
     """
     Parse a single Verilog file and generate JSON with module hierarchy
-    and register info.
+    and register info. Top module is auto-detected (never instantiated).
 
     Args:
         sv_top_file:      Path to the SystemVerilog source file
         output_json_path: Path to output JSON file
-        top_module_name:  Name of top module (default: "SimTop")
         inc_dirs:         Include directories for svinst
         define_macros:    Macros to define (e.g. ["SYNTHESIS"])
         keep_temp:        Keep temporary YAML file (default: False)
@@ -299,7 +302,6 @@ def generate_hierarchy_with_regs(
     return HierarchyParser().generate(
         sv_top_file=sv_top_file,
         output_json_path=output_json_path,
-        top_module_name=top_module_name,
         inc_dirs=inc_dirs,
         define_macros=define_macros,
         keep_temp=keep_temp

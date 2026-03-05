@@ -16,11 +16,13 @@ Two responsibilities:
        score is at or below the reset threshold.
 """
 
+import os
 import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from utils.logger import BMCFuzzLogger
+from core.config import Config
 from initialization.scorer import Scorer, create_scorer
 
 
@@ -60,6 +62,7 @@ class SnapshotManager:
                 "Either 'project_name' or 'scorer' must be provided"
             )
         self.snapshot_dir = Path(snapshot_dir)
+        shutil.rmtree(self.snapshot_dir, ignore_errors=True)
         self.snapshot_dir.mkdir(parents=True, exist_ok=True)
         self.prefer_reset_threshold = (
             prefer_reset_threshold
@@ -88,11 +91,14 @@ class SnapshotManager:
         - zero-score entries are dropped
         - duplicates (same scorer.get_identifier output) are dropped
         - accepted entries are copied to snapshot_dir/{id} and {id}.vcd
+        - if pool size exceeds Config.SNAPSHOT_POOL_CAPACITY, lowest-scoring
+          snapshots are removed until at capacity.
 
         Returns: number of snapshots actually added
         """
         added = sum(1 for snap in snapshots if self._add_one(snap))
         self.logger.info(f"Added {added}/{len(snapshots)} snapshots")
+        self._trim_to_capacity()
         return added
 
     def select_best(self) -> Optional[Dict[str, Any]]:
@@ -153,10 +159,6 @@ class SnapshotManager:
 
         # self.logger.debug(f"Processing snapshot entry: flag={flag}, wave={wave}, snapshot={snapshot}")
 
-        if not Path(flag).exists():
-            self.logger.debug(f"Flag file not found: {flag}")
-            return False
-
         input_data = self.scorer.parse_input(flag)
         if input_data is None:
             return False
@@ -179,7 +181,8 @@ class SnapshotManager:
 
         saved_snap = self.snapshot_dir / str(snap_id)
         saved_wave = self.snapshot_dir / f"{snap_id}.vcd"
-        shutil.copyfile(snapshot, saved_snap)
+        if os.path.exists(snapshot):
+            shutil.copyfile(snapshot, saved_snap)
         shutil.copyfile(wave, saved_wave)
 
         self._id2data[snap_id] = input_data
@@ -198,6 +201,39 @@ class SnapshotManager:
             if input_data is not None
             else old_score
         )
+
+    def _trim_to_capacity(self) -> None:
+        """If pool exceeds Config.SNAPSHOT_POOL_CAPACITY, remove lowest-scoring snapshots."""
+        cap = Config.SNAPSHOT_POOL_CAPACITY
+        if len(self._scores) <= cap:
+            return
+        # Sort by score ascending; remove (current - cap) lowest
+        sorted_scores = sorted(self._scores, key=lambda x: (x[0], x[1]))
+        to_remove = len(sorted_scores) - cap
+        remove_ids = {sid for _, sid in sorted_scores[:to_remove]}
+        self.logger.info(
+            f"Pool size {len(self._scores)} > capacity {cap}, removing {to_remove} lowest-scoring snapshots"
+        )
+        for sid in remove_ids:
+            self._remove_snapshot(sid)
+        self._scores = [(s, i) for s, i in self._scores if i not in remove_ids]
+
+    def _remove_snapshot(self, snap_id: int) -> None:
+        """Remove one snapshot from pool and delete its files; update _seen."""
+        if snap_id in self._id2data:
+            identifier = self.scorer.get_identifier(self._id2data[snap_id])
+            self._seen.discard(identifier)
+        for key in (self._id2snap, self._id2wave):
+            if snap_id in key:
+                p = Path(key[snap_id])
+                if p.exists():
+                    try:
+                        p.unlink()
+                    except OSError as e:
+                        self.logger.warning(f"Could not delete {p}: {e}")
+                del key[snap_id]
+        if snap_id in self._id2data:
+            del self._id2data[snap_id]
 
 
 __all__ = ['SnapshotManager']

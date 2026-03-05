@@ -11,19 +11,21 @@ Provides two public operations on one or more Verilog source files:
      Parse VCD + merge with hierarchy (once), then insert **actual-value**
      initial blocks into each registered SV file.
 
-Multiple SV files (e.g. one for formal, another for fuzzer) share the
-same hierarchy and VCD data — only the initial-block insertion runs
-per-file.
+Each SV file in sv_files is parsed for hierarchy separately; then
+prepare_rtl / load_snapshot use that file's hierarchy for template
+and snapshot insertion. VCD is parsed once and merged into each
+hierarchy per file.
 
 Extra-file processors (e.g. MemRWHelper) are run once per load_snapshot
 call.
 """
 
 import json
+import shutil
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
-from core.config import BMCFUZZ_HOME
+from core.config import Config, BMCFUZZ_HOME
 from utils.logger import BMCFuzzLogger
 
 from initialization.vcd_parser import VCDParser
@@ -90,17 +92,20 @@ class SnapshotLoader:
         self._primary_stem = next(iter(self._sv_files.values())).stem
 
         self._work = Path(BMCFUZZ_HOME) / "tmp" / "snapshot_loader"
+        shutil.rmtree(self._work, ignore_errors=True)
         self._work.mkdir(parents=True, exist_ok=True)
 
         self._extra: List[Tuple[str, str, Callable]] = []
 
-        self._hierarchy_json: Optional[Path] = (
+        # Optional single hierarchy JSON (used for all labels when provided)
+        self._external_hierarchy: Optional[Path] = (
             Path(hierarchy_json) if hierarchy_json else None
         )
+        # Per-label hierarchy JSON: each SV file gets its own structure
+        self._hierarchy_jsons: Dict[str, Path] = {}
 
         # Auto-register MemRWHelper extra processor for known CPU projects
-        _CPU_PROJECTS = {"nutshell", "rocket", "boom"}
-        if self.project_name in _CPU_PROJECTS:
+        if self.project_name in Config.CPU_PROJECTS:
             seen: set = set()
             for sv_path in self._sv_files.values():
                 mem_helper = sv_path.parent / "MemRWHelper.v"
@@ -143,8 +148,8 @@ class SnapshotLoader:
         """
         Parse hierarchy and insert template initial blocks into every SV file.
 
-        All registers are initialised to 0.  The hierarchy JSON is parsed
-        once (from the first registered SV file) and shared across files.
+        Each SV file's hierarchy is parsed separately; all registers are
+        initialised to 0 per that structure.
 
         Args:
             output_map: {label: output_path} overrides.  Labels not present
@@ -159,18 +164,18 @@ class SnapshotLoader:
         if not self._ensure_hierarchy():
             return None
 
-        # Build template register JSON (shared across files)
-        template_json = self._work / f"{self._primary_stem}_template_regs.json"
-        if not self._build_template_registers(str(template_json)):
-            return None
-
         results: Dict[str, str] = {}
         for label, sv_path in self._sv_files.items():
+            hier_path = self._hierarchy_jsons[label]
+            template_json = self._work / label / f"{sv_path.stem}_template_regs.json"
+            template_json.parent.mkdir(parents=True, exist_ok=True)
+            if not self._build_template_registers(str(hier_path), str(template_json)):
+                self.logger.error(f"[{label}] Failed to build template registers")
+                return None
+
             out = output_map.get(label)
             if out is None:
-                out = str(
-                    self._work / label / f"{sv_path.stem}_prepared.sv"
-                )
+                out = str(self._work / label / f"{sv_path.stem}_prepared.sv")
             Path(out).parent.mkdir(parents=True, exist_ok=True)
 
             self.logger.info(
@@ -197,8 +202,8 @@ class SnapshotLoader:
         """
         Load a VCD snapshot into every registered SV file.
 
-        VCD parsing and hierarchy merging are done once; only the
-        initial-block insertion runs per file.
+        VCD is parsed once; for each SV file, VCD is merged with that
+        file's hierarchy and initial blocks are inserted.
 
         Args:
             vcd_file:   Path to the VCD waveform file
@@ -209,9 +214,6 @@ class SnapshotLoader:
             or None on failure.
         """
         output_map = output_map or {}
-
-        if not self._ensure_hierarchy():
-            return None
 
         vcd_path = Path(vcd_file)
         if not vcd_path.exists():
@@ -227,23 +229,22 @@ class SnapshotLoader:
         if not self._parse_vcd(vcd_file, str(vcd_json)):
             return None
 
-        # 2. Merge VCD into hierarchy  (once)
-        regs_json = snap_dir / "registers.json"
-        self.logger.info("Merging VCD into hierarchy")
-        if not self.rtl_init.merge_vcd_into_hierarchy(
-            str(self._hierarchy_json), str(vcd_json), str(regs_json)
-        ):
-            self.logger.error("Failed to merge VCD into hierarchy")
-            return None
-
-        # 3. Insert actual-value initial blocks  (per file)
+        # 2 & 3. Per file: merge VCD into that file's hierarchy, then insert initial blocks
         results: Dict[str, str] = {}
         for label, sv_path in self._sv_files.items():
+            hier_path = self._hierarchy_jsons[label]
+            regs_json = snap_dir / label / "registers.json"
+            regs_json.parent.mkdir(parents=True, exist_ok=True)
+            self.logger.info(f"[{label}] Merging VCD into hierarchy")
+            if not self.rtl_init.merge_vcd_into_hierarchy(
+                str(hier_path), str(vcd_json), str(regs_json)
+            ):
+                self.logger.error(f"[{label}] Failed to merge VCD into hierarchy")
+                return None
+
             out = output_map.get(label)
             if out is None:
-                out = str(
-                    snap_dir / label / f"{sv_path.stem}_init.sv"
-                )
+                out = str(snap_dir / label / f"{sv_path.stem}_init.sv")
             Path(out).parent.mkdir(parents=True, exist_ok=True)
 
             self.logger.info(
@@ -277,36 +278,36 @@ class SnapshotLoader:
     # -------------------------------------------------------------------------
 
     def _ensure_hierarchy(self) -> bool:
-        """Make sure the hierarchy JSON exists, parsing from the first SV if needed."""
-        if self._hierarchy_json and self._hierarchy_json.exists():
+        """Ensure hierarchy JSON exists for each SV file (parse per file if not provided)."""
+        if self._external_hierarchy and self._external_hierarchy.exists():
+            self._hierarchy_jsons = {
+                label: self._external_hierarchy for label in self._sv_files
+            }
+            self.logger.info("Using external hierarchy JSON for all files")
             return True
 
-        out = self._work / f"{self._primary_stem}_hierarchy.json"
-        # if out.exists():
-        #     self._hierarchy_json = out
-        #     self.logger.info(f"Reusing cached hierarchy {out}")
-        #     return True
+        parser = HierarchyParser()
+        for label, sv_path in self._sv_files.items():
+            out = self._work / label / f"{sv_path.stem}_hierarchy.json"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            self.logger.info(f"[{label}] Parsing RTL {sv_path} -> {out}")
+            if not parser.generate(
+                sv_top_file=str(sv_path),
+                output_json_path=str(out),
+            ):
+                self.logger.error(f"[{label}] Failed to parse RTL: {sv_path}")
+                return False
+            self._hierarchy_jsons[label] = out
 
-        primary_sv = next(iter(self._sv_files.values()))
-        self.logger.info(f"Parsing RTL {primary_sv} -> {out}")
-        ok = HierarchyParser().generate(
-            sv_top_file=str(primary_sv),
-            output_json_path=str(out),
-        )
-        if ok:
-            self._hierarchy_json = out
-            return True
+        return True
 
-        self.logger.error(f"Failed to parse RTL: {primary_sv}")
-        return False
-
-    def _build_template_registers(self, output_json: str) -> bool:
-        """Build a register JSON with every initval set to '0'."""
+    def _build_template_registers(self, hierarchy_json_path: str, output_json: str) -> bool:
+        """Build a register JSON with every initval set to '0' from the given hierarchy."""
         try:
-            with open(self._hierarchy_json, 'r') as f:
+            with open(hierarchy_json_path, 'r') as f:
                 hierarchy = json.load(f)
         except Exception as e:
-            self.logger.error(f"Error loading hierarchy JSON: {e}")
+            self.logger.error(f"Error loading hierarchy JSON {hierarchy_json_path}: {e}")
             return False
 
         reg_paths: Dict[str, dict] = HierarchyParser().find_registers(hierarchy)
@@ -316,9 +317,8 @@ class SnapshotLoader:
         try:
             with open(output_json, 'w') as f:
                 json.dump(reg_paths, f, indent=4, ensure_ascii=False)
-            self.logger.info(
-                f"Template register JSON: {output_json} "
-                f"({len(reg_paths)} registers)"
+            self.logger.debug(
+                f"Template register JSON: {output_json} ({len(reg_paths)} registers)"
             )
             return True
         except Exception as e:

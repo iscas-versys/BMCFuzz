@@ -81,6 +81,7 @@ class RTLInitializer:
 
         if unmatched:
             self.logger.warning(f"{len(unmatched)} register(s) not matched in VCD")
+            self.logger.warning(f"Unmatched registers: {unmatched}")
 
         try:
             with open(output_json_path, 'w') as f:

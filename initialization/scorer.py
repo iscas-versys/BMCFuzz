@@ -9,9 +9,10 @@ inputs (can be state or transition, interface is unified).
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional, Set, Type
+from typing import Dict, Any, List, Optional, Type
 
 from utils.logger import BMCFuzzLogger
+from core.config import Config
 
 
 class Scorer(ABC):
@@ -227,10 +228,8 @@ class Scorer(ABC):
 
 
 # =============================================================================
-# Project → Scorer mapping
+# Project → Scorer mapping (uses Config.CPU_PROJECTS / Config.MODULE_PROJECTS)
 # =============================================================================
-
-CSR_SCORER_PROJECTS: Set[str] = {"nutshell", "rocket", "boom"}
 
 
 def get_scorer_class(project_name: str) -> Type["Scorer"]:
@@ -246,9 +245,12 @@ def get_scorer_class(project_name: str) -> Type["Scorer"]:
     Raises:
         ValueError: If no scorer is registered for the project
     """
-    if project_name in CSR_SCORER_PROJECTS:
+    if project_name in Config.CPU_PROJECTS:
         from initialization.csr_scorer import CSRScorer
         return CSRScorer
+    if project_name in Config.MODULE_PROJECTS:
+        from initialization.module_scorer import ModuleScorer
+        return ModuleScorer
     raise ValueError(f"No scorer available for project: {project_name}")
 
 
@@ -269,11 +271,10 @@ def create_scorer(project_name: str, **kwargs) -> "Scorer":
 
 def is_project_supported(project_name: str) -> bool:
     """Check whether a project has a registered scorer."""
-    return project_name in CSR_SCORER_PROJECTS
+    return project_name in Config.CPU_PROJECTS or project_name in Config.MODULE_PROJECTS
 
 __all__ = [
     'Scorer',
-    'CSR_SCORER_PROJECTS',
     'get_scorer_class',
     'create_scorer',
     'is_project_supported',

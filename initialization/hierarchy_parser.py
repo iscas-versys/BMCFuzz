@@ -249,7 +249,7 @@ class HierarchyParser:
             bit_width = (m.group(1) or '').strip()
             reg_name = m.group(2)
             count = abs(int(m.group(3)) - int(m.group(4))) + 1
-            if count <= 32:
+            if count <= 512:
                 for i in range(count):
                     name = f"{bit_width} {reg_name}[{i}]".strip() if bit_width else f"{reg_name}[{i}]"
                     reg_list.append({"regname": name, "initval": 'None'})

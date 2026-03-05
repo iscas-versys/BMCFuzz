@@ -6,15 +6,14 @@ Provides two public operations on one or more Verilog source files:
   1. prepare_rtl()
      Parse hierarchy (once), then insert **template** ``initial begin …
      end`` blocks (every register = 0) into each registered SV file.
+     The blocks are wrapped with ``BMCFUZZ_INIT`` markers.
 
-  2. load_snapshot(vcd_file)
-     Parse VCD + merge with hierarchy (once), then insert **actual-value**
-     initial blocks into each registered SV file.
+  2. load_snapshot(wave_file)
+     Parse waveform (VCD/FST), merge with hierarchy, then **update** the
+     register values inside the existing marked template blocks produced
+     by ``prepare_rtl``.  No new initial blocks are inserted.
 
-Each SV file in sv_files is parsed for hierarchy separately; then
-prepare_rtl / load_snapshot use that file's hierarchy for template
-and snapshot insertion. VCD is parsed once and merged into each
-hierarchy per file.
+``prepare_rtl`` must be called before ``load_snapshot``.
 
 Extra-file processors (e.g. MemRWHelper) are run once per load_snapshot
 call.
@@ -28,7 +27,7 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 from core.config import Config, BMCFUZZ_HOME
 from utils.logger import BMCFuzzLogger
 
-from initialization.vcd_parser import VCDParser
+from initialization.wave_parser import WaveParser
 from initialization.hierarchy_parser import HierarchyParser
 from initialization.rtl_initializer import RTLInitializer
 
@@ -51,7 +50,7 @@ class SnapshotLoader:
     prepared = loader.prepare_rtl()
     # prepared == {"formal": "…/SimTop_prepared.sv", "fuzzer": "…/SimTop_prepared.sv"}
 
-    loaded = loader.load_snapshot("snap.vcd")
+    loaded = loader.load_snapshot("snap.vcd")   # or "snap.fst"
     # loaded == {"formal": "…/SimTop_init.sv", "fuzzer": "…/SimTop_init.sv"}
 
     # Single SV file (backward compatible)
@@ -73,7 +72,7 @@ class SnapshotLoader:
                             - Dict[str, str]: named mapping {label: path}
                               e.g. {"formal": "formal/SimTop.sv",
                                     "fuzzer": "build/SimTop.sv"}
-            project_name:       CPU type for VCD signal filtering
+            project_name:       CPU type for waveform signal filtering
                             (nutshell | rocket | boom | None)
             hierarchy_json: Pre-generated hierarchy JSON.  If provided the
                             hierarchy parsing step is skipped.
@@ -96,6 +95,9 @@ class SnapshotLoader:
         self._work.mkdir(parents=True, exist_ok=True)
 
         self._extra: List[Tuple[str, str, Callable]] = []
+
+        # Paths produced by prepare_rtl(); used as templates by load_snapshot()
+        self._prepared_paths: Dict[str, str] = {}
 
         # Optional single hierarchy JSON (used for all labels when provided)
         self._external_hierarchy: Optional[Path] = (
@@ -191,55 +193,72 @@ class SnapshotLoader:
 
             results[label] = out
 
+        self._prepared_paths = dict(results)
         self.logger.info(f"Prepared RTL for {len(results)} file(s)")
         return results
 
     def load_snapshot(
         self,
-        vcd_file: str,
+        wave_file: str,
         output_map: Optional[Dict[str, str]] = None,
     ) -> Optional[Dict[str, str]]:
         """
-        Load a VCD snapshot into every registered SV file.
+        Load a waveform snapshot into every registered SV file.
 
-        VCD is parsed once; for each SV file, VCD is merged with that
-        file's hierarchy and initial blocks are inserted.
+        Requires :meth:`prepare_rtl` to have been called first.  The
+        prepared files (which already contain marked template initial
+        blocks) are used as the base; this method only **updates** the
+        register values inside those blocks.
 
         Args:
-            vcd_file:   Path to the VCD waveform file
+            wave_file:  Path to the waveform file (VCD or FST)
             output_map: {label: output_path} overrides.
 
         Returns:
             {label: output_path} for every registered SV file,
             or None on failure.
         """
+        if not self._prepared_paths:
+            self.logger.error(
+                "No prepared RTL files found — call prepare_rtl() first"
+            )
+            return None
+
         output_map = output_map or {}
 
-        vcd_path = Path(vcd_file)
-        if not vcd_path.exists():
-            self.logger.error(f"VCD file not found: {vcd_file}")
+        wave_path = Path(wave_file)
+        if not wave_path.exists():
+            self.logger.error(f"Waveform file not found: {wave_file}")
             return None
 
-        snap_dir = self._work / vcd_path.stem
+        snap_dir = self._work / wave_path.stem
         snap_dir.mkdir(exist_ok=True)
 
-        # 1. Parse VCD -> JSON  (once)
-        vcd_json = snap_dir / "vcd.json"
-        self.logger.info(f"Parsing VCD {vcd_file}")
-        if not self._parse_vcd(vcd_file, str(vcd_json)):
+        # 1. Parse waveform -> JSON  (once)
+        wave_json = snap_dir / "wave.json"
+        self.logger.info(f"Parsing waveform {wave_file}")
+        if not self._parse_wave(wave_file, str(wave_json)):
             return None
 
-        # 2 & 3. Per file: merge VCD into that file's hierarchy, then insert initial blocks
+        # 2 & 3. Per file: merge waveform data into hierarchy,
+        #        then update values in the existing template initial blocks
         results: Dict[str, str] = {}
         for label, sv_path in self._sv_files.items():
+            prepared = self._prepared_paths.get(label)
+            if not prepared or not Path(prepared).exists():
+                self.logger.error(
+                    f"[{label}] Prepared file missing: {prepared}"
+                )
+                return None
+
             hier_path = self._hierarchy_jsons[label]
             regs_json = snap_dir / label / "registers.json"
             regs_json.parent.mkdir(parents=True, exist_ok=True)
-            self.logger.info(f"[{label}] Merging VCD into hierarchy")
+            self.logger.info(f"[{label}] Merging waveform data into hierarchy")
             if not self.rtl_init.merge_vcd_into_hierarchy(
-                str(hier_path), str(vcd_json), str(regs_json)
+                str(hier_path), str(wave_json), str(regs_json)
             ):
-                self.logger.error(f"[{label}] Failed to merge VCD into hierarchy")
+                self.logger.error(f"[{label}] Failed to merge waveform into hierarchy")
                 return None
 
             out = output_map.get(label)
@@ -248,13 +267,13 @@ class SnapshotLoader:
             Path(out).parent.mkdir(parents=True, exist_ok=True)
 
             self.logger.info(
-                f"[{label}] Inserting snapshot initial blocks -> {out}"
+                f"[{label}] Updating initial block values -> {out}"
             )
-            if not self.rtl_init.insert_initial_blocks(
-                str(sv_path), str(regs_json), out
+            if not self.rtl_init.update_initial_blocks(
+                prepared, str(regs_json), out
             ):
                 self.logger.error(
-                    f"[{label}] Failed to insert initial blocks"
+                    f"[{label}] Failed to update initial blocks"
                 )
                 return None
 
@@ -263,7 +282,7 @@ class SnapshotLoader:
         # 4. Extra-file processors  (once)
         for src, dst, fn in self._extra:
             self.logger.info(f"Processing extra file {Path(src).name}")
-            if not fn(str(vcd_json), src, dst):
+            if not fn(str(wave_json), src, dst):
                 self.logger.warning(
                     f"Extra processor failed for {Path(src).name}"
                 )
@@ -325,12 +344,12 @@ class SnapshotLoader:
             self.logger.error(f"Error writing {output_json}: {e}")
             return False
 
-    def _parse_vcd(self, vcd_file: str, output_json: str) -> bool:
-        """Parse a VCD file to JSON using the configured signal filter."""
+    def _parse_wave(self, wave_file: str, output_json: str) -> bool:
+        """Parse a waveform file (VCD/FST) to JSON using the configured signal filter."""
         parser = (
-            VCDParser.for_cpu(self.project_name) if self.project_name else VCDParser()
+            WaveParser.for_cpu(self.project_name) if self.project_name else WaveParser()
         )
-        return parser.parse_vcd_to_json(vcd_file, output_json)
+        return parser.parse_to_json(wave_file, output_json)
 
 
 # =============================================================================
@@ -359,20 +378,20 @@ def prepare_rtl(
 
 def load_snapshot(
     sv_files: Union[str, Dict[str, str]],
-    vcd_file: str,
+    wave_file: str,
     output_map: Optional[Dict[str, str]] = None,
     project_name: Optional[str] = None,
     hierarchy_json: Optional[str] = None,
     extra_files: Optional[List[Tuple[str, str, Callable]]] = None,
 ) -> Optional[Dict[str, str]]:
     """
-    One-call interface: load a VCD snapshot into Verilog source(s).
+    One-call interface: load a waveform snapshot into Verilog source(s).
 
     Args:
         sv_files:       Single path or {label: path} dict
-        vcd_file:       VCD waveform file
+        wave_file:      Waveform file (VCD or FST)
         output_map:     {label: output_path} overrides
-        project_name:       CPU type for VCD filtering
+        project_name:   CPU type for waveform signal filtering
         hierarchy_json: Pre-generated hierarchy JSON (optional)
         extra_files:    List of (src, dst, processor) tuples
 
@@ -382,7 +401,7 @@ def load_snapshot(
     loader = SnapshotLoader(sv_files, project_name=project_name, hierarchy_json=hierarchy_json)
     for src, dst, fn in (extra_files or []):
         loader.register_extra_file(src, dst, fn)
-    return loader.load_snapshot(vcd_file, output_map)
+    return loader.load_snapshot(wave_file, output_map)
 
 
 __all__ = ['SnapshotLoader', 'prepare_rtl', 'load_snapshot']

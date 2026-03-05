@@ -180,7 +180,7 @@ class SnapshotManager:
         self._seen.add(identifier)
 
         saved_snap = self.snapshot_dir / str(snap_id)
-        saved_wave = self.snapshot_dir / f"{snap_id}.vcd"
+        saved_wave = self.snapshot_dir / f"{snap_id}.fst"
         if os.path.exists(snapshot):
             shutil.copyfile(snapshot, saved_snap)
         shutil.copyfile(wave, saved_wave)

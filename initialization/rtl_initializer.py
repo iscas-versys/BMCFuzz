@@ -24,6 +24,14 @@ from utils.logger import BMCFuzzLogger
 # Same module-boundary pattern used by hierarchy_parser
 _MODULE_RE = re.compile(r'\bmodule\s+(\w+)\b.*?\bendmodule\b', re.DOTALL)
 
+# Markers wrapping auto-generated initial blocks
+_INIT_MARKER_BEGIN = "// BMCFUZZ_INIT_BEGIN"
+_INIT_MARKER_END   = "// BMCFUZZ_INIT_END"
+_INIT_BLOCK_RE = re.compile(
+    r'// BMCFUZZ_INIT_BEGIN (\w+)\ninitial begin\n.*?end\n// BMCFUZZ_INIT_END',
+    re.DOTALL,
+)
+
 
 class RTLInitializer:
     """Injects VCD snapshot values into SystemVerilog source files."""
@@ -121,6 +129,45 @@ class RTLInitializer:
         try:
             Path(output_sv_path).write_text(result)
             self.logger.info(f"Inserted initial blocks: {output_sv_path}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Error writing {output_sv_path}: {e}")
+            return False
+
+    def update_initial_blocks(
+        self,
+        sv_file_path: str,
+        register_json_path: str,
+        output_sv_path: str
+    ) -> bool:
+        """
+        Update values in existing marked initial blocks.
+
+        The file at *sv_file_path* must already contain blocks inserted by
+        :meth:`insert_initial_blocks` (via ``prepare_rtl``).  This method
+        locates those blocks by their ``BMCFUZZ_INIT`` markers and replaces
+        the assignment values with those from *register_json_path*.
+
+        Args:
+            sv_file_path:       Verilog source with existing marked initial blocks
+            register_json_path: Flat register dict with updated initvals
+            output_sv_path:     Output Verilog file
+
+        Returns:
+            True on success.
+        """
+        try:
+            content = Path(sv_file_path).read_text()
+        except Exception as e:
+            self.logger.error(f"Error reading {sv_file_path}: {e}")
+            return False
+
+        init_map = self._build_init_map(register_json_path)
+        result   = self._update_initial_blocks(content, init_map)
+
+        try:
+            Path(output_sv_path).write_text(result)
+            self.logger.info(f"Updated initial blocks: {output_sv_path}")
             return True
         except Exception as e:
             self.logger.error(f"Error writing {output_sv_path}: {e}")
@@ -235,7 +282,10 @@ class RTLInitializer:
     ) -> str:
         """
         For each module block in content whose name appears in init_map,
-        insert an 'initial begin … end' block immediately before endmodule.
+        insert a marked 'initial begin … end' block before endmodule.
+
+        The block is wrapped with BMCFUZZ_INIT markers so that
+        :meth:`_update_initial_blocks` can locate and replace it later.
         """
         def replace_module(m: re.Match) -> str:
             mod_name = m.group(1)
@@ -243,11 +293,42 @@ class RTLInitializer:
             stmts    = init_map.get(mod_name)
             if not stmts:
                 return body
-            initial_block = "initial begin\n" + "\n".join(stmts) + "\nend\n"
+            initial_block = (
+                f"{_INIT_MARKER_BEGIN} {mod_name}\n"
+                f"initial begin\n"
+                + "\n".join(stmts) + "\n"
+                f"end\n"
+                f"{_INIT_MARKER_END}\n"
+            )
             insert_at = body.rfind('endmodule')
             return body[:insert_at] + initial_block + body[insert_at:]
 
         return _MODULE_RE.sub(replace_module, content)
+
+    def _update_initial_blocks(
+        self, content: str, init_map: Dict[str, List[str]]
+    ) -> str:
+        """
+        Replace the body of every marked initial block with new values.
+
+        Finds blocks delimited by ``BMCFUZZ_INIT_BEGIN / END`` markers
+        (inserted by :meth:`_inject_initial_blocks`) and rebuilds them
+        with the statements from *init_map*.
+        """
+        def replace_init_block(m: re.Match) -> str:
+            mod_name = m.group(1)
+            stmts = init_map.get(mod_name)
+            if stmts is None:
+                return m.group(0)
+            return (
+                f"{_INIT_MARKER_BEGIN} {mod_name}\n"
+                f"initial begin\n"
+                + "\n".join(stmts) + "\n"
+                f"end\n"
+                f"{_INIT_MARKER_END}"
+            )
+
+        return _INIT_BLOCK_RE.sub(replace_init_block, content)
 
 
 # =============================================================================
@@ -296,6 +377,27 @@ def insert_initial_blocks(
     )
 
 
+def update_initial_blocks(
+    sv_file_path: str,
+    register_json_path: str,
+    output_sv_path: str
+) -> bool:
+    """
+    Update values in existing marked initial blocks.
+
+    Args:
+        sv_file_path:       Verilog source with BMCFUZZ_INIT markers
+        register_json_path: Flat register dict with updated initvals
+        output_sv_path:     Output Verilog file
+
+    Returns:
+        True on success.
+    """
+    return RTLInitializer().update_initial_blocks(
+        sv_file_path, register_json_path, output_sv_path
+    )
+
+
 def update_mem_rw_helper(
     vcd_json_path: str,
     src_file_path: str,
@@ -321,5 +423,6 @@ __all__ = [
     'RTLInitializer',
     'merge_vcd_into_hierarchy',
     'insert_initial_blocks',
+    'update_initial_blocks',
     'update_mem_rw_helper',
 ]

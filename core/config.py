@@ -4,6 +4,7 @@ Configuration management for BMCFuzz
 
 import os
 import sys
+from typing import Set
 
 # Get BMCFUZZ_HOME from environment or use current directory
 BMCFUZZ_HOME = os.environ.get("BMCFUZZ_HOME", os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -21,6 +22,10 @@ class Config:
     
     # Project Paths (relative to BMCFUZZ_HOME)
     BMCFUZZ_HOME: str = BMCFUZZ_HOME
+
+    # Project type sets (CPU vs Module)
+    CPU_PROJECTS: Set[str] = {"nutshell", "rocket", "boom"}
+    MODULE_PROJECTS: Set[str] = {"rocket_dcache"}
 
     # Formal
     POINT_SELECTOR_MAX_POINT_NUM: int = 5
@@ -41,13 +46,15 @@ class Config:
     FORMAL_RUN_DIR: str = os.path.join(BMCFUZZ_HOME, "formal_run")
 
     # Fuzzer Paths
-    FUZZER_INIT: bool = False
-    FUZZER_INIT_RUNS: int = 10
-    INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "linearized", "riscv-all")
+    FUZZER_INIT: bool = True
+    FUZZER_INIT_RUNS: int = 100
+    # INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "linearized", "riscv-all")
+    INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "modules")
     CORPUS_DIR: str = os.path.join(FORMAL_RUN_DIR, "corpus")
 
     # Initialization
     SNAPSHOT_DIR: str = os.path.join(BMCFUZZ_HOME, "snapshots")
+    SNAPSHOT_POOL_CAPACITY: int = 128  # max snapshots in pool; excess low-score ones are removed after add
 
     # Logging
     LOG_DIR: str = os.path.join(BMCFUZZ_HOME, "logs")
@@ -74,6 +81,9 @@ class Config:
         logger.info(f"Point Selector - Max Point Num: {cls.POINT_SELECTOR_MAX_POINT_NUM}")
         logger.info(f"Coverage - CSV Filename: {cls.COVERAGE_CSV_FILENAME}")
         logger.info(f"Formal - Max Workers: {cls.FORMAL_MAX_WORKERS}")
+        logger.info(f"CPU Projects: {cls.CPU_PROJECTS}")
+        logger.info(f"Module Projects: {cls.MODULE_PROJECTS}")
+        logger.info(f"Snapshot Pool Capacity: {cls.SNAPSHOT_POOL_CAPACITY}")
         logger.info("==============================")
 
 

@@ -41,14 +41,14 @@ class Scheduler:
         4. Repeat until no more points or max iterations
     """
     
-    def __init__(self):
+    def __init__(self, project_name: str, cover_type: str = "toggle", solver_mode: str = "smt", run_snapshot: bool = True):
         self.logger = BMCFuzzLogger.get_logger("Scheduler")
 
         # Configuration
-        self.project_name: Optional[str] = None
-        self.cover_type = "toggle"
-        self.solver_mode = "sat"
-        self.run_snapshot = False
+        self.project_name = project_name
+        self.cover_type = cover_type
+        self.solver_mode = solver_mode
+        self.run_snapshot = run_snapshot
         
         # Formal components
         self.executor: Optional[FormalExecutor] = None
@@ -169,7 +169,7 @@ class Scheduler:
 
         # 7. Wire up seed generator as executor callback
         seed_gen = SeedGenerator()
-        seed_gen.configure(project_name=self.project_name, mode=self.solver_mode)
+        seed_gen.configure(project_name=self.project_name, mode=self.solver_mode, fuzz_inputs=rtl_init.get_fuzz_inputs())
         self.executor.set_seed_generator(seed_gen)
 
         # 8. Inject cover/assert statements into formal RTL
@@ -177,6 +177,10 @@ class Scheduler:
         if not self.executor.add_cover_statements(self.formal_rtl_file):
             self.logger.error("Failed to add cover statements to RTL")
             return False
+
+        # 9. If no snapshot mode, insert initial assume statements for registers
+        if not self.run_snapshot:
+            self.executor.add_reg_initial_statements(self.formal_rtl_file)
 
         self.logger.info("Formal initialization completed successfully")
         return True
@@ -331,6 +335,9 @@ class Scheduler:
             f"{self.coverage.get_covered_num()}/{self.total_points}"
         )
 
+        # reset uncovered points
+        self.point_selector.reset_uncovered_points(self.coverage.get_uncovered_points())
+
     # =========================================================================
     # Initialization (Snapshot Loader + Manager)
     # =========================================================================
@@ -367,14 +374,7 @@ class Scheduler:
             project_name=self.project_name,
         )
 
-        # Generate template initial-block copies (all regs = 0)
-        prepared = self.snapshot_loader.prepare_rtl()
-        if prepared is None:
-            self.logger.error("Failed to prepare RTL with template initial blocks")
-            return False
-        self.logger.info(f"Prepared template RTL: {prepared}")
-
-        # 2. Disable reset in FormalTop.sv (snapshot provides initial state)
+        # 1. Disable reset in FormalTop.sv (snapshot provides initial state)
         formal_top = Path(self.formal_rtl_file).parent / "FormalTop.sv"
         if formal_top.exists():
             content = formal_top.read_text()
@@ -383,6 +383,13 @@ class Scheduler:
             )
             formal_top.write_text(content)
             self.logger.info(f"Disabled reset in {formal_top}")
+
+        # 2. Generate template initial-block copies (all regs = 0)
+        prepared = self.snapshot_loader.prepare_rtl()
+        if prepared is None:
+            self.logger.error("Failed to prepare RTL with template initial blocks")
+            return False
+        self.logger.info(f"Prepared template RTL: {prepared}")
 
         # 3. Create SnapshotManager (scorer auto-selected by project_name)
         self.snapshot_manager = SnapshotManager(

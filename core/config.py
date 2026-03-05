@@ -28,8 +28,8 @@ class Config:
     MODULE_PROJECTS: Set[str] = {"rocket_dcache"}
 
     # Formal
-    POINT_SELECTOR_MAX_POINT_NUM: int = 5
-    FORMAL_MAX_WORKERS: int = 5
+    POINT_SELECTOR_MAX_POINT_NUM: int = 10
+    FORMAL_MAX_WORKERS: int = 10
     SBY_PATH: str = os.path.join(BMCFUZZ_HOME, "sby", "sbysrc", "sby.py")
     OSS_CAD_SUITE_ENV: str = os.environ.get(
         "OSS_CAD_SUITE_ENV",
@@ -47,7 +47,7 @@ class Config:
 
     # Fuzzer Paths
     FUZZER_INIT: bool = True
-    FUZZER_INIT_RUNS: int = 100
+    FUZZER_INIT_RUNS: int = 3000
     # INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "linearized", "riscv-all")
     INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "modules")
     CORPUS_DIR: str = os.path.join(FORMAL_RUN_DIR, "corpus")

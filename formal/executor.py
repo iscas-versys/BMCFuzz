@@ -338,10 +338,10 @@ class FormalExecutor:
             # Return code 1: not covered
             # Return code 2: counterexample found (covered)
             if return_code == 0 and self.mode == "smt" or return_code == 2 and self.mode == "sat":
-                self.logger.debug(f"Point {cover_point} successfully verified")
+                self.logger.info(f"Point {cover_point} successfully verified")
                 return True
             else:
-                self.logger.debug(
+                self.logger.info(
                     f"Point {cover_point} not covered, return code: {return_code}"
                 )
                 return False

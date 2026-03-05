@@ -231,6 +231,7 @@ class Scheduler:
             # Generate sby files and run BMC
             self.executor.generate_sby_files(selected_points)
             result = self.executor.execute(selected_points)
+            # result = {"covered_points": [], "execution_time": 0}
             covered_points: List[int] = result["covered_points"]
 
             if covered_points:
@@ -271,6 +272,7 @@ class Scheduler:
             corpus_dir=corpus_dir,
             formal_cover_rate=formal_cover_rate,
             snapshot_id=self.current_snapshot_id if self.run_snapshot else None,
+            run_snapshot=self.run_snapshot,
         )
 
         # Retrieve per-point coverage status from the fuzzer run
@@ -317,7 +319,7 @@ class Scheduler:
         while True:
             bmc_covered = self.do_bmc()
             self.logger.info(
-                f"BMC phase covered {len(bmc_covered)} point(s):{bmc_covered}" 
+                f"BMC phase covered {len(bmc_covered)} point(s):{sorted(bmc_covered)}" 
             )
 
             if not bmc_covered:
@@ -401,25 +403,25 @@ class Scheduler:
         self.logger.info("Snapshot components initialized successfully")
         return True
 
-    def load_snapshot(self, vcd_file: str) -> bool:
+    def load_snapshot(self, wave_file: str) -> bool:
         """
-        Load a VCD snapshot into both formal and fuzzer RTL files.
+        Load a waveform snapshot into both formal and fuzzer RTL files.
 
         Replaces the original formal_rtl_file and fuzzer_rtl_file with
-        snapshot-loaded copies (initial blocks filled with VCD values),
+        snapshot-loaded copies (initial blocks filled with waveform values),
         then rebuilds the fuzzer.
 
         Args:
-            vcd_file: Path to the VCD waveform file
+            wave_file: Path to the waveform file (VCD or FST)
 
         Returns:
             True on success, False on failure.
         """
-        self.logger.info(f"Loading snapshot from {vcd_file}")
+        self.logger.info(f"Loading snapshot from {wave_file}")
 
         # Generate snapshot-loaded SV files, writing directly over the originals
         results = self.snapshot_loader.load_snapshot(
-            vcd_file=vcd_file,
+            wave_file=wave_file,
             output_map={
                 "formal": self.formal_rtl_file,
                 "fuzzer": self.fuzzer_rtl_file,

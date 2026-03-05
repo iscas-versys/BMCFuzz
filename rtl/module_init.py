@@ -357,7 +357,8 @@ class ModuleFuzzerManager(FuzzerManagerBase):
             return False
     
     def run(self, corpus_dir: str, max_runs: int = 0, formal_cover_rate: Optional[float] = None,
-            max_instr: int = 10000, max_cycle: int = 10000, dump_snapshot: bool = True,
+            max_instr: int = 10000, max_cycle: int = 10000,
+            run_snapshot: bool = False, dump_snapshot: bool = True,
             continue_on_errors: bool = True,
             save_errors: bool = False, no_diff: bool = False, **kwargs) -> Dict[str, Any]:
         """
@@ -407,6 +408,9 @@ class ModuleFuzzerManager(FuzzerManagerBase):
         
         # Module-specific sim args after -- separator
         cmd += f" -- -m {max_cycle}"
+
+        if run_snapshot:
+            cmd += " --run-snapshot"
         
         if dump_snapshot:
             cmd += " --dump-snapshot"
@@ -487,7 +491,7 @@ class ModuleFuzzerManager(FuzzerManagerBase):
                 continue
             
             for vcd_file in os.listdir(fuzz_id_dir):
-                cycle_match = re.search(r"snapshot-(\d+)\.vcd$", vcd_file)
+                cycle_match = re.search(r"snapshot-(\d+)\.(vcd|fst)$", vcd_file)
                 if cycle_match:
                     cycle = cycle_match.group(1)
                     wave_path = os.path.join(fuzz_id_dir, vcd_file)

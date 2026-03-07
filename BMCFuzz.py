@@ -20,7 +20,7 @@ def parse_args() -> argparse.Namespace:
         help="Coverage type (default: toggle)",
     )
     parser.add_argument(
-        "-s", "--solver", default="smt",
+        "-s", "--solver", default="sat",
         help="Solver mode (default: smt)",
     )
     parser.add_argument(

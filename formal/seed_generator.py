@@ -7,7 +7,7 @@ for fuzzing.
 
 Supports two project families:
   - CPU projects (nutshell, rocket, boom): use CPUConfig + SMTParser/SATParser
-  - Module projects (rocket_dcache, ...): use ModuleConfig + ModuleSMTParser
+  - Module projects (rocket_dcache, ...): use ModuleConfig + ModuleSMTParser/ModuleSATParser
 """
 
 import os
@@ -503,6 +503,111 @@ class ModuleSMTParser(ResultParser):
             'bytes_per_cycle': bytes_per_cycle,
         }
 
+class ModuleSATParser(ResultParser):
+    """
+    SAT result parser for module-level projects.
+
+    Uses ``yosys-witness display`` to parse the ``.yw`` witness file,
+    extracts the ``formal_input`` signal at each step, and writes
+    a flat binary seed file identical in layout to what
+    :class:`ModuleSMTParser` produces.
+    """
+
+    def __init__(self, module_config: ModuleConfig):
+        self.module_config = module_config
+        self.logger = BMCFuzzLogger.get_logger("ModuleSATParser")
+
+    # ---- regex for witness display lines ----
+    # e.g. "  #3 formal_input[175:0] = 1111...0011"
+    _SIGNAL_RE = re.compile(
+        r'^\s+#(\d+)\s+(\S+?)(?:\[[\d:]+\])?\s*=\s*([01]+)\s*$'
+    )
+
+    def parse(self, cover_point: int, formal_run_dir: str) -> Optional[Dict[str, Any]]:
+        cover_dir = os.path.join(formal_run_dir, f"cover_{cover_point}")
+        witness_file = os.path.join(cover_dir, "engine_0", "trace0_aiw.yw")
+
+        if not os.path.exists(witness_file):
+            self.logger.warning(f"Witness file not found: {witness_file}")
+            return None
+
+        # ── 1. Run yosys-witness display ──────────────────────────────
+        witness_dir = os.path.dirname(witness_file)
+        os.makedirs(witness_dir, exist_ok=True)
+        witness_output_path = os.path.join(
+            witness_dir, f"cover_{cover_point}.witness"
+        )
+
+        from core.config import Config
+        oss_env = Config.OSS_CAD_SUITE_ENV
+        display_command = (
+            f"bash -c 'source {oss_env} && "
+            f"yosys-witness display {witness_file} > {witness_output_path}'"
+        )
+        return_code = run_command(display_command, shell=True)
+        if return_code != 0:
+            self.logger.error(
+                f"yosys-witness display failed (rc={return_code})"
+            )
+            return None
+
+        # ── 2. Parse displayed output for formal_input ────────────────
+        input_signal = self.module_config.input_signal
+        step_values: Dict[int, str] = {}
+        signal_width = 0
+
+        try:
+            with open(witness_output_path, 'r') as f:
+                for line in f:
+                    m = self._SIGNAL_RE.match(line)
+                    if m is None:
+                        continue
+                    step_num = int(m.group(1))
+                    sig_name = m.group(2)
+                    bits = m.group(3)
+                    if sig_name == input_signal:
+                        step_values[step_num] = bits
+                        if len(bits) > signal_width:
+                            signal_width = len(bits)
+        except Exception as e:
+            self.logger.error(f"Failed to parse witness output: {e}")
+            return None
+
+        if not step_values:
+            self.logger.warning(
+                f"Signal '{input_signal}' not found in witness for "
+                f"cover point {cover_point}"
+            )
+            return None
+
+        # ── 3. Write bin file ─────────────────────────────────────────
+        bytes_per_cycle = (signal_width + 7) // 8
+        all_steps_sorted = sorted(step_values.keys())
+
+        output_dir = os.path.join(formal_run_dir, "corpus")
+        os.makedirs(output_dir, exist_ok=True)
+        output_file = os.path.join(output_dir, f"cover_{cover_point}.bin")
+        with open(output_file, 'wb') as f:
+            for step in all_steps_sorted:
+                val = int(step_values[step], 2)
+                f.write(val.to_bytes(bytes_per_cycle, byteorder='little'))
+
+        self.logger.info(
+            f"Generated seed for cover point {cover_point}: "
+            f"{len(all_steps_sorted)} steps × {bytes_per_cycle} bytes"
+        )
+
+        return {
+            'cover_point': cover_point,
+            'mode': 'sat',
+            'witness_file': witness_file,
+            'bin_file': output_file,
+            'status': 'covered',
+            'cycles': len(all_steps_sorted),
+            'bytes_per_cycle': bytes_per_cycle,
+        }
+
+
 class SeedGenerator:
     """
     Seed generator for parsing BMC results
@@ -585,17 +690,14 @@ class SeedGenerator:
                 self.logger.debug(f"Using custom parser: {name}")
                 return parser
         
-        # Module projects → ModuleSMTParser (only SMT supported)
+        # Module projects → ModuleSMTParser / ModuleSATParser
         if self.project_name in Config.MODULE_PROJECTS:
             module_config = self.module_configs.get(self.project_name)
             if module_config is None:
                 module_config = ModuleConfig(self.project_name)
                 self.module_configs[self.project_name] = module_config
-            if self.mode != "smt":
-                self.logger.warning(
-                    f"Module project '{self.project_name}' only supports SMT mode, "
-                    f"falling back from '{self.mode}'"
-                )
+            if self.mode == "sat":
+                return ModuleSATParser(module_config=module_config)
             return ModuleSMTParser(module_config=module_config)
         
         # CPU projects → SMTParser / SATParser

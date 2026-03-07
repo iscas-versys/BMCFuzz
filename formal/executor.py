@@ -126,6 +126,7 @@ class FormalExecutor:
             'rocket': {'depth': 75, 'timeout': 3 * 3600},
             'boom': {'depth': 75, 'timeout': 4 * 3600},
             'rocket_dcache': {'depth': 300, 'timeout': 30 * 60},
+            'rocket_fpu': {'depth': 300, 'timeout': 30 * 60},
         }
 
         default = {'depth': 300, 'timeout': 30 * 60}

@@ -25,7 +25,7 @@ class Config:
 
     # Project type sets (CPU vs Module)
     CPU_PROJECTS: Set[str] = {"nutshell", "rocket", "boom"}
-    MODULE_PROJECTS: Set[str] = {"rocket_dcache"}
+    MODULE_PROJECTS: Set[str] = {"rocket_dcache", "rocket_fpu"}
 
     # Formal
     POINT_SELECTOR_MAX_POINT_NUM: int = 10
@@ -47,7 +47,7 @@ class Config:
 
     # Fuzzer Paths
     FUZZER_INIT: bool = True
-    FUZZER_INIT_RUNS: int = 3000
+    FUZZER_INIT_RUNS: int = 10000
     # INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "linearized", "riscv-all")
     INIT_CORPUS_DIR: str = os.path.join(BMCFUZZ_HOME, "corpus", "modules")
     CORPUS_DIR: str = os.path.join(FORMAL_RUN_DIR, "corpus")

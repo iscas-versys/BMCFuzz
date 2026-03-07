@@ -3,10 +3,10 @@
 	url = https://github.com/SeddonShen/sby.git
 [submodule "fuzzer/xfuzz"]
 	path = fuzzer/xfuzz
-	url = git@github.com:Chooaa/xfuzz.git
+	url = https://github.com/Chooaa/xfuzz.git
 [submodule "rtl/nutshell"]
 	path = rtl/nutshell
 	url = https://github.com/SeddonShen/nutshell-fv.git
 [submodule "rtl/rocket-modules"]
 	path = rtl/rocket-modules
-	url = git@github.com:Chooaa/rocket-modules.git
+	url = https://github.com/Chooaa/rocket-modules.git

@@ -169,7 +169,7 @@ class Scheduler:
 
         # 7. Wire up seed generator as executor callback
         seed_gen = SeedGenerator()
-        seed_gen.configure(project_name=self.project_name, mode=self.solver_mode, fuzz_inputs=rtl_init.get_fuzz_inputs())
+        seed_gen.configure(project_name=self.project_name, mode=self.solver_mode)
         self.executor.set_seed_generator(seed_gen)
 
         # 8. Inject cover/assert statements into formal RTL
@@ -237,6 +237,7 @@ class Scheduler:
             if covered_points:
                 # Update coverage and exit - seeds have been generated for the fuzzer
                 # self.coverage.update_formal(covered_points)
+                self.coverage.generate_cover_file()
                 self.coverage.update_formal_cover_rate(
                     len(covered_points), result["execution_time"]
                 )

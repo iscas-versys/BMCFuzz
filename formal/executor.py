@@ -122,18 +122,14 @@ class FormalExecutor:
             Dictionary with depth and timeout settings
         """
         configs = {
-            'nutshell': {'smt': {'depth': 90, 'timeout': 2 * 3600},
-                         'sat': {'depth': 90, 'timeout': 2 * 3600}},
-            'rocket': {'smt': {'depth': 75, 'timeout': 3 * 3600},
-                       'sat': {'depth': 75, 'timeout': 3 * 3600}},
-            'boom': {'smt': {'depth': 75, 'timeout': 4 * 3600},
-                     'sat': {'depth': 75, 'timeout': 4 * 3600}},
-            'rocket_dcache': {'smt': {'depth': 150, 'timeout': 30 * 60},
-                              'sat': {'depth': 150, 'timeout': 30 * 60}},
+            'nutshell': {'depth': 90, 'timeout': 2 * 3600},
+            'rocket': {'depth': 75, 'timeout': 3 * 3600},
+            'boom': {'depth': 75, 'timeout': 4 * 3600},
+            'rocket_dcache': {'depth': 300, 'timeout': 30 * 60},
         }
 
-        default = {'depth': 50, 'timeout': 1 * 3600}
-        return configs.get(self.project_name, {}).get(self.mode, default)
+        default = {'depth': 300, 'timeout': 30 * 60}
+        return configs.get(self.project_name, default)
     
     def generate_sby_files(self, cover_points: List[int]) -> bool:
         """

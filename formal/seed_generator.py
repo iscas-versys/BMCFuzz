@@ -120,27 +120,28 @@ class ModuleConfig:
     """
     Module-level project configuration for seed generation.
 
-    Stores the ordered list of fuzz-input signal names and the VCD
-    hierarchy prefix used to locate them in the formal trace.
+    Stores the VCD hierarchy prefix and signal name used to locate
+    the packed formal_input signal in the formal trace.
     """
 
     DEFAULT_CONFIGS: Dict[str, Dict[str, Any]] = {
         'rocket_dcache': {
             'dut_hier': 'FormalTop',
+            'input_signal': 'formal_input',
         },
     }
 
-    def __init__(self, project_name: str, fuzz_inputs: List[str],
+    def __init__(self, project_name: str,
                  custom_config: Optional[Dict[str, Any]] = None):
         self.project_name = project_name
-        self.fuzz_inputs = [s.strip() for s in fuzz_inputs if s.strip()]
         self.config = custom_config or self.DEFAULT_CONFIGS.get(project_name, {})
         self.dut_hier = self.config.get('dut_hier', 'FormalTop')
+        self.input_signal = self.config.get('input_signal', 'formal_input')
 
         self.logger = BMCFuzzLogger.get_logger("ModuleConfig")
         self.logger.debug(
             f"Initialized ModuleConfig for {project_name}: "
-            f"{len(self.fuzz_inputs)} fuzz inputs, dut_hier={self.dut_hier}"
+            f"dut_hier={self.dut_hier}, input_signal={self.input_signal}"
         )
 
 
@@ -419,9 +420,9 @@ class ModuleSMTParser(ResultParser):
     SMT result parser for module-level projects.
 
     Reads the VCD trace produced by the formal solver, extracts the
-    dut's input signals at each clock cycle, packs them in the same
-    bit-order used by the SimTop fuzz wrapper (``reg_input``), and
-    writes a flat binary seed file consumable by the module fuzzer.
+    single ``formal_input`` signal at each clock cycle, and writes
+    its packed value as a flat binary seed file consumable by the
+    module fuzzer.
     """
 
     def __init__(self, module_config: ModuleConfig):
@@ -443,73 +444,45 @@ class ModuleSMTParser(ResultParser):
             self.logger.error("Verilog_VCD package is required for module SMT parsing")
             return None
 
-        fuzz_inputs = self.module_config.fuzz_inputs
         dut_hier = self.module_config.dut_hier
-        fuzz_set = set(fuzz_inputs)
+        input_signal = self.module_config.input_signal
 
-        # ── 1. Extract signals from VCD ──────────────────────────────
-        signal_data: Dict[str, Dict[int, str]] = {}  # name → {time → raw_value}
-        signal_widths: Dict[str, int] = {}            # name → bit width
+        # ── 1. Find the formal_input signal in VCD ───────────────────
+        signal_width = 0
+        time_values: Dict[int, str] = {}
 
         for netinfo in vcd_data.values():
             if 'nets' not in netinfo or not netinfo['nets']:
                 continue
             net = netinfo['nets'][0]
-            if net['hier'] == dut_hier and net['name'] in fuzz_set:
-                name = net['name']
-                signal_widths[name] = int(net['size'])
-                signal_data[name] = {int(t): v for t, v in netinfo['tv']}
-                # self.logger.debug(f"{name}({signal_widths[name]}): {signal_data[name]}")
+            if net['hier'] == dut_hier and net['name'] == input_signal:
+                signal_width = int(net['size'])
+                time_values = {int(t): v for t, v in netinfo['tv']}
+                break
 
-        missing = fuzz_set - set(signal_data.keys())
-        if missing:
+        if not time_values:
             self.logger.warning(
-                f"Signals not found in VCD under '{dut_hier}': {missing}"
-            )
-
-        # ── 2. Collect all time steps ────────────────────────────────
-        all_times: set[int] = set()
-        for tv_dict in signal_data.values():
-            all_times.update(tv_dict.keys())
-        all_times_sorted = sorted(all_times)
-
-        if not all_times_sorted:
-            self.logger.warning(
-                f"No time steps found in VCD for cover point {cover_point}"
+                f"Signal '{input_signal}' not found in VCD under '{dut_hier}' "
+                f"for cover point {cover_point}"
             )
             return None
 
-        # ── 3. Byte-aligned size per cycle ───────────────────────────
-        total_bits = sum(signal_widths.get(n, 1) for n in fuzz_inputs)
-        bytes_per_cycle = (total_bits + 7) // 8
+        # ── 2. Collect time steps and compute byte width ─────────────
+        all_times_sorted = sorted(time_values.keys())
+        bytes_per_cycle = (signal_width + 7) // 8
 
-        # ── 4. Pack and write bin file ───────────────────────────────
+        # ── 3. Write bin file ────────────────────────────────────────
         output_dir = os.path.join(formal_run_dir, "corpus")
         os.makedirs(output_dir, exist_ok=True)
         output_file = os.path.join(output_dir, f"cover_{cover_point}.bin")
 
-        current_values: Dict[str, int] = {n: 0 for n in fuzz_inputs}
+        current_value = 0
 
         with open(output_file, 'wb') as f:
-            # self.logger.debug(f"cover_point: {cover_point}")
             for t in all_times_sorted:
-                for name in fuzz_inputs:
-                    if name in signal_data and t in signal_data[name]:
-                        current_values[name] = int(signal_data[name][t], 2)
-
-                packed = 0
-                bit_pos = 0
-                # self.logger.debug(f"clock cycle: {t}")
-                for name in fuzz_inputs:
-                    # self.logger.debug(f"{name}: {current_values[name]}")
-                    # self.logger.debug(f"signal_widths.get(name, 1): {signal_widths.get(name, 1)}")
-                    # self.logger.debug(f"packed: {packed}, bit_pos: {bit_pos}")
-                    width = signal_widths.get(name, 1)
-                    val = current_values[name] & ((1 << width) - 1)
-                    packed |= val << bit_pos
-                    bit_pos += width
-
-                f.write(packed.to_bytes(bytes_per_cycle, byteorder='little'))
+                if t in time_values:
+                    current_value = int(time_values[t], 2)
+                f.write(current_value.to_bytes(bytes_per_cycle, byteorder='little'))
 
         self.logger.info(
             f"Generated seed for cover point {cover_point}: "
@@ -539,7 +512,6 @@ class SeedGenerator:
         self.logger = BMCFuzzLogger.get_logger("SeedGenerator")
         self.project_name = None
         self.mode = None  # "smt" or "sat"
-        self.fuzz_inputs: List[str] = []
         
         # CPU configurations (users can register custom configs)
         self.cpu_configs: Dict[str, CPUConfig] = {}
@@ -552,26 +524,20 @@ class SeedGenerator:
         
         self.logger.info("SeedGenerator initialized")
     
-    def configure(self, project_name: str, mode: str,
-                  fuzz_inputs: Optional[List[str]] = None):
+    def configure(self, project_name: str, mode: str):
         """
         Configure seed generator for specific project and mode
 
         Args:
             project_name: Project name (CPU or module project)
             mode: Solver mode ("smt" or "sat")
-            fuzz_inputs: Ordered list of dut input signal names
-                         (required for module projects)
         """
         self.project_name = project_name
         self.mode = mode
-        self.fuzz_inputs = fuzz_inputs or []
 
         if project_name in Config.MODULE_PROJECTS:
             if project_name not in self.module_configs:
-                self.module_configs[project_name] = ModuleConfig(
-                    project_name, self.fuzz_inputs
-                )
+                self.module_configs[project_name] = ModuleConfig(project_name)
         else:
             if project_name not in self.cpu_configs:
                 self.cpu_configs[project_name] = CPUConfig(project_name)
@@ -619,7 +585,7 @@ class SeedGenerator:
         if self.project_name in Config.MODULE_PROJECTS:
             module_config = self.module_configs.get(self.project_name)
             if module_config is None:
-                module_config = ModuleConfig(self.project_name, self.fuzz_inputs)
+                module_config = ModuleConfig(self.project_name)
                 self.module_configs[self.project_name] = module_config
             if self.mode != "smt":
                 self.logger.warning(

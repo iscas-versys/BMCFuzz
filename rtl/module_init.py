@@ -363,6 +363,7 @@ class ModuleFuzzerManager(FuzzerManagerBase):
             max_instr: int = 10000, max_cycle: int = 10000,
             run_snapshot: bool = False, dump_snapshot: bool = True,
             continue_on_errors: bool = True,
+            only_fuzz: bool = False,
             save_errors: bool = False, no_diff: bool = False, **kwargs) -> Dict[str, Any]:
         """
         Run module fuzzer with corpus
@@ -405,6 +406,9 @@ class ModuleFuzzerManager(FuzzerManagerBase):
         
         if save_errors:
             cmd += " --save-errors"
+        
+        if only_fuzz:
+            cmd += " --only-fuzz"
         
         formal_cover_points_file = os.path.join(self.bmcfuzz_home, "formal_run", "cover_points.csv")
         if os.path.exists(formal_cover_points_file):

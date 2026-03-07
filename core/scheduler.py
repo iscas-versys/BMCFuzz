@@ -41,7 +41,9 @@ class Scheduler:
         4. Repeat until no more points or max iterations
     """
     
-    def __init__(self, project_name: str, cover_type: str = "toggle", solver_mode: str = "smt", run_snapshot: bool = True):
+    def __init__(self, project_name: str, cover_type: str = "toggle",
+                 solver_mode: str = "smt", run_snapshot: bool = True,
+                 only_fuzz: bool = False, only_bmc: bool = False):
         self.logger = BMCFuzzLogger.get_logger("Scheduler")
 
         # Configuration
@@ -49,6 +51,8 @@ class Scheduler:
         self.cover_type = cover_type
         self.solver_mode = solver_mode
         self.run_snapshot = run_snapshot
+        self.only_fuzz = only_fuzz
+        self.only_bmc = only_bmc
         
         # Formal components
         self.executor: Optional[FormalExecutor] = None
@@ -72,29 +76,51 @@ class Scheduler:
         """
         Main entry point: initialize all components and run the full loop.
 
-        Flow:
-          1. Initialize RTL manager (global)
-          2. init_formal()  — build RTL, coverage, executor, cover statements
-          3. Build fuzzer
-          4. If snapshot mode: init_initialization() + run_snapshot_loop()
-             Else: run_bmc_cgf()
+        Flow depends on mode:
+          --only-fuzz : build RTL + fuzzer, run fuzzer only
+          --only-bmc  : build RTL + formal, run BMC only
+          --snapshot  : full two-level snapshot loop
+          (default)   : BMC-CGF hybrid loop
         """
         self.logger.info(
             f"BMCFuzz starting: project={self.project_name}, "
             f"cover_type={self.cover_type}, solver={self.solver_mode}, "
-            f"snapshot={self.run_snapshot}"
+            f"snapshot={self.run_snapshot}, "
+            f"only_fuzz={self.only_fuzz}, only_bmc={self.only_bmc}"
         )
 
         # 1. Initialize global RTL manager
         initialize_rtl(self.project_name, self.cover_type)
+        rtl_init = get_rtl_manager()
 
+        # ── Fuzz-only mode ────────────────────────────────────────────
+        if self.only_fuzz:
+            if not rtl_init.build_rtl(cover_type=self.cover_type):
+                self.logger.error("RTL build failed, aborting")
+                return
+            if not rtl_init.build_fuzzer():
+                self.logger.error("Fuzzer build failed, aborting")
+                return
+            self.run_fuzz_only()
+            self.logger.info("BMCFuzz (fuzz-only) finished")
+            return
+
+        # ── BMC-only mode ─────────────────────────────────────────────
+        if self.only_bmc:
+            if not self.init_formal():
+                self.logger.error("Formal initialization failed, aborting")
+                return
+            self.run_bmc_only()
+            self.logger.info("BMCFuzz (bmc-only) finished")
+            return
+
+        # ── Normal hybrid modes ───────────────────────────────────────
         # 2. Initialize formal verification components
         if not self.init_formal():
             self.logger.error("Formal initialization failed, aborting")
             return
 
         # 3. Build fuzzer
-        rtl_init = get_rtl_manager()
         if not rtl_init.build_fuzzer():
             self.logger.error("Fuzzer build failed, aborting")
             return
@@ -301,6 +327,73 @@ class Scheduler:
                 self.logger.info(f"Added {added} snapshot(s) to manager")
 
         return new_covered
+
+    # =========================================================================
+    # Standalone modes (fuzz-only / bmc-only)
+    # =========================================================================
+
+    def run_fuzz_only(self) -> None:
+        """
+        Run fuzzer continuously without BMC.
+
+        Uses the initial corpus and runs with no max_runs limit.
+        Coverage is tracked by the fuzzer binary itself
+        (written to $NOOP_HOME/tmp/fuzz_coverage.csv).
+        """
+        self.logger.info("Starting fuzz-only mode")
+
+        rtl_init = get_rtl_manager()
+        rtl_init.run_fuzzer(
+            corpus_dir=Config.INIT_CORPUS_DIR,
+            max_runs=0,
+            dump_snapshot=False,
+            only_fuzz=True
+        )
+
+        self.logger.info("Fuzz-only mode finished")
+
+    def run_bmc_only(self) -> None:
+        """
+        Run pure BMC verification on all cover points without fuzzing.
+
+        Iterates over all point batches via the point selector. For each
+        batch, runs formal verification and records covered points. The
+        loop exits when all points have been tried.
+        """
+        self.logger.info("Starting BMC-only mode")
+
+        while True:
+            self.executor.cleanup()
+
+            if self.point_selector.uncovered_points_num == 0:
+                self.logger.info("All points processed; exiting BMC-only loop")
+                break
+
+            # selected_points = self.point_selector.generate_cover_points()
+            selected_points = list(range(self.total_points))
+            if not selected_points:
+                self.logger.info("No more points to select; exiting BMC-only loop")
+                break
+
+            self.executor.generate_sby_files(selected_points)
+            result = self.executor.execute(selected_points)
+            covered_points: List[int] = result["covered_points"]
+
+            if covered_points:
+                self.coverage.generate_cover_file()
+                self.coverage.update_formal_cover_rate(
+                    len(covered_points), result["execution_time"]
+                )
+                self.logger.info(
+                    f"BMC covered {len(covered_points)} point(s): "
+                    f"{sorted(covered_points)}"
+                )
+                self.coverage.display_coverage()
+
+        self.logger.info(
+            f"BMC-only finished. Coverage: "
+            f"{self.coverage.get_covered_num()}/{self.total_points}"
+        )
 
     def run_bmc_cgf(self) -> None:
         """

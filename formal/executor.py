@@ -187,7 +187,10 @@ class FormalExecutor:
             cover_label = f"cov_count_{cover_id}"
             
             if self.mode == "smt":
-                scripts = f"chformal -remove -cover c:{cover_label} %n\n"
+                scripts = (
+                    f"chformal -remove -cover c:{cover_label} %n\n"
+                    f"chformal -assert2assume\n"
+                )
             elif self.mode == "sat":
                 scripts = f"chformal -remove -assert c:{cover_label} %n\n"
             

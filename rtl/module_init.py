@@ -79,7 +79,7 @@ class ModuleRTLGenerator(RTLGeneratorBase):
         
         build_command = (
             f"cd {self.noop_home} && source env.sh && make clean && "
-            f"make src XFUZZ=1 FIRRTL_COVER={self.cover_type} -j16 {make_args} > {log_file} 2>&1 && "
+            f"make src XFUZZ=1 FIRRTL_COVER={self.cover_type},control -j16 {make_args} > {log_file} 2>&1 && "
             f"python3 modules/module_parser.py --project-name {self.project_name}"
         )
         
@@ -237,7 +237,7 @@ class ModuleEmulatorManager(EmulatorManagerBase):
         
         make_command = (
             f"cd {self.noop_home} && source env.sh && "
-            f"make modules {' '.join(make_flags)} {make_args}"
+            f"make modules {' '.join(make_flags)} {make_args} -j16"
         )
         
         log_file = os.path.join(self.noop_home, "tmp", "make_emu.log")
@@ -340,7 +340,7 @@ class ModuleFuzzerManager(FuzzerManagerBase):
         
         make_command = (
             f"cd {self.noop_home} && source env.sh && "
-            f"make modules XFUZZ=1 EMU_TRACE=1 {make_args}"
+            f"make modules XFUZZ=1 EMU_TRACE=1 {make_args} -j16"
         )
         
         log_file = os.path.join(self.noop_home, "tmp", "make_fuzzer.log")
@@ -378,14 +378,14 @@ class ModuleFuzzerManager(FuzzerManagerBase):
             Dictionary with fuzzer results
         """
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        run_dir = os.path.join(self.noop_home, "tmp", "fuzzer")
+        run_dir = os.path.join(self.noop_home, "tmp", "fuzz_run")
         os.makedirs(run_dir, exist_ok=True)
         
         self.logger.info(f"Running module fuzzer from corpus: {corpus_dir}")
         
         # Fuzzer command (same structure as cpu_init)
         cmd = f"cd {self.noop_home} && source env.sh && {self.fuzzer_path} -f"
-        cmd += f" -c firrtl.{self.cover_type}"
+        cmd += f" -c {self.cover_type}"
         
         if max_runs > 0:
             cmd += f" --max-runs {max_runs}"
@@ -474,33 +474,51 @@ class ModuleFuzzerManager(FuzzerManagerBase):
     
     def _collect_snapshots(self) -> List[Dict]:
         """
-        Collect snapshots from fuzz_run/{fuzz_id}/ directories.
-        
-        Each snapshot is a VCD waveform: snapshot-{cycle}.vcd
-        The cycle number serves as the flag identifier.
+        Collect snapshots from fuzz_run/ directory.
+
+        Files are directly in fuzz_run_dir (no fuzz_id subdirectories):
+          - wave:  snapshot-{fuzz_id}-{cycle}.fst
+          - flag:  control_cover_points-{fuzz_id}-{cycle}.csv
+
+        A valid snapshot requires both files with matching fuzz_id and cycle.
+        The flag path points to the CSV file for scorer parsing.
         """
         snapshots = []
         fuzz_run_dir = os.path.join(self.noop_home, "tmp", "fuzz_run")
-        
+
         if not os.path.exists(fuzz_run_dir):
             return snapshots
-        
-        for fuzz_id in os.listdir(fuzz_run_dir):
-            fuzz_id_dir = os.path.join(fuzz_run_dir, fuzz_id)
-            if not os.path.isdir(fuzz_id_dir):
+
+        # Index wave files by (fuzz_id, cycle)
+        wave_map: dict[tuple[str, str], str] = {}
+        flag_map: dict[tuple[str, str], str] = {}
+
+        for fname in os.listdir(fuzz_run_dir):
+            fpath = os.path.join(fuzz_run_dir, fname)
+            if not os.path.isfile(fpath):
                 continue
-            
-            for vcd_file in os.listdir(fuzz_id_dir):
-                cycle_match = re.search(r"snapshot-(\d+)\.(vcd|fst)$", vcd_file)
-                if cycle_match:
-                    cycle = cycle_match.group(1)
-                    wave_path = os.path.join(fuzz_id_dir, vcd_file)
-                    snapshots.append({
-                        "flag": cycle,
-                        "wave": wave_path,
-                        "snapshot": "",
-                    })
-        
+
+            wave_match = re.match(r"snapshot-(\d+)-(\d+)\.fst$", fname)
+            if wave_match:
+                key = (wave_match.group(1), wave_match.group(2))
+                wave_map[key] = fpath
+                continue
+
+            flag_match = re.match(
+                r"control_cover_points-(\d+)-(\d+)\.csv$", fname
+            )
+            if flag_match:
+                key = (flag_match.group(1), flag_match.group(2))
+                flag_map[key] = fpath
+
+        # Only keep entries that have both wave and flag
+        for key in wave_map.keys() & flag_map.keys():
+            snapshots.append({
+                "flag": flag_map[key],
+                "wave": wave_map[key],
+                "snapshot": "",
+            })
+
         return snapshots
     
     def _collect_errors(self) -> List[str]:

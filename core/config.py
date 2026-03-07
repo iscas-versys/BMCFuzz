@@ -89,13 +89,3 @@ class Config:
 
 # Global configuration instance
 config = Config()
-
-
-if __name__ == "__main__":
-    from utils.logger import log_init
-    
-    log_init(prefix="config_test")
-    
-    Config.display()
-    logger.info(f"Accessing config: {Config.POINT_SELECTOR_MAX_POINT_NUM}")
-    logger.info("Configuration test completed!")

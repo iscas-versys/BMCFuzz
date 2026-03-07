@@ -379,6 +379,7 @@ class ModuleFuzzerManager(FuzzerManagerBase):
         """
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         run_dir = os.path.join(self.noop_home, "tmp", "fuzz_run")
+        shutil.rmtree(run_dir, ignore_errors=True)
         os.makedirs(run_dir, exist_ok=True)
         
         self.logger.info(f"Running module fuzzer from corpus: {corpus_dir}")
@@ -449,7 +450,7 @@ class ModuleFuzzerManager(FuzzerManagerBase):
             "percentage": 0.0,
             "points": []
         }
-        cover_file = os.path.join(self.noop_home, "tmp", "cover_points.csv")
+        cover_file = os.path.join(self.noop_home, "tmp", "fuzz_run", "cover_points.csv")
         
         if os.path.exists(cover_file):
             try:

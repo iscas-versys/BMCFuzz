@@ -142,7 +142,7 @@ class SnapshotManager:
         return {
             "id":            best_id,
             "score":         best_score,
-            "details":       self._id2data[best_id],
+            "details":       self.scorer.get_identifier(self._id2data[best_id]),
             "snapshot_path": self._id2snap[best_id],
             "wave_path":     self._id2wave[best_id],
         }

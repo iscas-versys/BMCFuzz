@@ -402,12 +402,14 @@ def _save_log(log_path, records, timeout):
     """Write time-coverage records to *log_path*, deduplicating identical points."""
     with open(log_path, "w") as f:
         f.write("  0h  0m  0s Coverage:  0.00%\n")
+        prev_t = 0.0
         prev_cov = 0.0
         written = 0
         for t, c in records:
-            if c == prev_cov:
+            if prev_t == t and c == prev_cov:
                 continue
             f.write(f"{_fmt_time(t)} Coverage: {c:.2f}%\n")
+            prev_t = t
             prev_cov = c
             written += 1
         end_str = _fmt_time(timeout)

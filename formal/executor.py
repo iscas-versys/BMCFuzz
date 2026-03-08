@@ -125,11 +125,11 @@ class FormalExecutor:
             'nutshell': {'depth': 90, 'timeout': 2 * 3600},
             'rocket': {'depth': 75, 'timeout': 3 * 3600},
             'boom': {'depth': 75, 'timeout': 4 * 3600},
-            'rocket_dcache': {'depth': 300, 'timeout': 30 * 60},
-            'rocket_fpu': {'depth': 300, 'timeout': 30 * 60},
+            'rocket_dcache': {'depth': 300, 'timeout': 10 * 60},
+            'rocket_fpu': {'depth': 300, 'timeout': 10 * 60},
         }
 
-        default = {'depth': 300, 'timeout': 30 * 60}
+        default = {'depth': 300, 'timeout': 10 * 60}
         return configs.get(self.project_name, default)
     
     def generate_sby_files(self, cover_points: List[int]) -> bool:

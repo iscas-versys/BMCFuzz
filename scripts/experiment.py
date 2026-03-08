@@ -4,7 +4,7 @@ Module-level BMCFuzz Experiment Runner
 
 Supported projects : rocket_dcache, rocket_fpu
 Supported methods  : fuzz, hypfuzz, bmcfuzz, allbmc
-Supported cover    : toggle (12 h), line (6 h), mux (6 h)
+Supported cover    : toggle (2 h), line (1 h), mux (1 h)
 
 Usage
 -----
@@ -46,9 +46,9 @@ BMCFUZZ_PY = os.path.join(BMCFUZZ_HOME, "BMCFuzz.py")
 PROJECTS = {"rocket_dcache", "rocket_fpu"}
 
 COVER_TIMEOUTS = {
-    "toggle": 12 * 3600,
-    "line":    6 * 3600,
-    "mux":     6 * 3600,
+    "toggle":  2 * 3600,
+    "line":    1 * 3600,
+    "mux":     1 * 3600,
 }
 
 NOOP_HOME_SUFFIX = os.path.join("rtl", "rocket-modules")
@@ -536,7 +536,7 @@ def main():
     parser.add_argument(
         "-c", "--cover-type", required=True,
         choices=sorted(COVER_TIMEOUTS.keys()),
-        help="Coverage type (toggle=12h, line=6h, mux=6h)",
+        help="Coverage type (toggle=2h, line=1h, mux=1h)",
     )
 
     # Method flags

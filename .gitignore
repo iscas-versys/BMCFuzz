@@ -28,6 +28,7 @@ corpus/
 formal_run/*
 
 snapshots/
+experiment/
 
 test/
 

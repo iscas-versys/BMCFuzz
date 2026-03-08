@@ -24,10 +24,12 @@ python3 scripts/experiment.py -p rocket_dcache -c toggle --graph --fuzz --bmcfuz
 
 import argparse
 import os
+import queue
 import re
 import signal
 import subprocess
 import sys
+import threading
 import time
 
 import matplotlib
@@ -59,7 +61,7 @@ METHOD_COLORS = {
     "allbmc":  "green",
 }
 
-POLL_INTERVAL = 30  # seconds between coverage polls
+POLL_INTERVAL = 30  # seconds between coverage polls (fuzz CSV mode)
 
 # ═══════════════════════════════════════════════════════════════════
 # Path helpers
@@ -99,10 +101,10 @@ def _build_command(method, project, cover_type):
 
 
 # ═══════════════════════════════════════════════════════════════════
-# Coverage CSV reader
+# Coverage CSV reader (for fuzz method)
 # ═══════════════════════════════════════════════════════════════════
 
-def _read_coverage(csv_path):
+def _read_coverage_csv(csv_path):
     """Return coverage percentage from *csv_path*, or ``None``."""
     if not os.path.exists(csv_path):
         return None
@@ -123,7 +125,7 @@ def _read_coverage(csv_path):
 
 
 # ═══════════════════════════════════════════════════════════════════
-# Formatting helpers
+# Formatting / process helpers
 # ═══════════════════════════════════════════════════════════════════
 
 def _fmt_time(seconds):
@@ -142,22 +144,60 @@ def _kill_tree(pid):
         print(f"[EXP] Warning: kill_tree failed: {exc}")
 
 
+def _stderr_reader(pipe, q):
+    """Read lines from *pipe* and push them into *q*. Sentinel ``None``."""
+    try:
+        for line in iter(pipe.readline, ""):
+            q.put(line)
+    except ValueError:
+        pass
+    finally:
+        q.put(None)
+
+
 # ═══════════════════════════════════════════════════════════════════
-# Run experiment
+# Regex patterns for output parsing
 # ═══════════════════════════════════════════════════════════════════
 
-def run_experiment(method, project, cover_type, timeout, poll_interval):
-    cmd = _build_command(method, project, cover_type)
-    out_dir = _exp_dir(project, cover_type)
-    log_path = os.path.join(out_dir, f"{method}.log")
+# bmcfuzz / hypfuzz: "Coverage: 3097/3309 (93.59%)"
+_RE_HYBRID_COV = re.compile(r"Coverage:\s*(\d+)/(\d+)\s*\(([\d.]+)%\)")
+
+# allbmc: "Point 3121 successfully verified"
+_RE_BMC_POINT = re.compile(r"Point\s+(\d+)\s+successfully verified")
+
+# allbmc: "total points: 3309"
+_RE_TOTAL_POINTS = re.compile(r"total points:\s*(\d+)", re.IGNORECASE)
+
+# fuzz (if capturing fuzzer stdout): "Total Coverage:       21.275%"
+_RE_FUZZ_COV = re.compile(r"Total Coverage:\s*([\d.]+)%")
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Tick helpers
+# ═══════════════════════════════════════════════════════════════════
+
+def _flush_ticks(records, start, next_tick, current_cov, poll_interval):
+    """Emit scheduled tick records up to *now*. Returns updated next_tick."""
+    now = time.time()
+    while next_tick <= now:
+        tick_elapsed = next_tick - start
+        records.append((tick_elapsed, current_cov))
+        print(f"[EXP] {_fmt_time(tick_elapsed)}  Coverage: {current_cov:.2f}%")
+        next_tick += poll_interval
+    return next_tick
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Run experiment — fuzz (CSV poll)
+# ═══════════════════════════════════════════════════════════════════
+
+def _run_fuzz(cmd, timeout, poll_interval, log_path):
+    """Run fuzz baseline, monitoring coverage via CSV file.
+
+    Records a sample at every *poll_interval* tick (even if unchanged).
+    CSV updates between ticks are recorded as supplementary entries.
+    """
     csv_path = _coverage_csv()
-
-    print(f"[EXP] ─── {method} | {project} / {cover_type} ───")
-    print(f"[EXP] Command : {cmd}")
-    print(f"[EXP] Timeout : {_fmt_time(timeout)}")
-    print(f"[EXP] Log     : {log_path}")
-
-    # Remove old coverage so we track from scratch
     if os.path.exists(csv_path):
         os.remove(csv_path)
 
@@ -167,52 +207,239 @@ def run_experiment(method, project, cover_type, timeout, poll_interval):
         preexec_fn=os.setsid,
     )
 
-    records = []       # (elapsed_seconds, coverage_pct)
-    last_cov = None
+    records = []
+    current_cov = 0.0
     start = time.time()
+    next_tick = start + poll_interval
 
     try:
         while True:
-            elapsed = time.time() - start
+            now = time.time()
+            elapsed = now - start
+            if elapsed >= timeout:
+                print(f"[EXP] Timeout reached ({_fmt_time(timeout)}), terminating")
+                _kill_tree(process.pid)
+                break
+            if process.poll() is not None:
+                print(f"[EXP] Process exited with code {process.returncode}")
+                break
+
+            # Read CSV — supplementary record on change
+            cov = _read_coverage_csv(csv_path)
+            if cov is not None and cov != current_cov:
+                current_cov = cov
+                records.append((elapsed, current_cov))
+                print(f"[EXP] {_fmt_time(elapsed)}  * Coverage: {current_cov:.2f}%")
+
+            # Scheduled ticks
+            next_tick = _flush_ticks(records, start, next_tick,
+                                     current_cov, poll_interval)
+
+            sleep_dur = max(0.5, min(next_tick - time.time(), poll_interval))
+            time.sleep(sleep_dur)
+    except KeyboardInterrupt:
+        print("\n[EXP] Interrupted, terminating")
+        _kill_tree(process.pid)
+
+    _save_log(log_path, records, timeout)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Run experiment — bmcfuzz / hypfuzz (capture "Coverage: N/M (X%)")
+# ═══════════════════════════════════════════════════════════════════
+
+def _run_hybrid(cmd, timeout, poll_interval, log_path):
+    """Run bmcfuzz or hypfuzz, capturing Coverage lines from stderr.
+
+    Scheduled tick records every *poll_interval*; coverage updates
+    from stderr are recorded as supplementary entries.
+    """
+    process = subprocess.Popen(
+        cmd, shell=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True, bufsize=1,
+        preexec_fn=os.setsid,
+    )
+
+    q = queue.Queue()
+    reader = threading.Thread(target=_stderr_reader, args=(process.stderr, q))
+    reader.daemon = True
+    reader.start()
+
+    records = []
+    current_cov = 0.0
+    start = time.time()
+    next_tick = start + poll_interval
+
+    try:
+        while True:
+            now = time.time()
+            elapsed = now - start
             if elapsed >= timeout:
                 print(f"[EXP] Timeout reached ({_fmt_time(timeout)}), terminating")
                 _kill_tree(process.pid)
                 break
 
-            ret = process.poll()
-            if ret is not None:
-                print(f"[EXP] Process exited with code {ret}")
+            # Flush scheduled ticks
+            next_tick = _flush_ticks(records, start, next_tick,
+                                     current_cov, poll_interval)
+
+            # Read stderr with short timeout
+            wait = max(0.1, min(1.0, next_tick - time.time()))
+            try:
+                line = q.get(timeout=wait)
+            except queue.Empty:
+                continue
+
+            if line is None:
+                print(f"[EXP] Process exited with code {process.wait()}")
                 break
 
-            cov = _read_coverage(csv_path)
-            if cov is not None and cov != last_cov:
-                records.append((elapsed, cov))
-                last_cov = cov
-                print(f"[EXP] {_fmt_time(elapsed)}  Coverage: {cov:.2f}%")
+            # Supplementary record on coverage change
+            m = _RE_HYBRID_COV.search(line)
+            if m:
+                cov = float(m.group(3))
+                if cov != current_cov:
+                    current_cov = cov
+                    elapsed = time.time() - start
+                    records.append((elapsed, current_cov))
+                    print(f"[EXP] {_fmt_time(elapsed)}  * Coverage: "
+                          f"{m.group(1)}/{m.group(2)} ({cov:.2f}%)")
 
-            time.sleep(poll_interval)
     except KeyboardInterrupt:
         print("\n[EXP] Interrupted, terminating")
         _kill_tree(process.pid)
 
-    # Final coverage sample
-    cov = _read_coverage(csv_path)
-    if cov is not None:
-        elapsed = time.time() - start
-        if not records or records[-1][1] != cov:
-            records.append((elapsed, cov))
+    _save_log(log_path, records, timeout)
 
-    # Persist log
+
+# ═══════════════════════════════════════════════════════════════════
+# Run experiment — allbmc (count "Point N successfully verified")
+# ═══════════════════════════════════════════════════════════════════
+
+def _run_allbmc(cmd, timeout, poll_interval, log_path):
+    """Run pure BMC, counting successfully verified points from stderr.
+
+    Scheduled tick records every *poll_interval*; each newly verified
+    point is recorded as a supplementary entry.
+    """
+    process = subprocess.Popen(
+        cmd, shell=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True, bufsize=1,
+        preexec_fn=os.setsid,
+    )
+
+    q = queue.Queue()
+    reader = threading.Thread(target=_stderr_reader, args=(process.stderr, q))
+    reader.daemon = True
+    reader.start()
+
+    records = []
+    current_cov = 0.0
+    total_points = 0
+    verified = set()
+    start = time.time()
+    next_tick = start + poll_interval
+
+    try:
+        while True:
+            now = time.time()
+            elapsed = now - start
+            if elapsed >= timeout:
+                print(f"[EXP] Timeout reached ({_fmt_time(timeout)}), terminating")
+                _kill_tree(process.pid)
+                break
+
+            # Flush scheduled ticks
+            next_tick = _flush_ticks(records, start, next_tick,
+                                     current_cov, poll_interval)
+
+            # Read stderr with short timeout
+            wait = max(0.1, min(1.0, next_tick - time.time()))
+            try:
+                line = q.get(timeout=wait)
+            except queue.Empty:
+                continue
+
+            if line is None:
+                print(f"[EXP] Process exited with code {process.wait()}")
+                break
+
+            # Capture total points count
+            if total_points == 0:
+                tm = _RE_TOTAL_POINTS.search(line)
+                if tm:
+                    total_points = int(tm.group(1))
+                    print(f"[EXP] Total points: {total_points}")
+
+            # Supplementary record on newly verified point
+            pm = _RE_BMC_POINT.search(line)
+            if pm and total_points > 0:
+                point_id = int(pm.group(1))
+                if point_id not in verified:
+                    verified.add(point_id)
+                    current_cov = len(verified) / total_points * 100
+                    elapsed = time.time() - start
+                    records.append((elapsed, current_cov))
+                    print(f"[EXP] {_fmt_time(elapsed)}  * Verified: "
+                          f"{len(verified)}/{total_points} ({current_cov:.2f}%)")
+
+    except KeyboardInterrupt:
+        print("\n[EXP] Interrupted, terminating")
+        _kill_tree(process.pid)
+
+    _save_log(log_path, records, timeout)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Log persistence
+# ═══════════════════════════════════════════════════════════════════
+
+def _save_log(log_path, records, timeout):
+    """Write time-coverage records to *log_path*, deduplicating identical points."""
     with open(log_path, "w") as f:
         f.write("  0h  0m  0s Coverage:  0.00%\n")
+        prev_cov = 0.0
+        written = 0
         for t, c in records:
+            if c == prev_cov:
+                continue
             f.write(f"{_fmt_time(t)} Coverage: {c:.2f}%\n")
-        # End-line at timeout
+            prev_cov = c
+            written += 1
         end_str = _fmt_time(timeout)
         final_cov = records[-1][1] if records else 0.0
         f.write(f"{end_str} Coverage: {final_cov:.2f}%\n")
+    print(f"[EXP] {written} unique samples (from {len(records)}) saved → {log_path}")
 
-    print(f"[EXP] {method} done — {len(records)} samples → {log_path}")
+
+# ═══════════════════════════════════════════════════════════════════
+# Top-level run dispatcher
+# ═══════════════════════════════════════════════════════════════════
+
+def run_experiment(method, project, cover_type, timeout, poll_interval):
+    cmd = _build_command(method, project, cover_type)
+    out_dir = _exp_dir(project, cover_type)
+    log_path = os.path.join(out_dir, f"{method}.log")
+
+    print(f"[EXP] ─── {method} | {project} / {cover_type} ───")
+    print(f"[EXP] Command : {cmd}")
+    print(f"[EXP] Timeout : {_fmt_time(timeout)}")
+    print(f"[EXP] Log     : {log_path}")
+
+    if method == "fuzz":
+        _run_fuzz(cmd, timeout, poll_interval, log_path)
+    elif method in ("hypfuzz", "bmcfuzz"):
+        _run_hybrid(cmd, timeout, poll_interval, log_path)
+    elif method == "allbmc":
+        _run_allbmc(cmd, timeout, poll_interval, log_path)
+    else:
+        raise ValueError(f"Unknown method: {method}")
+
+    print(f"[EXP] ─── {method} done ───\n")
 
 
 # ═══════════════════════════════════════════════════════════════════

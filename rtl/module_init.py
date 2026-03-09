@@ -39,6 +39,9 @@ MODULE_PROJECT_CONFIGS = {
     "rocket_fpu": {
         "noop_home_suffix": os.path.join("rtl", "rocket-modules"),
     },
+    "rocket_frontend": {
+        "noop_home_suffix": os.path.join("rtl", "rocket-modules"),
+    },
 }
 
 

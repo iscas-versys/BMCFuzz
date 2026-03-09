@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 BMCFUZZ_HOME = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BMCFUZZ_PY = os.path.join(BMCFUZZ_HOME, "BMCFuzz.py")
 
-PROJECTS = {"rocket_dcache", "rocket_fpu"}
+PROJECTS = {"rocket_dcache", "rocket_fpu", "rocket_frontend"}
 
 COVER_TIMEOUTS = {
     "toggle":  2 * 3600,

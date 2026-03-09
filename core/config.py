@@ -25,7 +25,7 @@ class Config:
 
     # Project type sets (CPU vs Module)
     CPU_PROJECTS: Set[str] = {"nutshell", "rocket", "boom"}
-    MODULE_PROJECTS: Set[str] = {"rocket_dcache", "rocket_fpu"}
+    MODULE_PROJECTS: Set[str] = {"rocket_dcache", "rocket_fpu", "rocket_frontend"}
 
     # Formal
     POINT_SELECTOR_MAX_POINT_NUM: int = 10

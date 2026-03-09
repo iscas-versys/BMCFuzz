@@ -198,13 +198,15 @@ class Scheduler:
         seed_gen.configure(project_name=self.project_name, mode=self.solver_mode)
         self.executor.set_seed_generator(seed_gen)
 
-        # 8. Inject cover/assert statements into formal RTL
-        # add_cover_statements() defaults to formal_run_dir/rtl/SimTop.sv
+        # 8. Convert original assert to assume (preserve design constraints)
+        self.executor.convert_assert_to_assume(self.formal_rtl_file)
+
+        # 9. Inject cover/assert statements into formal RTL
         if not self.executor.add_cover_statements(self.formal_rtl_file):
             self.logger.error("Failed to add cover statements to RTL")
             return False
 
-        # 9. If no snapshot mode, insert initial assume statements for registers
+        # 10. If no snapshot mode, insert initial assume statements for registers
         if not self.run_snapshot:
             self.executor.add_reg_initial_statements(self.formal_rtl_file)
 

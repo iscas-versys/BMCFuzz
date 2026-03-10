@@ -205,6 +205,7 @@ class Scheduler:
 
         # 9. If no snapshot mode, insert initial assume statements for registers
         if not self.run_snapshot:
+            self.executor.add_reg_initial_statements(self.fuzzer_rtl_file)
             self.executor.add_reg_initial_statements(self.formal_rtl_file)
 
         self.logger.info("Formal initialization completed successfully")

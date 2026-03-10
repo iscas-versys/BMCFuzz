@@ -156,7 +156,7 @@ class Scheduler:
         rtl_init = get_rtl_manager()
         shutil.rmtree(Config.FORMAL_RUN_DIR, ignore_errors=True)
         os.makedirs(Config.FORMAL_RUN_DIR, exist_ok=True)
-        if not rtl_init.build_rtl(cover_type=self.cover_type):
+        if not rtl_init.build_rtl(cover_type=self.cover_type, run_snapshot=self.run_snapshot):
             self.logger.error("RTL build failed")
             return False
 
@@ -198,14 +198,17 @@ class Scheduler:
         seed_gen.configure(project_name=self.project_name, mode=self.solver_mode)
         self.executor.set_seed_generator(seed_gen)
 
-        # 8. Inject cover/assert statements into formal RTL
+        # 8a. Convert RTL assert -> assume (debug: prevents SAT traces
+        #     from violating RTL invariants when replayed in the fuzzer)
+        self.executor.convert_assert_to_assume(self.formal_rtl_file)
+
+        # 8b. Inject cover/assert statements into formal RTL
         if not self.executor.add_cover_statements(self.formal_rtl_file):
             self.logger.error("Failed to add cover statements to RTL")
             return False
 
         # 9. If no snapshot mode, insert initial assume statements for registers
         if not self.run_snapshot:
-            self.executor.add_reg_initial_statements(self.fuzzer_rtl_file)
             self.executor.add_reg_initial_statements(self.formal_rtl_file)
 
         self.logger.info("Formal initialization completed successfully")

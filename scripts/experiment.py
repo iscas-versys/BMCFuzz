@@ -86,9 +86,9 @@ def _exp_dir(project, cover_type):
 # Command builders
 # ═══════════════════════════════════════════════════════════════════
 
-def _build_command(method, project, cover_type):
+def _build_command(method, project, cover_type, solver):
     """Build the BMCFuzz.py command string for *method*."""
-    base = f"python3 {BMCFUZZ_PY} -p {project} -c {cover_type}"
+    base = f"python3 {BMCFUZZ_PY} -p {project} -c {cover_type} -s {solver}"
     if method == "fuzz":
         return f"{base} --only-fuzz"
     if method == "hypfuzz":
@@ -422,8 +422,8 @@ def _save_log(log_path, records, timeout):
 # Top-level run dispatcher
 # ═══════════════════════════════════════════════════════════════════
 
-def run_experiment(method, project, cover_type, timeout, poll_interval):
-    cmd = _build_command(method, project, cover_type)
+def run_experiment(method, project, cover_type, solver, timeout, poll_interval):
+    cmd = _build_command(method, project, cover_type, solver)
     out_dir = _exp_dir(project, cover_type)
     log_path = os.path.join(out_dir, f"{method}.log")
 
@@ -540,6 +540,10 @@ def main():
         choices=sorted(COVER_TIMEOUTS.keys()),
         help="Coverage type (toggle=2h, line=1h, mux=1h)",
     )
+    parser.add_argument(
+        "-s", "--solver", default="sat",
+        help="Solver mode (default: sat)",
+    )
 
     # Method flags
     parser.add_argument("--fuzz",    action="store_true", help="Run / plot fuzz baseline")
@@ -574,7 +578,7 @@ def main():
     elif requested:
         for method in requested:
             run_experiment(
-                method, args.project, args.cover_type,
+                method, args.project, args.cover_type, args.solver,
                 timeout, args.poll_interval,
             )
     else:

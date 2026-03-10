@@ -356,6 +356,48 @@ class FormalExecutor:
             )
             return False
     
+    def convert_assert_to_assume(self, rtl_file: str = None) -> int:
+        """
+        Convert all ``assert(...)`` statements in *rtl_file* to ``assume(...)``.
+
+        Intended to be called **before** :meth:`add_cover_statements` so that
+        the original RTL assertions become formal assumptions.  This prevents
+        the SAT/AIGER flow from producing counterexamples that violate RTL
+        invariants (e.g. TLB, Frontend assertions) when replayed in the fuzzer.
+
+        Args:
+            rtl_file: Path to the RTL file (default: self.rtl_dir/SimTop.sv)
+
+        Returns:
+            Number of assert statements converted.
+        """
+        if rtl_file is None:
+            rtl_file = os.path.join(self.rtl_dir, "SimTop.sv")
+
+        if not os.path.exists(rtl_file):
+            self.logger.error(f"RTL file not found: {rtl_file}")
+            return 0
+
+        self.logger.info(f"Converting assert -> assume in {rtl_file}")
+
+        with open(rtl_file, 'r') as f:
+            content = f.read()
+
+        pattern = re.compile(r'\bassert\(')
+        count = len(pattern.findall(content))
+
+        if count == 0:
+            self.logger.info("No assert statements found to convert")
+            return 0
+
+        new_content = pattern.sub('assume(', content)
+
+        with open(rtl_file, 'w') as f:
+            f.write(new_content)
+
+        self.logger.info(f"Converted {count} assert -> assume in {rtl_file}")
+        return count
+
     def add_cover_statements(self, rtl_file: str = None) -> bool:
         """
         Add cover/assert statements to RTL file for cover blocks

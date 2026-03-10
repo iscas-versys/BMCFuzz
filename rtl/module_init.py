@@ -69,7 +69,7 @@ class ModuleRTLGenerator(RTLGeneratorBase):
 
         os.makedirs(os.path.join(self.noop_home, "tmp"), exist_ok=True)
     
-    def build(self, make_args: str = "", **kwargs) -> bool:
+    def build(self, run_snapshot = False, make_args: str = "", **kwargs) -> bool:
         """
         Build RTL: make src FIRRTL_COVER=<cover_type> + module_parser.py
         
@@ -88,6 +88,9 @@ class ModuleRTLGenerator(RTLGeneratorBase):
             f"make src XFUZZ=1 FIRRTL_COVER={self.cover_type},control -j16 {make_args} > {log_file} 2>&1 && "
             f"python3 modules/module_parser.py --project-name {self.project_name}"
         )
+
+        if not run_snapshot:
+            build_command += " --initial"
         
         build_command += f" >> {log_file} 2>&1"
         build_command = f"bash -c '{build_command}'"

@@ -189,9 +189,15 @@ class FormalExecutor:
             cover_label = f"cov_count_{cover_id}"
             
             if self.mode == "smt":
-                scripts = f"chformal -remove -cover c:{cover_label} %n\n"
+                scripts = (
+                    f"chformal -remove -cover c:{cover_label} %n\n"
+                    f"chformal -assert2assume\n"
+                )
             elif self.mode == "sat":
-                scripts = f"chformal -remove -assert c:{cover_label} %n\n"
+                scripts = (
+                    f"chformal -assert2assume c:{cover_label} %n\n"
+                    f"chformal -remove -assume c:cov_count_*\n"
+                )
             
             # Format template (without define.sv reference)
             sby_file_content = self.template_content.format(
@@ -350,51 +356,6 @@ class FormalExecutor:
             )
             return False
     
-    def convert_assert_to_assume(self, rtl_file: str = None) -> int:
-        """
-        Convert all existing assert statements in RTL to assume before
-        injecting coverage assertions.
-
-        This preserves original design constraints as assumptions so that
-        they remain active regardless of how coverage assertions are later
-        added or removed by ``chformal``.
-
-        Args:
-            rtl_file: Path to RTL file (default: self.rtl_dir/SimTop.sv)
-
-        Returns:
-            Number of assert statements converted.
-        """
-        if rtl_file is None:
-            rtl_file = os.path.join(self.rtl_dir, "SimTop.sv")
-
-        if not os.path.exists(rtl_file):
-            self.logger.error(f"RTL file not found: {rtl_file}")
-            return 0
-
-        with open(rtl_file, 'r') as f:
-            lines = f.readlines()
-
-        assert_pattern = re.compile(r'\bassert\(')
-        count = 0
-        new_lines = []
-        for line in lines:
-            stripped = line.lstrip()
-            if stripped.startswith('//'):
-                new_lines.append(line)
-                continue
-            new_line, n = assert_pattern.subn('assume(', line)
-            count += n
-            new_lines.append(new_line)
-
-        with open(rtl_file, 'w') as f:
-            f.writelines(new_lines)
-
-        self.logger.info(
-            f"Converted {count} assert statement(s) to assume in {rtl_file}"
-        )
-        return count
-
     def add_cover_statements(self, rtl_file: str = None) -> bool:
         """
         Add cover/assert statements to RTL file for cover blocks

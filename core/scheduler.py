@@ -200,7 +200,7 @@ class Scheduler:
 
         # 8a. Convert RTL assert -> assume (debug: prevents SAT traces
         #     from violating RTL invariants when replayed in the fuzzer)
-        self.executor.convert_assert_to_assume(self.formal_rtl_file)
+        # self.executor.convert_assert_to_assume(self.formal_rtl_file)
 
         # 8b. Inject cover/assert statements into formal RTL
         if not self.executor.add_cover_statements(self.formal_rtl_file):

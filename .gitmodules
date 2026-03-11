@@ -10,3 +10,6 @@
 [submodule "rtl/rocket-modules"]
 	path = rtl/rocket-modules
 	url = https://github.com/Chooaa/rocket-modules.git
+[submodule "rtl/boom-modules"]
+	path = rtl/boom-modules
+	url = https://github.com/Chooaa/boom-modules.git

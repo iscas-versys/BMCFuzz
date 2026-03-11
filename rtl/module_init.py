@@ -42,6 +42,9 @@ MODULE_PROJECT_CONFIGS = {
     "rocket_frontend": {
         "noop_home_suffix": os.path.join("rtl", "rocket-modules"),
     },
+    "boom_dcache": {
+        "noop_home_suffix": os.path.join("rtl", "boom-modules"),
+    },
 }
 
 

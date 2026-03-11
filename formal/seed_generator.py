@@ -137,6 +137,10 @@ class ModuleConfig:
             'dut_hier': 'FormalTop',
             'input_signal': 'formal_input',
         },
+        'boom_dcache': {
+            'dut_hier': 'FormalTop',
+            'input_signal': 'formal_input',
+        },
     }
 
     def __init__(self, project_name: str,

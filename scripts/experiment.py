@@ -2,17 +2,16 @@
 """
 Module-level BMCFuzz Experiment Runner
 
-Supported projects : rocket_dcache, rocket_fpu
+Supported projects : rocket_dcache, rocket_fpu, rocket_frontend, boom_dcache
 Supported methods  : fuzz, hypfuzz, bmcfuzz, allbmc
 Supported cover    : toggle (2 h), line (1 h), mux (1 h)
+                     (boom projects use 2× timeout)
 
 Usage
 -----
 # Run a single method
 python3 scripts/experiment.py -p rocket_dcache -c toggle --fuzz
-python3 scripts/experiment.py -p rocket_dcache -c toggle --hypfuzz
-python3 scripts/experiment.py -p rocket_dcache -c toggle --bmcfuzz
-python3 scripts/experiment.py -p rocket_dcache -c toggle --allbmc
+python3 scripts/experiment.py -p boom_dcache  -c toggle --bmcfuzz
 
 # Run multiple methods sequentially
 python3 scripts/experiment.py -p rocket_dcache -c toggle --fuzz --hypfuzz --bmcfuzz --allbmc
@@ -32,18 +31,20 @@ import sys
 import threading
 import time
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+from core.config import Config
+from rtl.module_init import MODULE_PROJECT_CONFIGS
 
 # ═══════════════════════════════════════════════════════════════════
 # Constants
 # ═══════════════════════════════════════════════════════════════════
 
-BMCFUZZ_HOME = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-BMCFUZZ_PY = os.path.join(BMCFUZZ_HOME, "BMCFuzz.py")
-
-PROJECTS = {"rocket_dcache", "rocket_fpu", "rocket_frontend"}
+BMCFUZZ_PY = os.path.join(Config.BMCFUZZ_HOME, "BMCFuzz.py")
 
 COVER_TIMEOUTS = {
     "toggle":  2 * 3600,
@@ -51,7 +52,7 @@ COVER_TIMEOUTS = {
     "mux":     1 * 3600,
 }
 
-NOOP_HOME_SUFFIX = os.path.join("rtl", "rocket-modules")
+BOOM_TIMEOUT_MULTIPLIER = 2
 
 METHODS = ("fuzz", "hypfuzz", "bmcfuzz", "allbmc")
 METHOD_COLORS = {
@@ -67,17 +68,23 @@ POLL_INTERVAL = 30  # seconds between coverage polls (fuzz CSV mode)
 # Path helpers
 # ═══════════════════════════════════════════════════════════════════
 
-def _noop_home():
-    return os.path.join(BMCFUZZ_HOME, NOOP_HOME_SUFFIX)
+def _project_family(project):
+    """Return 'rocket' or 'boom' based on project name prefix."""
+    return project.split("_")[0]
 
 
-def _coverage_csv():
+def _noop_home(project):
+    suffix = MODULE_PROJECT_CONFIGS[project]["noop_home_suffix"]
+    return os.path.join(Config.BMCFUZZ_HOME, suffix)
+
+
+def _coverage_csv(project):
     """$NOOP_HOME/tmp/fuzz_coverage.csv"""
-    return os.path.join(_noop_home(), "tmp", "fuzz_coverage.csv")
+    return os.path.join(_noop_home(project), "tmp", "fuzz_coverage.csv")
 
 
 def _exp_dir(project, cover_type):
-    d = os.path.join(BMCFUZZ_HOME, "experiment", project, cover_type)
+    d = os.path.join(Config.BMCFUZZ_HOME, "experiment", project, cover_type)
     os.makedirs(d, exist_ok=True)
     return d
 
@@ -191,13 +198,13 @@ def _flush_ticks(records, start, next_tick, current_cov, poll_interval):
 # Run experiment — fuzz (CSV poll)
 # ═══════════════════════════════════════════════════════════════════
 
-def _run_fuzz(cmd, timeout, poll_interval, log_path):
+def _run_fuzz(cmd, timeout, poll_interval, log_path, project):
     """Run fuzz baseline, monitoring coverage via CSV file.
 
     Records a sample at every *poll_interval* tick (even if unchanged).
     CSV updates between ticks are recorded as supplementary entries.
     """
-    csv_path = _coverage_csv()
+    csv_path = _coverage_csv(project)
     if os.path.exists(csv_path):
         os.remove(csv_path)
 
@@ -433,7 +440,7 @@ def run_experiment(method, project, cover_type, solver, timeout, poll_interval):
     print(f"[EXP] Log     : {log_path}")
 
     if method == "fuzz":
-        _run_fuzz(cmd, timeout, poll_interval, log_path)
+        _run_fuzz(cmd, timeout, poll_interval, log_path, project)
     elif method in ("hypfuzz", "bmcfuzz"):
         _run_hybrid(cmd, timeout, poll_interval, log_path)
     elif method == "allbmc":
@@ -532,7 +539,7 @@ def main():
     )
     parser.add_argument(
         "-p", "--project", required=True,
-        choices=sorted(PROJECTS),
+        choices=sorted(Config.MODULE_PROJECTS),
         help="Project name",
     )
     parser.add_argument(
@@ -570,7 +577,10 @@ def main():
     if args.bmcfuzz: requested.append("bmcfuzz")
     if args.allbmc:  requested.append("allbmc")
 
-    timeout = args.timeout if args.timeout else COVER_TIMEOUTS[args.cover_type]
+    base_timeout = COVER_TIMEOUTS[args.cover_type]
+    if _project_family(args.project) == "boom":
+        base_timeout *= BOOM_TIMEOUT_MULTIPLIER
+    timeout = args.timeout if args.timeout else base_timeout
 
     if args.graph:
         methods_for_graph = requested if requested else list(METHODS)

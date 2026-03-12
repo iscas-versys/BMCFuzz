@@ -497,7 +497,8 @@ class ModuleSMTParser(ResultParser):
                 if t in time_values:
                     current_value = int(time_values[t], 2)
                 if idx == 0 and not self.run_snapshot:
-                    f.write(b'\x00' * bytes_per_cycle)
+                    # f.write(b'\x00' * bytes_per_cycle)
+                    self.logger.debug(f"Skip first cycle for cover point {cover_point}")
                 else:
                     f.write(current_value.to_bytes(bytes_per_cycle, byteorder='little'))
 
@@ -606,7 +607,8 @@ class ModuleSATParser(ResultParser):
         with open(output_file, 'wb') as f:
             for idx, step in enumerate(all_steps_sorted):
                 if idx == 0 and not self.run_snapshot:
-                    f.write(b'\x00' * bytes_per_cycle)
+                    # f.write(b'\x00' * bytes_per_cycle)
+                    self.logger.debug(f"Skip first step for cover point {cover_point}")
                 else:
                     val = int(step_values[step], 2)
                     f.write(val.to_bytes(bytes_per_cycle, byteorder='little'))

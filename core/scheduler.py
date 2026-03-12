@@ -195,7 +195,8 @@ class Scheduler:
 
         # 7. Wire up seed generator as executor callback
         seed_gen = SeedGenerator()
-        seed_gen.configure(project_name=self.project_name, mode=self.solver_mode)
+        seed_gen.configure(project_name=self.project_name, mode=self.solver_mode,
+                          run_snapshot=self.run_snapshot)
         self.executor.set_seed_generator(seed_gen)
 
         # 8a. Convert RTL assert -> assume (debug: prevents SAT traces
@@ -208,8 +209,8 @@ class Scheduler:
             return False
 
         # 9. If no snapshot mode, insert initial assume statements for registers
-        if not self.run_snapshot:
-            self.executor.add_reg_initial_statements(self.formal_rtl_file)
+        # if not self.run_snapshot:
+        #     self.executor.add_reg_initial_statements(self.formal_rtl_file)
 
         self.logger.info("Formal initialization completed successfully")
         return True

@@ -437,8 +437,10 @@ class ModuleSMTParser(ResultParser):
     module fuzzer.
     """
 
-    def __init__(self, module_config: ModuleConfig):
+    def __init__(self, module_config: ModuleConfig,
+                 run_snapshot: bool = True):
         self.module_config = module_config
+        self.run_snapshot = run_snapshot
         self.logger = BMCFuzzLogger.get_logger("ModuleSMTParser")
 
     def parse(self, cover_point: int, formal_run_dir: str) -> Optional[Dict[str, Any]]:
@@ -491,14 +493,18 @@ class ModuleSMTParser(ResultParser):
         current_value = 0
 
         with open(output_file, 'wb') as f:
-            for t in all_times_sorted:
+            for idx, t in enumerate(all_times_sorted):
                 if t in time_values:
                     current_value = int(time_values[t], 2)
-                f.write(current_value.to_bytes(bytes_per_cycle, byteorder='little'))
+                if idx == 0 and not self.run_snapshot:
+                    f.write(b'\x00' * bytes_per_cycle)
+                else:
+                    f.write(current_value.to_bytes(bytes_per_cycle, byteorder='little'))
 
         self.logger.info(
             f"Generated seed for cover point {cover_point}: "
             f"{len(all_times_sorted)} cycles × {bytes_per_cycle} bytes"
+            f"{' (first cycle zeroed)' if not self.run_snapshot else ''}"
         )
 
         return {
@@ -521,8 +527,10 @@ class ModuleSATParser(ResultParser):
     :class:`ModuleSMTParser` produces.
     """
 
-    def __init__(self, module_config: ModuleConfig):
+    def __init__(self, module_config: ModuleConfig,
+                 run_snapshot: bool = True):
         self.module_config = module_config
+        self.run_snapshot = run_snapshot
         self.logger = BMCFuzzLogger.get_logger("ModuleSATParser")
 
     # ---- regex for witness display lines ----
@@ -596,13 +604,17 @@ class ModuleSATParser(ResultParser):
         os.makedirs(output_dir, exist_ok=True)
         output_file = os.path.join(output_dir, f"cover_{cover_point}.bin")
         with open(output_file, 'wb') as f:
-            for step in all_steps_sorted:
-                val = int(step_values[step], 2)
-                f.write(val.to_bytes(bytes_per_cycle, byteorder='little'))
+            for idx, step in enumerate(all_steps_sorted):
+                if idx == 0 and not self.run_snapshot:
+                    f.write(b'\x00' * bytes_per_cycle)
+                else:
+                    val = int(step_values[step], 2)
+                    f.write(val.to_bytes(bytes_per_cycle, byteorder='little'))
 
         self.logger.info(
             f"Generated seed for cover point {cover_point}: "
             f"{len(all_steps_sorted)} steps × {bytes_per_cycle} bytes"
+            f"{' (first cycle zeroed)' if not self.run_snapshot else ''}"
         )
 
         return {
@@ -629,6 +641,7 @@ class SeedGenerator:
         self.logger = BMCFuzzLogger.get_logger("SeedGenerator")
         self.project_name = None
         self.mode = None  # "smt" or "sat"
+        self.run_snapshot = True
         
         # CPU configurations (users can register custom configs)
         self.cpu_configs: Dict[str, CPUConfig] = {}
@@ -641,16 +654,21 @@ class SeedGenerator:
         
         self.logger.info("SeedGenerator initialized")
     
-    def configure(self, project_name: str, mode: str):
+    def configure(self, project_name: str, mode: str,
+                  run_snapshot: bool = True):
         """
         Configure seed generator for specific project and mode
 
         Args:
             project_name: Project name (CPU or module project)
             mode: Solver mode ("smt" or "sat")
+            run_snapshot: Whether snapshot mode is active.  When False, the
+                first cycle of module seeds is zeroed to match the fuzzer's
+                reset behaviour.
         """
         self.project_name = project_name
         self.mode = mode
+        self.run_snapshot = run_snapshot
 
         if project_name in Config.MODULE_PROJECTS:
             if project_name not in self.module_configs:
@@ -705,8 +723,10 @@ class SeedGenerator:
                 module_config = ModuleConfig(self.project_name)
                 self.module_configs[self.project_name] = module_config
             if self.mode == "sat":
-                return ModuleSATParser(module_config=module_config)
-            return ModuleSMTParser(module_config=module_config)
+                return ModuleSATParser(module_config=module_config,
+                                      run_snapshot=self.run_snapshot)
+            return ModuleSMTParser(module_config=module_config,
+                                  run_snapshot=self.run_snapshot)
         
         # CPU projects → SMTParser / SATParser
         cpu_config = self.cpu_configs.get(self.project_name)
